@@ -1,0 +1,241 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>GOTech Tutorial</title>
+</head>
+
+<body>
+
+<p><a name="top"></a><img border="0" src="../images/coc.gif" width="308" height="94"></p>
+<h1>GOTech Tutorial</h1>
+<hr>
+<p>Table of contents:</p>
+<ol>
+  <li><a href="#intro">Introduction</a></li>
+  <li><a href="#set">Setting up third-party products</a></li>
+  <li><a href="#inst">Installing GoTech</a></li>
+  <li><a href="#ex">Hello World revisited</a></li>
+  <li><a href="#cont">Contact information</a></li>
+</ol>
+<p><a href="index.htm">back to GoTech overview</a></p>
+<hr>
+<h2><a name="intro"></a>1. Introduction</h2>
+<p>In the following pages we will give a step-by-step description on how to 
+install and use the GoTech-framework. As the framework uses several third-party 
+products there might be differences if other versions than the ones specified in 
+this tutorial are used. The used operating system was Windows 2003 Server, 
+however it should also run on all platforms supporting Java Version 1.4. The 
+given example is just to demonstrate the capabilities of GoTech and does not 
+represent any meaningful application.</p>
+<p><font size="1"><a href="#top">top</a></font></p>
+<hr>
+<h2><a name="set"></a>2. Setting up third-party products</h2>
+<p>The first step to set up the GoTech-framework is to install all necessary 
+third-party products. The basis for all further steps is a freshly installed 
+Windows 2003 Server. In the following table, all products and installation notes 
+are listed. The products were installed in order as listed, however, the 
+ordering should be of no importance. </p>
+<p>Product Installation notes</p>
+<table border="1" width="100%" id="table5">
+  <tr>
+    <td><b>Product</b></td>
+    <td>
+    <b>Product-specific installation notes</b></td>
+  </tr>
+  <tr>
+    <td>Java 2 Standard Platform SDK 1.4.2</td>
+    <td>
+    <ul>
+      <li>follow the installation instructions</li>
+      <li>add “.” to CLASSPATH </li>
+      <li>add “bin” directory to PATH </li>
+    </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>Apache Ant 1.5.3</td>
+    <td>
+    <ul>
+      <li>follow the installation instructions</li>
+      <li>add JAVA_HOME variable</li>
+      <li>add ANT_HOME variable</li>
+      <li>add “bin” directory to PATH</li>
+    </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>AspectJ 1.1.0</td>
+    <td>
+    <ul>
+      <li>follow the installation instructions</li>
+      <li>add “aspectjrt.jar” to CLASSPATH</li>
+      <li>add “aspectjtools.jar” to CLASSPATH</li>
+      <li>add “bin” directory to PATH</li>
+    </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>XDoclet 1.2B3</td>
+    <td>
+    <ul>
+      <li>follow the installation instructions</li>
+    </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>JBoss Application Server 4.0.0 DR 2</td>
+    <td>
+    <ul>
+      <li>follow the installation instructions </li>
+		<li>add “asptectjrt.jar” to 
+      JBOSS_CLASSPATH</li>
+    </ul>
+    </td>
+  </tr>
+</table>
+<p>The only larger requirement for configuration arises to enable NRMI for JBoss. 
+To enable NRMI, open the file “standardjboss.xml” in “server/default/conf/” for 
+editing (note: replace “default” with the name of your JBoss configuration if 
+you do not use default). Now locate the section called “stateless-remoting-socket-invoker” 
+and add the line “&lt;interceptor&gt;org.jboss.invocation.nrmi.ClientInterceptor&lt;/interceptor&gt;” 
+as shown below. Do the same in the section called “stateful-remoting-socket-invoker”.
+</p>
+<p><font face="Courier New">&lt;invoker-proxy-binding&gt;<br>
+&nbsp;&lt;name&gt;stateless-remoting-socket-invoker&lt;/name&gt;<br>
+&nbsp;...<br>
+&nbsp;&lt;proxy-factory-config&gt;<br>
+&nbsp; &lt;client-interceptors&gt; <br>
+&nbsp;&nbsp; &lt;home&gt;<br>
+&nbsp;&nbsp; ...<br>
+&nbsp;&nbsp; &lt;/home&gt;<br>
+&nbsp;&nbsp; &lt;bean&gt;<br>
+&nbsp;&nbsp;&nbsp; <font color="#FF0000">&lt;interceptor&gt;org.jboss.invocation.nrmi.ClientInterceptor&lt;/interceptor&gt;</font><br>
+&nbsp;&nbsp;&nbsp; ...<br>
+&nbsp;&nbsp; &lt;/bean&gt;<br>
+&nbsp; &lt;/client-interceptors&gt;<br>
+&nbsp;&lt;/proxy-factory-config&gt;<br>
+&lt;/invoker-proxy-binding&gt; </font></p>
+<p>This sets up the client interceptors for NRMI. Now we need to set up the 
+interceptors for the server side. Locate the section called “Standard Stateless 
+SessionBean” and add the line 
+“&lt;interceptor&gt;org.jboss.invocation.nrmi.ServerInterceptor&lt;/interceptor&gt;” as 
+shown below. Do the same for “Standard Stateful SessionBean”. </p>
+<p><font face="Courier New">&lt;container-configuration&gt;<br>
+&nbsp;&lt;container-name&gt;Standard Stateless SessionBean&lt;/container-name&gt;<br>
+&nbsp;...<br>
+&nbsp;&lt;container-interceptors&gt;<br>
+&nbsp; <font color="#FF0000">&lt;interceptor&gt;org.jboss.invocation.nrmi.ServerInterceptor&lt;/interceptor&gt;<br>
+</font>&nbsp; ...<br>
+&nbsp;&lt;/container-interceptors&gt;<br>
+&nbsp;...<br>
+&lt;/container-configuration&gt; </font></p>
+<p>Now all third-party software necessary should be installed correctly. The 
+next step is to download and install the GoTech framework itself.</p>
+<p><font size="1"><a href="#top">top</a></font></p><hr>
+<h2><a name="inst"></a>3. Installing GOTech</h2>
+<p>The GoTech framework can be downloaded from
+<a href="http://www.jorchestra.org">www.jorchestra.org</a>. Installation is done 
+quickly. Just unzip the archive. Now the configuration file of GoTech needs some 
+work. Open “gotech.properties” located in “buildfile” in an editor. Adjust the 
+paths corresponding to your installation. To test if all settings are correct, 
+we now try to build and run the included example. First, change into the 
+“buildfile” directory. By typing “ant” the build process is started. After 
+successful completion of the build process, change into “build/bin” and execute 
+“run-client.bat”. Then, change into the “build/client” directory and start the 
+demo with “java –classpath %LCP% GuiPlate”. The application should now work, 
+doing all the computations on the application server.</p>
+<p><font size="1"><a href="#top">top</a></font></p>
+<hr>
+<h2><a name="ex"></a>4. Hello World revisited</h2>
+<p>In this section, we will demonstrate the functionality of the GoTech 
+framework by building a pretty standard application – a hello world example. The 
+application in the original version will consist of two classes as shown below. 
+The Main class calls the “functionality” of the demo application in demo.Changer. 
+We have to introduce a package name for the future Bean class due to a 
+limitation of XDoclet. XDoclet is unable to handle Beans without package name.
+</p>
+<p><b>Main.java</b></p>
+<p><font face="Courier New">import demo.Changer; </font></p>
+<p><font face="Courier New">public class Main { </font></p>
+<blockquote>
+  <p><font face="Courier New">public static void main(String[] args) { <br>
+&nbsp;&nbsp;&nbsp; StringBuffer buf = new StringBuffer(&quot;Hello &quot;); <br>
+&nbsp;&nbsp;&nbsp; Changer change = new Changer(); <br>
+&nbsp;&nbsp;&nbsp; change.change(buf); <br>
+&nbsp;&nbsp;&nbsp; System.out.println(buf); <br>
+  }</font></p>
+</blockquote>
+<p><font face="Courier New">}</font></p>
+<p><b>demo/Changer.java</b></p>
+<p><font face="Courier New">package demo; </font></p>
+<p><font face="Courier New">public class Changer { </font></p>
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; public void change(StringBuffer 
+s) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; s.append(&quot;GoTech!&quot;);<br>
+&nbsp;&nbsp;&nbsp; } </font></p>
+<p><font face="Courier New">} </font></p>
+<p>If we now compile and run the example it will hopefully print the result 
+“Hello GoTech!”. Consider now that we want to change the example into a 
+distributed application. To achieve that, the class Changer should be moved to 
+an application server. Here, GoTech comes in. GoTech allows annotating Changer 
+with just comments to distribute the application. Another noteworthy challenge 
+is that the parameter s in regular Java is passed by reference. Standard policy 
+for EJBs is call by copy, which would result in an erroneous program. GoTech 
+however can use NRMI to maintain calling semantics using copy-restore. The fully 
+annotated version of Change is shown below. </p>
+<p><font face="Courier New">package demo; </font></p>
+<p><font face="Courier New">/**<br>
+&nbsp;* Changer<br>
+&nbsp;* @ejb:bean name=&quot;ChangerBean&quot;<br>
+&nbsp;* display-name=&quot;Changer Bean&quot;<br>
+&nbsp;* type=&quot;Stateless&quot;<br>
+&nbsp;* view-type=&quot;remote&quot;<br>
+&nbsp;* jndi-name=&quot;ejb/test/CDemo&quot;<br>
+&nbsp;*<br>
+&nbsp;**/<br>
+public class Changer { </font></p>
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * @ejb:interface-method view-type=&quot;remote&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * @jboss:method-attributes copy-restore=&quot;true&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; public void change(StringBuffer s) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; s.append(&quot;GoTech!&quot;);<br>
+&nbsp;&nbsp;&nbsp; } </font></p>
+<p><font face="Courier New">} </font></p>
+<p>The @ejb:bean-tag tells GoTech the name of the bean, the bean type (stateless 
+in this case as we do not need to maintain state), the view-type of the bean and 
+the jndi-name. The @jboss:method-tag selects the calling semantics for the 
+method - if non is specified, call by copy is used. To make it more interesting, 
+let's add a method to Changer using call by copy semantics.</p>
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * @ejb:interface-method view-type=&quot;remote&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; public void changeCBC(StringBuffer s) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; s.append(&quot;GoTech!&quot;);<br>
+&nbsp;&nbsp;&nbsp; } </font></p>
+<p>The only (but important) difference is now that we did not specify 
+copy-restore as calling semantics. To finish the example, we have to add the 
+following line to the main program right after the change.change-call:</p>
+<p><font face="Courier New">change.changeCBC(buf);</font></p>
+<p>With the annotations included, the program can still be compiled and started 
+with any normal java compiler. However, lets try the GoTech framework. Copy the 
+client into the src/client directory and demo/Changer.java to src/share/demo/Changer.java. 
+Note that the Changer class is shared code as the client accesses it. So do not 
+copy your future EJBs to the server directory. Now start the JBoss application 
+server, change into the buildfile-directory of GoTech and type &quot;ant&quot;. The 
+program should build successfully and the EJB should be automatically deployed 
+to the application server.</p>
+<p>To run the example, change into &quot;build/bin&quot; and type &quot;run-client&quot;, then 
+change to &quot;build/client&quot; and type &quot;java -classpath %LCP% Main&quot;. The program 
+should print &quot;Hello GoTech!&quot; on the screen (and not &quot;Hello GoTech!GoTech!&quot;).</p>
+<p><font size="1"><a href="#top">top</a></font></p><hr>
+<h2><a name="cont"></a>5. Contact information</h2>
+<p>For questions, comments, and bug reports please contact
+<a href="mailto:urbs@gmx.net?subject=GoTech:">Stephan Urbanski</a> or
+<a href="mailto:tilevich@cc.gatech.edu?subject=GoTech:">Eli Tilevich</a>.</p>
+<p><font size="1"><a href="#top">top</a></font></p>
+
+</body>
+
+</html>

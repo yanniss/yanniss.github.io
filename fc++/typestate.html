@@ -1,0 +1,153 @@
+<h3>Our quick "typestate" bibiliography</h3>
+
+<p>
+Here's a list of papers related to the typestate idea.  I've put some
+quick comments about some of the papers <i>in italics</i>.  --Brian
+</p>
+
+<p>
+Papers available from 
+<a href="http://www.cs.utexas.edu/users/sammy/">Guyer</a>'s web page:
+<ul>
+<li>
+Detecting Errors with Configurable Whole-Program Dataflow Analysis with
+Emery D. Berger and Calvin Lin UTCS TR-02-04
+<br><i>This is a good first paper to read; it describes the general idea of
+extending type systems with state-specific information</i>
+</li>
+<li>
+An Annotation Language for Optimizing Software Libraries
+with Calvin Lin
+2nd Conference on Domain Specific Languages. October 1999.
+<br><i>An earlier paper with a nice application of the idea</i>
+</li>
+</ul>
+</p>
+
+<p>
+Papers available from 
+<a href="http://www.cs.berkeley.edu/~jfoster/">Foster</a>'s web page:
+<ul>
+<li>
+Flow-Sensitive Type Qualifiers. Jeffrey S. Foster, Tachio Terauchi, and
+Alex Aiken. To appear in ACM SIGPLAN Conference on Programming Language
+Design and Implementation (PLDI'02). Berlin, Germany. June 2002.
+<br><i>Another general approach to a similar idea</i>
+</li>
+<li>
+Polymorphic versus Monomorphic Flow-insensitive Points-to Analysis for
+C. Jeffrey S. Foster, Manuel Fhndrich, and Alexander Aiken. In Static
+Analysis Symposium 2000. Santa Barbara, California. June 2000.
+<br><i>Details</i>
+</li>
+<li>
+Checking Programmer-Specified Non-Aliasing. Jeffrey S. Foster and Alex
+Aiken. Computer Science Division Tech Report UCB//CSD-01-1160.
+University of California, Berkeley. October 2001.
+<br><i>An interesting paper, IMO, in its own right; only related via 
+aliasing</i>
+</li>
+<li>
+Detecting Format-String Vulnerabilities with Type Qualifiers. Umesh
+Shankar, Kunal Talwar, Jeffrey S. Foster, and David Wagner. In 10th
+USENIX Security Symposium, August 2001.
+</li>
+<li>
+A Theory of Type Qualifiers. Jeffrey S. Foster, Manuel Fhndrich, and
+Alexander Aiken. In ACM SIGPLAN Conference on Programming Language
+Design and Implementation (PLDI'99). Atlanta, Georgia. May 1999.
+</li>
+</ul>
+</p>
+
+<p>
+Papers available from 
+<a href="http://www.stanford.edu/~engler/">Engler</a>'s web page:
+<ul>
+<li>
+Bugs as Deviant Behavior: A General Approach to Inferring Errors in
+Systems Code , Dawson Engler, David Yu Chen, Seth Hallem, Andy Chou,
+and Benjamin Chelf Appeared in SOSP 01.
+</li>
+<li>
+Checking System Rules Using System-Specific, Programmer-Written
+Compiler Extensions , Dawson Engler, Benjamin Chelf, Andy Chou, and
+Seth Hallem.
+<br><i>The killer app for the OSDI crowd</i>
+</li>
+<li>
+A Simple Method for Extracting Models from Protocol Code ,
+David Lie, Andy Chou, Dawson Engler, and David Dill
+</li>
+<li>
+Interface Compilation: Steps toward Compiling Program Interfaces as
+Languages, by Dawson R. Engler
+<br><i>Some interesting comments here</i>
+</li>
+</ul>
+</p>
+
+<p>
+The manual for <a
+href="http://www.research.ibm.com/people/d/dfb/papers/Strom91Hermes.ps">Hermes</a>--Chapter
+3 talks about typestate.  Also, read Strom & Yemini, Typestate: A
+Programming Language Concept for Enhancing Software
+Reliability (from IEEE Transactions on Software Engineering
+[12,1/Jan 1986])--Yannis has a hard copy.
+<br><i>The IEEE article is a must-read, as it's the root of it all</i>
+</p>
+
+<p>
+The <a
+href="http://www.cis.upenn.edu/~bcpierce/FOOL//FOOL8/Drossop.pdf">Fickle</a>
+paper; Fickle uses dynamic object reclassification on the 'empty stack'
+example.
+<br><i>A completely different approach</i>
+</p>
+
+<p>
+The <a href="http://research.compaq.com/SRC/esc/">ESC/Java</a> homepage.
+<br><i>A theorem-prover-ish type of system; good to keep in mind in
+terms of engineering trade-offs</i>
+</p>
+
+<p>
+A couple of reports from digital SRC:
+<ul>
+<li><a
+href="http://gatekeeper.dec.com/pub/DEC/SRC/research-reports/abstracts/src-rr-156.html">Wrestling with rep exposure</a></li>
+<li><a
+href="http://gatekeeper.dec.com/pub/DEC/SRC/technical-notes/abstracts/src-tn-1997-001.html">Virginity</a></li>
+<br><i>More stuff on aliasing, I think</i>
+</ul>
+</p>
+
+<p>
+Finally, here's a <a href="typestate.txt">note about my ideas</a> that
+I wrote to some student friends of mine a few months ago.  It shows more
+of I how I think of the idea in an OO context.
+</p>
+
+<hr>
+
+Oh yeah, and I said to myself I'd make a short list of applications or
+potential applications (domains) for the idea:
+
+<ul>
+<li>taintedness (done)</li>
+<li>matrix library (done)</li>
+<li>side-effects</li>
+<li>deadlock</li>
+<li>files (open/read/write/closed)</li>
+<li>integers (0/+/-)</li>
+<li>integers (tiny/small/int/bignum)</li>
+<li>stacks (data structures: empty, one-element, sorted, etc)</li>
+<li>pointers (null/non-null)</li>
+<li>fairness?</li>
+<li>liveness?</li>
+<li>protocols?</li>
+<li>complicated library APIs</li>
+<li>software engineering (using typestate model to make the software
+more understandable or analyazable in new ways)</li>
+</ul>
+

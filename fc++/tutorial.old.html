@@ -1,0 +1,571 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.61 [en] (X11; U; SunOS 5.7 sun4u) [Netscape]">
+   <title>A tutorial on using FC++</title>
+</head>
+<!-- <body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
+-->
+
+<h1>
+Getting started with FC++</h1>
+This page provides some informal documentation for FC++. The page is mostly
+intended for readers familiar with C++, but not with functional programming.
+The paper "<a href="http://www.cs.umass.edu/~yannis/fc++/fc++.main.pdf">Functional
+Programming in C++</a>" provides a more complete (albeit somewhat terse)
+overview of FC++.
+<h3>
+Contents:</h3>
+
+<ul>
+<li>
+<a href="#Sec1">Downloading and Compiling</a></li>
+
+<li>
+<a href="#Sec2">Library Layout</a></li>
+
+<li>
+<a href="#Sec3">What are "Functoids"?</a></li>
+
+<ul>
+<li>
+<a href="#Sec3.1">Monomorphic direct functoids</a></li>
+
+<li>
+<a href="#Sec3.2">Beyond monomorphic functoids: "Generic" function objects</a></li>
+
+<li>
+<a href="#Sec3.3">Polymorphic direct functoids</a></li>
+</ul>
+
+<li>
+<a href="#Example">Example</a></li>
+
+<li>
+<a href="#predefined">Predefined Functionality</a></li>
+
+<ul>
+<li>
+<a href="#lazylists">Lazy lists</a></li>
+
+<li>
+<a href="#currying">Currying (specialization)</a></li>
+
+<li>
+<a href="#listfuns">List functions</a></li>
+
+<li>
+<a href="#compose">Function composition</a></li>
+</ul>
+
+<li>
+<a href="#idioms">Common FC++ Programming Idioms</a></li>
+
+<ul>
+<li>
+<a href="#closures">Closures</a></li>
+</ul>
+
+<li>
+<a href="#advanced">Advanced Features</a></li>
+
+<ul>
+<li>
+<a href="#full">Indirect functoids</a></li>
+</ul>
+
+<li>
+<a href="#Index">Index of Concepts and Primitives</a></li>
+</ul>
+
+<hr WIDTH="100%">
+<h3>
+<a NAME="Sec1"></a><font size=+1>Downloading and Compiling</font></h3>
+Download the library from the FC++ download web page. The library contains
+a set of header files that you need to "include" in your programs, in much
+the same way as the Standard Template Library. If (as expected) you have
+downloaded FC++ in a separate directory, make sure that this directory
+is in your "include" path during compilation.
+<p>For a quick example, download the example/test files from the FC++ web
+page (the test files are separate from the main library). All these files
+have been tested and compile/run with no problems using <a href="http://gcc.gnu.org/gcc-2.95/gcc-2.95.2.html">g++.2.95.2</a>.
+For instance, you can compile Y.cc using the command line:
+<pre>&nbsp;&nbsp; g++ -I[fc++ path] -o Y Y.cc</pre>
+where "fc++ path" is the path where you have put the FC++ library files.
+<b>The
+FC++ example files are the best way to learn to use the library!</b> Additionally,
+the prelude.h file of FC++ contains the implementation of many polymorphic
+operators, which are excellent examples of FC++ usage patterns.
+<br>
+<hr>
+<h3>
+<a NAME="Sec2"></a>Library layout</h3>
+The distribution contains the following files:
+<pre>curry.h&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Has the bindMofN() functoids, the curryN() operators, and Const()
+function.h&nbsp;&nbsp; The indirect functoid classes (FunN) and supporting implementation
+list.h&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The List class and its support functoids
+operator.h&nbsp;&nbsp; Operators like Plus, many conversion functions, misc
+prelude.h&nbsp;&nbsp;&nbsp; Functions found in the Haskell Standard Prelude
+ref_count.h&nbsp; Reference-counting pointer class
+signature.h&nbsp; Classes like FunType (used for nested typedefs)</pre>
+The easiest way to start using FC++ in your programs is to include the
+file "prelude.h". This will, in turn, include all the other files you may
+need.
+<br>
+<hr>
+<h3>
+<a NAME="Sec3"></a>What are "functoids"?</h3>
+In standard C++, <i>function objects</i> are commonly used to pass functions
+by value to higher-order algorithms. For example, if you have two equal-length
+lists of integers (<tt>list&lt;int></tt>), and you want to add their respective
+elements together, you might call the C++ Standard Library function
+<tt>transform</tt>
+with
+<tt>plus&lt;int>()</tt>, as illustrated here:
+<pre>&nbsp;&nbsp; First list:&nbsp; (1, 2, 3)&nbsp;&nbsp;&nbsp;&nbsp; -\
+&nbsp;&nbsp; Second list: (2, 4, 6)&nbsp;&nbsp;&nbsp;&nbsp; --> transform() ->&nbsp; Result list: (3, 6, 9)
+&nbsp;&nbsp; Function:&nbsp;&nbsp;&nbsp; plus&lt;int>()&nbsp;&nbsp; -/</pre>
+(We shall ignore the details of how <code>transform()</code> is called, as it would only
+serve as a needless digression into STL iterators.)
+<p>The key idea in the example above is that <tt>plus&lt;int>()</tt> is
+a function object, which can be passed as an argument to another function.
+If we had instead wanted to multiply the respective values in the lists
+in our previous example, we would have passed
+<tt>multiplies&lt;int>()</tt>
+(and gotten the list (2,8,18) back as a result). In the STL, <tt>plus</tt>
+and
+<tt>multiplies</tt> are examples of "Adaptable Binary Functions". These
+are function objects which use nested typedefs to name the argument types
+and result types of the functions. These typedefs enable many of the STL
+algorithms to work.
+<p>In FC++ we use the term "functoids" for function representations. Thus,
+functoids are classes that are used to represent functions. There are two
+different kinds of functoids in FC++: <i>direct functoids</i>, and <i>indirect
+functoids</i>. Each kind of functoid is good for a different purpose. Direct
+functoids are essential in FC++ programming and will be described here.
+Indirect functoids will be described <a href="#full">later</a>.
+<blockquote>
+<h3>
+<a NAME="Sec3.1"></a>Monomorphic direct functoids</h3>
+<i>Monomorphic direct functoids</i> in FC++ are very similar in functionality
+to STL adaptable function objects. For example, we could define a function
+object named "divisible" as
+<pre>&nbsp;&nbsp; struct Divisible : public CFunType&lt;int, int, bool> {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool operator()( int x, int y ) const { return x%y==0; }
+&nbsp;&nbsp; } divisible;
+
+&nbsp;&nbsp; divisible( 10, 5 )&nbsp;&nbsp;&nbsp; // returns true
+&nbsp;&nbsp; divisible( 10, 4 )&nbsp;&nbsp;&nbsp; // returns false</pre>
+Note the inheritance from&nbsp;<a NAME="CFunType"></a><tt>CFunType&lt;int,
+int, bool></tt>. This is what makes <tt>Divisible</tt> a monomorphic direct
+functoid. A monomorphic direct functoid expressing a k-argument function
+should inherit from a class <tt>CFunType&lt;A1, A2, ..., Ak, R></tt>, where
+A1, ..., Ak are the argument types for the function and R is its return
+type. The inheritance is used to provide typedefs for the argument types
+and result types (here the template arguments
+<tt>&lt;int,int,bool></tt>
+will get named something like Arg1Type, Arg2Type, and ResultType, respectively).
+Of course, you could "manually" make your classes support the same conventions
+as monomorphic direct functoids, instead of inheriting from a class like
+<tt>CFunType&lt;...></tt>,
+but this would be inconvenient.
+<p>Note that the above definition differs from an STL-style function class
+in that we inherit from
+<tt>CFunType</tt> rather than from
+<tt>binary_function</tt>.
+<br>&nbsp;
+<h3>
+<a NAME="Sec3.2"></a>Beyond monomorphic functoids: "Generic" function objects</h3>
+Monomorphic direct functoids are the basis of all functoids in the FC++
+library, but they have several limitiations (just like function objects
+in STL). The most important limitation is that the <i>signatures</i> (argument
+types and result types) of the objects named by <tt>plus&lt;int></tt>,
+<tt>multiplies&lt;int></tt>,
+and <tt>divisible</tt>, are all fixed. What if we want to create a truly
+"generic" function object? For example, what if we want to pass "plus"
+to an algorithm, but not specify the argument type--if the algorithm happens
+to be applied to integers, we'll use integer-plus (addition), if the algorithm
+is applied to strings, we'll use string-plus (concatenation), etc.--how
+can we do that?
+<p>We can easily make a generic function template in C++, like
+<pre>&nbsp;&nbsp; template &lt;class T>
+&nbsp;&nbsp; T generic_plus( T x, T y ) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return x+y;
+&nbsp;&nbsp; }</pre>
+but template functions cannot be passed as arguments (we cannot pass the
+value <tt>generic_plus</tt> to another function, because it is merely a
+name, not a value). On the other hand, the standard C++ functor:
+<pre>&nbsp;&nbsp; template &lt;class T>
+&nbsp;&nbsp; struct plus : public binary_function&lt;T,T,T> {
+&nbsp;&nbsp;&nbsp;&nbsp; T operator()(const T&amp; x, const T&amp; y) const { return x + y; }
+&nbsp;&nbsp; };</pre>
+is a class template that requires us to instantiate it with types in order
+to use it; we cannot talk about just plain <tt>plus</tt>, we must talk
+about <tt>plus&lt;int></tt> or
+<tt>plus&lt;string></tt>. (Actually, so-called
+"template-template parameters" do provide a way to decouple the name
+<tt>plus</tt>
+from its type parameter, but this idea does not generalize or scale to
+provide a general solution framework.) So does this mean all is lost, and
+that there's no way to talk about generic (polymorphic) function objects
+in C++? No!<i> Polymorphic direct functoids</i> in FC++ provide the answer.
+<h3>
+<a NAME="Sec3.3"></a>Polymorphic direct functoids</h3>
+Direct functoids can be used to describe polymorphic function objects.
+The key is an idiom that wraps a function template inside a class, so that
+we can create a concrete object that is still templatized when called as
+a function. Here's the idea, applied to an addition function:
+<pre>&nbsp;&nbsp; struct AlmostPlus {&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; template &lt;class T>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; T operator()( const T&amp; x, const T&amp; y ) const {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return plus&lt;T>()( x, y );
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; } almost_plus;</pre>
+We've named this "almost plus" because we're not quite done yet. But the
+general idea is clear. Now we have created an object that can be passed
+via parameter, and this object is a <i>polymorphic</i> function object
+in that it can work on multiple types, thanks to the member function template.
+We've jumped the first hurdle.
+<p>Now the only problem is this: as we mentioned above, to enable many
+higher-order functions, the function objects need to be "adaptable"--that
+is they need nested typedefs to describe the signature of the function
+(to name the argument types and result types). How can we do that for our
+new function object? Using templates, of course!
+<pre>&nbsp;&nbsp; struct Plus {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>template &lt;class T, class U>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; struct Sig : public FunType&lt;T,U,T> {};
+</b>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; template &lt;class T>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; T operator()( const T&amp; x, const T&amp; y ) const {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return plus&lt;T>()( x, y );
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; } plus;</pre>
+<a NAME="Sig"></a>Here <tt>Sig</tt> is a nested template struct, which
+defines the needed typedefs. It inherits&nbsp;<a NAME="FunType"></a><tt>FunType</tt>,
+which, in the case of two arguments, is (roughly) defined as
+<pre>&nbsp;&nbsp; template &lt;class A1, class A2, class R><class A1, class A2, class R>
+&nbsp;&nbsp; struct FunType {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; typedef R ResultType;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; typedef A1 Arg1Type;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; typedef A2 Arg2Type;
+&nbsp;&nbsp; };</pre>
+Now our solution is complete. If an algorithm gets passed <tt>plus</tt>
+as a parameter, and the algorithm intends to pass integer arguments to
+it and wants to know what the result will be, the algorithm can refer to
+<pre>&nbsp;&nbsp; Plus::Sig&lt;int,int><int,int>::ResultType</pre>
+<tt>Sig</tt> is effectively a "type computer". By using this idiom throughout
+the library, higher-order polymorphic functions can deduce result types
+of polymorphic function objects using the general form
+<pre>&nbsp;&nbsp; FunctionObject::Sig&lt;ArgumentTypes><ArgumentTypes>::ResultType</pre>
+We can now summarize all the requirements for direct functoids. To create
+your own template functoids, you need to create a class with <i>both</i>
+a template <tt>operator ()</tt> <i>and</i> a <tt>Sig</tt> member structure
+template. The <tt>operator ()</tt> will allow your functoid to be polymorphic.
+The <tt>Sig</tt> member should be a template over the argument types of
+the function you want to express. That is, <tt>Sig</tt> can be used to
+answer the question "what type will your function return if I pass it these
+argument types?" For instance, for the two-argument function <tt>Plus</tt>,
+<tt>Plus::Sig&lt;int,
+int>::ResultType</tt> will be the type returned by
+<tt>Plus</tt> for two
+integer arguments. <tt>Sig</tt> members are essential in order for other
+(pre-defined or user-defined) FC++ functoids to be able to interoperate
+with your functoid. If the direct functoid is monomorphic, there is no
+need to explicitly define a Sig structure--instead one can be inherited
+from a <tt>CFunType</tt> class, as described <a href="#Sec3.1">earlier</a>.
+<p>Polymorphic direct functoids can be converted into monomorphic ones
+for a fixed type signature. This is done using the operators&nbsp;<a NAME="monomorphize"></a><tt>monomorphizeX</tt>
+of FC++ (where X is the number of arguments that the functoid takes). For
+instance, a monomorphic version of <tt>Plus</tt>, above, for integer arguments
+can be obtained using the expression:
+<pre>&nbsp;&nbsp; monomorphize2&lt;int, int, int>(plus)</pre>
+</blockquote>
+
+<h3>
+
+<hr WIDTH="100%"><a NAME="Example"></a>Example</h3>
+A great example of a realistic direct functoid is the "map" functoid in
+file <tt>prelude.h</tt>. "Map" is a function that takes another function,
+<tt>f</tt>,
+and a list, <tt>l</tt>, as parameters. It then applies <tt>f</tt> to each
+subsequent element of <tt>l</tt> and returns a list of all the results.
+Here's a quick example of a use of <code>map</code>:
+<pre>
+   List&lt;int&gt;  li = list_with(1,2,3);
+   List&lt;bool&gt; lb = map( even, li );
+   // now lb is the list (false,true,false)
+</pre>
+The FC++ implementation of <tt>map</tt> is shown below:
+<pre>
+  struct Map { 
+    template &lt;class F, class L&gt; 
+    struct Sig : public FunType&lt;F,L, 
+      List&lt;typename F::template Sig&lt;typename L::ElementType&gt;::ResultType&gt; &gt; {}; 
+
+    template &lt;class F, class T&gt; 
+    typename Sig&lt;F, List&lt;T&gt; &gt;::ResultType 
+    operator()( const F& f, const List&lt;T&gt;& l ) const { 
+      if( null(l) ) 
+        return NIL; 
+      else 
+        return cons( f(head(l)), curry2( Map(), f, tail(l) ) ); 
+    } 
+  }; 
+</pre>
+You can clearly see in the above code the two characteristic parts of
+a direct functoid: the <tt>Sig</tt> member template class and the template
+operator <tt>()</tt>.&nbsp; The code that implements the operator is very
+simple, but the <tt>Sig</tt> structure is a little more interesting. It
+is a template over two arguments, <tt>F</tt> and <tt>L</tt>, which correspond
+to the type signatures of the function and list passed to map. Recall that
+the <tt>Sig</tt> template is used to answer the question "what would <tt>map</tt>
+return if it were passed arguments of types <tt>F</tt> and <tt>L</tt>?"
+The answer in the above code is:
+<br><tt>&nbsp;&nbsp;&nbsp; List&lt;typename F::template Sig&lt;typename
+L::ElementType>::ResultType></tt>
+<br>(Note the use of template <tt>FunType</tt> that conveys this information
+but hides all the details of the implementation of <tt>Sig</tt>.)
+<br>This means: "<tt>map</tt> returns a <tt>List</tt> of what <tt>F</tt>
+would return if passed an element like the ones in list <tt>L</tt>". Here
+is the explanation of the parts of this construct. The type of elements
+in list <tt>L</tt> is <tt>L::ElementType</tt>. The return type of <tt>F</tt>
+when passed an <tt>L::ElementType</tt> is <tt>F::template Sig&lt;typename
+L::ElementType>::ResultType</tt>. The <tt>typename</tt> and <tt>template</tt>
+keywords are needed to help the C++ compiler parse this expression.
+<p>In reality, the signature of map could be somewhat simplified. Instead
+of:
+<br><tt>&nbsp;&nbsp;&nbsp; List&lt;typename F::template Sig&lt;typename
+L::ElementType>::ResultType></tt>
+<br>one could write:
+<br><tt>&nbsp;&nbsp;&nbsp; List&lt;typename RT&lt;F, typename L::ElementType>::ResultType>
+></tt>
+<br><a NAME="RT"></a><tt>RT</tt> (stands for "Return Type") is just a template
+that computes the return type of its first argument when it is called with
+arguments of types equal to the other arguments of <tt>RT</tt>.
+<hr WIDTH="100%">
+<h3>
+<a NAME="predefined"></a>Predefined Functionality</h3>
+
+<blockquote>
+<h3>
+<a NAME="lazylists"></a>Lazy Lists</h3>
+FC++ implements a lazy list data structure. Lazy data structures have their
+data computed when needed, and not in advance. In essence, the data structure
+holds both data and code that is used to produce more data. This code is
+called transparently when the extra data are needed. For instance, one
+can define an infinite list, and only the part that is actually needed
+will ever be produced. The FC++ lazy lists are compatible with STL algorithms
+(lazy list iterators support the protocol for STL input iterators) and
+several conversions are supported between STL data structures and FC++
+lazy lists.
+<p>We saw an example of lazy list usage in the code for <tt>map</tt>, <a href="#Example">above</a>.
+We reproduce some of this code here:
+<pre>
+    template &lt;class F, class T&gt;
+    typename Sig&lt;F, List&lt;T&gt; &gt;::ResultType
+    operator()( const F& f, const List&lt;T&gt;& l ) const {
+      if( null(l) )
+        return NIL;
+      else
+        return cons( f(head(l)), curry2( Map(), f, tail(l) ) );
+    }
+  };
+</pre>
+This code for map produces lazy lists. The lazy-list specific elements
+in the code above are <tt>List</tt>, <tt>null</tt>, <tt>NIL</tt>, <tt>cons</tt>,
+<tt>head</tt>,
+and <tt>tail</tt>. <tt>List</tt> (note the capitalization) is the C++ type
+for the lazy list and it is a template parameterized by the type of elements
+stored in the list. <tt>null</tt> is a function testing whether the list
+is empty. <tt>NIL</tt> is a constant representing an empty lazy list (of
+any type of stored element!). <tt>cons</tt> is a function creating a new
+lazy list node from the data the node will store and the code that produces
+the rest of the lazy list. <tt>head</tt> returns the data stored in the
+first node of a list. <tt>tail</tt> returns the list beyond the first node
+of a given list. In the above code, <tt>map</tt> creates a new list (using
+<tt>cons</tt>) that contains as its first node the data produced by function
+<tt>f</tt> when applied to the first element of list<tt> l</tt> (that is,
+<tt>f(head(l)</tt>). The rest of the result list is produced by applying
+<tt>map</tt> again using function <tt>f</tt> and the rest of the input
+list (that is, <tt>tail(l)</tt>).
+<h3>
+<a NAME="currying"></a>Currying (specialization)</h3>
+Note how the <tt>curry2</tt> operator is used in the above code. <tt>curry2</tt>
+takes a a 2-argument functoid as its first argument. It produces a specialized
+functoid that binds the first arguments of <tt>curry2</tt>'s first argument
+to the rest of the arguments of <tt>curry2</tt> (however many they are).
+That is, <tt>curry2(Map(), f, tail(l))</tt> creates a new functoid that
+does the same computation as <tt>map(f, tail(l))</tt>. The new functoid
+takes no arguments (as we have fully specialized <tt>map</tt> by supplying
+two arguments). <tt>curry2</tt> could have been called with 2 arguments,
+e.g., <tt>map</tt> and a function, in which case it would only fix the
+first argument of <tt>map</tt> and produce a 1-argument functoid that can
+be applied to a list.
+<p>In general, FC++ supplies&nbsp;<a NAME="curryN"></a><tt>curry<i>N</i></tt>
+operators (<i><tt>N</tt></i> is an integer constant up to a predefined
+maximum) that specialize the <i>first</i> arguments of an N-argument functoid.
+Additionally, FC++ provides operators&nbsp;<a NAME="bindX"></a><tt>bind<i>X</i>and<i>Y</i>...of<i>N</i></tt>&nbsp;
+that specialize (i.e., fix) the X-th, Y-th, etc. arguments of an N-argument
+functoid. For instance,&nbsp; <tt>bind1and3of3(f, 2, 4)</tt> will fix the
+first and third arguments of a 3-argument functoid <tt>f</tt> to 2 and
+4, respectively.
+<p>
+Note: in the latest library revision (version 1.2), functoids are
+curryable by default.  See the
+<a href="./FC++.1.2/changes.html">new additions</a> to this version of
+the library for more info.
+<h3>
+<a NAME="listfuns"></a>Other List Functions</h3>
+There is a lot of functionality (i.e., algorithms) for lazy lists defined
+by FC++. These functions are mostly re-implemented from functional language
+libraries, especially the 
+<a href="http://www.haskell.org/onlinereport/standard-prelude.html">Haskell
+Standard Prelude</a>. We will not exhaustively document these functions
+here, but the FC++ examples are an excellent way to become familiar with
+them. The most common such functions include <tt>map</tt>, <tt>foldl</tt>,
+<tt>foldr</tt>,
+<tt>scanl</tt>, <tt>scanr</tt>, <tt>iterate</tt>, <tt>drop</tt>,
+<tt>cycle</tt>,
+<tt>replicate</tt>, <tt>length</tt>, <tt>at</tt>, <tt>until</tt>,
+<tt>filter</tt>,
+<tt>concat</tt>, <tt>take</tt>, etc.
+<h3>
+<a NAME="compose"></a>Function Composition</h3>
+A way to produce new functoids in FC++ is by composing existing functoids.
+The functoid class that composes two existing functoids is <a NAME="Compose1"></a><tt>Compose1</tt>.
+(An instance of it is defined and it is called <tt>compose</tt>.) For instance, the
+expression:
+<pre>
+   compose(head, tail)
+</pre>
+creates a new functoid that implements the composition of <tt>head</tt>
+and <tt>tail</tt>--i.e., an operation returning the second element of a
+list. More importantly, that composition is polymorphic, exactly the same
+way as <tt>head</tt> and <tt>tail</tt> are polymorphic: it can be applied
+to (homogeneous) lazy lists holding elements of any type.</blockquote>
+
+<hr WIDTH="100%">
+<h3>
+<a NAME="idioms"></a>Common FC++ Programming Idioms</h3>
+
+<blockquote>
+<h3>
+<a NAME="closures"></a>Closures</h3>
+A common idiom in functional programming is encapsulating code together
+with the data that it operates on. This is called "creating a closure".
+Encapsulation is also the basis of object-oriented programming, so creating
+closures in FC++ should seem quite intuitive if you are a C++ programmer.
+To create a closure in FC++, one needs to create a functoid class (implementing
+a function) and add data members to this class. The constructor for the
+functoid class can then be used to initialize this data. Hence, an FC++
+closure is just a functoid object (an instance of a functoid class) and
+closing just means creating a functoid object.
+<p>The FC++ implementation contains multiple examples of closure usage
+(hint: look for classes named <tt>&lt;Something>Helper</tt> in the FC++
+code). Consider the implementation of the <tt>curry2</tt> function (discussed
+<a href="#currying">earlier</a>).
+<tt>curry2</tt> called with 2 arguments returns a new functoid object,
+that specializes <tt>curry2</tt>'s first argument by fixin <i>its</i> first
+argument. That new functoid object is really a closure, as it needs to
+hold the value for the specialized argument. The implementation is shown
+below and the extra elements of a closure functoid (member variables, constructor)
+can be seen clearly:
+<p><tt>&nbsp;template &lt;class Binary, class Arg1></tt>
+<br><tt>&nbsp;class binder1of2 {</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; Binary f;</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; Arg1 x;</tt>
+<br><tt>&nbsp;public:</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; binder1of2( const Binary&amp; a, const Arg1&amp;
+b ) : f(a), x(b) {}</tt>
+<p><tt>&nbsp;&nbsp;&nbsp; template &lt;class Arg2></tt>
+<br><tt>&nbsp;&nbsp;&nbsp; struct Sig :</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public FunType&lt;Arg2,typename
+Binary::Sig&lt;Arg1,Arg2>::ResultType> {};</tt>
+<p><tt>&nbsp;&nbsp;&nbsp; template &lt;class Arg2></tt>
+<br><tt>&nbsp;&nbsp;&nbsp; typename Binary::Sig&lt;Arg1,Arg2>::ResultType</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; operator()( const Arg2&amp; y ) const {</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return f(x,y);</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; }</tt>
+<br><tt>&nbsp;};</tt></blockquote>
+
+<hr WIDTH="100%">
+<h3>
+<a NAME="advanced"></a>Advanced Features</h3>
+This section describes functionality that few will need and can be omitted
+at first reading.
+<blockquote>
+<h3>
+<a NAME="full"></a>Indirect Functoids</h3>
+A limitation of direct functoids (as well as STL function objects) is that
+we cannot define run-time variables that range over different direct functoid
+instances with the same type signature. For example, there is no way to
+define a variable <tt>fun</tt> that can point to <i>any</i> functoid that
+takes an integer value and returns another integer value. This observation
+may at first seem wrong: After all, didn't we talk about STL functions
+like <tt>transform</tt> that can take variable functoid arguments (e.g.,
+either <tt>plus</tt> or <tt>multiplies</tt>)? Nevertheless, <tt>transform</tt>
+does <i>not</i> actually limit its arguments to be functions from integers
+to integers! Instead, it is a template function that is instantiated separately
+for each function supplied to it as an argument (e.g., <tt>plus&lt;String></tt>
+or <tt>multiplies&lt;float></tt>). This has two main disadvantages. First,
+there are multiple instances of code created where a single instance would
+suffice (all functions from integers to integers can be called using the
+same calling code). Second, type errors are only discovered later during
+the template instantiation (resulting in uninformative error messages)
+or not at all (if the offending functionality is not actually exercised).
+<p>Even more seriously, however, not being able to define variables over
+direct functoids means that there is no way to store direct functoids in
+dynamic data structures. For instance, one cannot create a (homogeneous)
+list of direct functoids--that is a list whose every member is a potentially
+different functoid (but they all have the same signature).
+<p>Indirect functoids address the above problems. All indirect functoids
+are subclasses of a class&nbsp;<a NAME="FunX"></a><tt>FunX</tt>, where
+X is the number of arguments that the indirect functoid takes. Indirect
+functoids are usually created from monomorphic direct functoids using the&nbsp;<a NAME="makeFunX"></a><tt>makeFunX</tt>
+operators in FC++. (Indirect functoids can also be created explicitly by
+subclassing the <tt>FunXImpl</tt> class, but this functionality will not
+be covered here.) If "plus" and "multiplies" are monomorphic direct functoids
+from integers to integers, a typical use of indirect functoids would be:
+<pre>&nbsp;&nbsp; Fun2&lt;int, int, int> f = makeFun2(plus);
+&nbsp;&nbsp; cout &lt;&lt; f(3, 5) &lt;&lt; endl;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Prints 8
+&nbsp;&nbsp; f = makeFun2(multiplies);
+&nbsp;&nbsp; cout &lt;&lt; f(3, 5) &lt;&lt; endl;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Prints 15</pre>
+For polymorphic versions of "plus" and "multiplies", we would need to use
+the operator <tt><a href="#monomorphize">monomorphize2</a></tt> first:
+<pre>&nbsp;&nbsp; Fun2&lt;int, int, int> f = makeFun2(monomorphize2&lt;int,int,int>(plus));
+&nbsp;&nbsp; cout &lt;&lt; f(3, 5) &lt;&lt; endl;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Prints 8
+&nbsp;&nbsp; f = makeFun2(monomorphize2&lt;int,int,int>(multiplies));
+&nbsp;&nbsp; cout &lt;&lt; f(3, 5) &lt;&lt; endl;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Prints 15</pre>
+Note: with revision 1.2 of the library, it is unnecessary to use
+<code>monomorphizeN</code> and <code>makeFunN</code> to convert a (possibly polymorphic) direct functoid
+into an indirect one.  For example, with v1.2, you can just say
+<pre>
+   Fun2&lt;int,int,int&gt; f = fcpp::plus;
+</pre>
+and the conversions happen implicitly.
+</blockquote>
+
+<h3>
+
+<hr WIDTH="100%"><a NAME="Index"></a>Index of Concepts and Primitives</h3>
+
+<blockquote><a href="#bindX">bind<i>X</i>and<i>Y</i>...of<i>N</i></a>
+<br><a href="#CFunType">CFunType</a>
+<br><a href="#Compose1">Compose1, compose</a>
+<br><a href="#curryN">curryN</a>
+<br><a href="#FunX">FunX (indirect functoid superclass)</a>
+<br><a href="#FunType">FunType</a>
+<br><a href="#makeFunX">makeFunX</a>
+<br><a href="#monomorphize">monomorphize</a>
+<br><a href="#RT">RT</a>
+<br><a href="#Sig">Sig structure template</a></blockquote>
+
+<hr>
+
+<h6>
+Last updated on February 27, 2001 by <a
+href="mailto:lorgon@cc.gatech.edu">Brian McNamara</a></h6>
+
+</body>
+</html>

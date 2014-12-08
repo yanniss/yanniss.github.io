@@ -1,0 +1,228 @@
+/*
+ * PRELIMINARIES: reasoning about subcritical sections
+ */
+// Computations
+SubcriticalSecBoundary(e) <- RelEvent[e] = _.
+SubcriticalSecBoundary(e) <- AcqEvent[e] = _.
+
+BeforeNextSubcriticalSecBoundary(e2,e1) <- 
+   SubcriticalSecBoundary(e1), 
+   TraceNext[e1] = e2, 
+   !SubcriticalSecBoundary(e2).
+BeforeNextSubcriticalSecBoundary(e2,e1) <- 
+   BeforeNextSubcriticalSecBoundary(e3,e1), 
+   TraceNext[e3] = e2, 
+   !SubcriticalSecBoundary(e2).
+
+// e2 is performed by any thread before the end of the subcritical section
+// that starts at e1.
+BeforeEndOfSubcriticalSec(e1,e2) <- BeforeNextSubcriticalSecBoundary(e2,e1).
+BeforeEndOfSubcriticalSec(e1,e2) <- 
+   BeforeEndOfSubcriticalSec(e1,e3), 
+   SubcriticalSecBoundary(e3), 
+   BeforeNextSubcriticalSecBoundary(e2,e3).
+BeforeEndOfSubcriticalSec(e1,e2) <- 
+   SubcriticalSecBoundary(e1), TraceNext[e1] = e2, SubcriticalSecBoundary(e2), 
+   ThreadForEvent[e1] = t1, ThreadForEvent[e2] = t2, t1 != t2.
+BeforeEndOfSubcriticalSec(e1,e2) <- 
+   TraceNext[e3] = e2, SubcriticalSecBoundary(e2),
+   BeforeEndOfSubcriticalSec(e1,e3), 
+   ThreadForEvent[e1] != ThreadForEvent[e2].
+
+// in same thread, both e1 and e2 are subcritical section boundaries
+NextSubcriticalSecBoundary[e1] = e2 <- 
+   SubcriticalSecBoundary(e2), ThreadForEvent[e1] = ThreadForEvent[e2], 
+   BeforeEndOfSubcriticalSec(e1,e3), TraceNext[e3] = e2.
+   // no longer necessary: SubcriticalSecBoundary(e1)
+NextSubcriticalSecBoundary[e1] = e2 <-
+   SubcriticalSecBoundary(e1), SubcriticalSecBoundary(e2), 
+   ThreadForEvent[e1] = ThreadForEvent[e2], 
+   TraceNext[e1] = e2.
+
+
+/*
+ * OPTIMIZATION CODE -- Auxiliary predicates
+ */
+// REVIEW: Unfortunate duplication of information, but this is the right way for quick indexing.
+AcquireEventForLock(e,l) <- AcqEvent[e] = l.
+
+WriteEventForVar(e,v) <- WriteEvent[e] = v.
+ReadEventForVar(e,v) <- ReadEvent[e] = v.
+
+// REVIEW: examine the use of the relations below throughout. To avoid bad 
+// quadratic effects, we limit the span of all transitive relations to
+// K events. This means that races more than K events apart will go
+// unreported.
+
+//  Not efficient enough for widespread use, only for final step.
+lang:derivationType[`PerformanceFilter] = "Derived".
+PerformanceFilter(e1,e2) <- Event:id[e2] < Event:id[e1]+500.
+
+TracePrev[e2] = e1 <- TraceNext[e1] = e2.
+
+// eNeigh is an event before e (which is a subcritical boundary) and
+// within K events of it.
+PrecedingNearbyEvent[eNeigh,e] = 1 <- 
+   SubcriticalSecBoundary(e), TraceNext[eNeigh] = e.
+PrecedingNearbyEvent[eNeigh,e] = k+1 <- 
+   PrecedingNearbyEvent[e2,e] = k, TracePrev[e2]=eNeigh, k < 500.
+
+// eNeigh is an event after e (which is a subcritical boundary) and
+// within K events of it.
+FollowingNearbyEvent[eNeigh,e] = 1 <- 
+   SubcriticalSecBoundary(e), TraceNext[e]=eNeigh.
+FollowingNearbyEvent[eNeigh,e] = k+1 <- 
+   FollowingNearbyEvent[e2,e] = k, TraceNext[e2]=eNeigh, k < 500.
+
+PrecedingNearbyEventBySameThread(eNeigh,e) <- 
+   PrecedingNearbyEvent[eNeigh,e] = _, 
+   ThreadForEvent[e] = ThreadForEvent[eNeigh].
+
+FollowingNearbyEventBySameThread(eNeigh,e) <- 
+   FollowingNearbyEvent[eNeigh,e] = _, 
+   ThreadForEvent[e] = ThreadForEvent[eNeigh].
+
+// eNeigh is a subcritical section boundary after e (also a subcritical boundary) and
+// within K events of it.
+FollowingNearbySubcriticalSection(eNeigh,e) <- 
+   SubcriticalSecBoundary(eNeigh), 
+   SubcriticalSecBoundary(e), 
+   FollowingNearbyEvent[eNeigh,e] = _.
+PrecedingNearbySubcriticalSection(e,eNeigh) <- 
+   FollowingNearbySubcriticalSection(eNeigh,e).
+
+/*
+ * MAIN RELATIONS
+ */
+// IMPORTANT Invariant: HB and CP are accurate only when their endpoints are in "nearby" regions.
+// only defined on subcritical section boundaries for scalability
+HB(e1,e2) <- NextSubcriticalSecBoundary[e1] = e2.
+HB(e1,e2) <- NearbyCriticalSecOnSameLock(e2,e1). 
+HB(e1,e2) <- HB(e1,e3), InverseHB(e2,e3), FollowingNearbySubcriticalSection(e2,e1).
+
+// Only for optimization
+InverseHB(e1,e2) <- HB(e2,e1).
+
+
+// first define it for subcritical section boundaries (except final one). 
+// e1 is the beginning of the critical section. Reflexive predicate.
+BoundariesInSameCriticalSec(e1,e1) <- 
+    AcqEvent[e1] = _.
+BoundariesInSameCriticalSec(e1,e2) <- 
+    BoundariesInSameCriticalSec(e1,e3), 
+    NextSubcriticalSecBoundary[e3] = e2, 
+    AcqEvent[e2] = _.
+BoundariesInSameCriticalSec(e1,e2) <- 
+    BoundariesInSameCriticalSec(e1,e3), 
+    NextSubcriticalSecBoundary[e3] = e2, 
+    AcqEvent[e1] = m, RelEvent[e2] = n, m != n.
+
+// e1 is a lock event, e2 its matching unlock
+MatchingCriticalSecBoundary[e1] = e2 <- 
+    BoundariesInSameCriticalSec(e1,e3), 
+    NextSubcriticalSecBoundary[e3] = e2, AcqEvent[e1] = RelEvent[e2].
+MatchingCriticalSecBoundary[e2] = e1 <- 
+    MatchingCriticalSecBoundary[e1] = e2.
+
+//REVIEW (YANNIS): Making the predicates below be derived slows down
+//  execution several times! The engine seems to do badly with query
+//  optimization at the site of inlining of derived predicates.
+//lang:derivationType[`InSameSubcriticalSec] = "Derived".
+//lang:derivationType[`InSameCriticalSec] = "Derived".
+
+// Events are by same thread. Note that it excludes the event ending
+// the subcritical section (considered the start of next).
+// Also, e1 is a subcritical section boundary and occurs before e2.
+InSameSubcriticalSec(e1,e2) <- 
+    BeforeEndOfSubcriticalSec(e1,e2), 
+    ThreadForEvent[e1] = t, ThreadForEvent[e2] = t. 
+
+// e1 is the start of the critical section. Order reversed for efficient indexing.
+InSameCriticalSec(e2,e1) <- BoundariesInSameCriticalSec(e1,e2).
+InSameCriticalSec(e2,e1) <- 
+    BoundariesInSameCriticalSec(e1,e3), InSameSubcriticalSec(e3,e2).
+
+// e2Acq comes after e1Rel and is on same lock and nearby
+NearbyCriticalSecOnSameLock(e2Acq,e1Rel) <-
+    RelEvent[e1Rel] = m, AcquireEventForLock(e2Acq,m), 
+    FollowingNearbySubcriticalSection(e2Acq,e1Rel).
+
+// only defined on subcritical section boundaries
+CP(e1Rel,e2Acq) <- 
+    MatchingCriticalSecBoundary[e1Rel] = e1Acq, 
+    NearbyCriticalSecOnSameLock(e2Acq,e1Rel),
+    InSameCriticalSec(e1,e1Acq), 
+    InSameCriticalSec(e2,e2Acq), 
+    (WriteEvent[e1] = WriteEvent[e2]; 
+     WriteEvent[e1] = ReadEvent[e2]; 
+     ReadEvent[e1] = WriteEvent[e2]).
+
+// the version for when CP is accurate
+CP(e1Rel,e2Acq) <- 
+    MatchingCriticalSecBoundary[e1Rel] = e1Acq, 
+    NearbyCriticalSecOnSameLock(e2Acq,e1Rel),
+    InSameCriticalSec(e1,e1Acq), 
+    InSameCriticalSec(e2,e2Acq), 
+    CP(e1,e2), 
+    FollowingNearbySubcriticalSection(e2,e1).
+
+// the conservative version for when the CP information may be inaccurate
+CP(e1Rel,e2Acq) <- 
+    MatchingCriticalSecBoundary[e1Rel] = e1Acq,
+    NearbyCriticalSecOnSameLock(e2Acq,e1Rel),
+    InSameCriticalSec(e1,e1Acq),
+    InSameCriticalSec(e2,e2Acq), 
+    SubcriticalSecBoundary(e1),
+    SubcriticalSecBoundary(e2), 
+    !FollowingNearbySubcriticalSection(e2,e1).
+
+// CP and HB information is accurate for intermediate points, 
+// since endpoints are nearby
+CP(e1,e2) <- 
+    CP(e1,e3), InverseHB(e2,e3), 
+    FollowingNearbySubcriticalSection(e2,e1).
+CP(e1,e2) <- 
+    HB(e1,e3), InverseCP(e2,e3),
+    FollowingNearbySubcriticalSection(e2,e1).
+
+// Only for optimization
+InverseCP(e1,e2) <- CP(e2,e1).
+
+// Note that a possible CP race or full CP race cannot be an HB race!
+
+// This is used for optimization. The optimizer didn't know to 
+// do this join first.
+SuspiciousEdge(e1,e2) <- 
+    HB(e1,e2), !CP(e1,e2), FollowingNearbySubcriticalSection(e2,e1).
+
+// This has been impossible to optimize. For some reason, the factbus
+// optimizer routinely prefers to iterate over all ReadEvents instead of using the
+// PrecedingNearby... and FollowingNearby... hints.
+CPPossibleRace(e1,e2) <- SuspiciousEdge(e3,e4),
+    PrecedingNearbyEventBySameThread(e1,e3), 
+    FollowingNearbyEventBySameThread(e2,e4),
+    (WriteEvent[e1] = WriteEvent[e2];
+     WriteEvent[e1] = ReadEvent[e2];
+     ReadEvent[e1] = WriteEvent[e2]),
+    ThreadForEvent[e1] != ThreadForEvent[e2], PerformanceFilter(e1,e2). 
+// Equivalent alternatives that didn't pay off:
+//       (WriteEventForVar(e2,WriteEvent[e1]); 
+//        WriteEventForVar(e1,ReadEvent[e2]); 
+//        WriteEventForVar(e2,ReadEvent[e1])),
+//       ThreadForEvent[e1] = t1, ThreadForEvent[e3] = t1, 
+//       ThreadForEvent[e2] = t2, ThreadForEvent[e4] = t2, 
+//       t1 != t2,
+//       Event:id[e1] < Event:id[e2], PerformanceFilter(e1,e2), 
+//       Event:id[e1] < Event:id[e3], Event:id[e4] < Event:id[e2],
+//       FollowingNearbyEvent[e2,e1] = _,
+
+CPNoRace(e1,e2) <- 
+       CPPossibleRace(e1,e2), 
+       CP(e3,e4), 
+       PrecedingNearbyEventBySameThread(e1,e3), 
+       FollowingNearbyEventBySameThread(e2,e4).
+// Event:id[e1] < Event:id[e3], Event:id[e4] < Event:id[e2],
+//       ThreadForEvent[e1] = ThreadForEvent[e3], 
+//       ThreadForEvent[e2] = ThreadForEvent[e4].
+
+CPRace(e1,e2) <- CPPossibleRace(e1,e2), !CPNoRace(e1,e2).

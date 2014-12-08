@@ -1,0 +1,46 @@
+/**
+ * @author David Zook
+ *
+ * Class:
+ * Purpose:
+ */
+import java.io.*;
+import java.lang.reflect.*;
+import org.aspectj.compiler.base.ast.*;
+import org.aspectj.compiler.crosscuts.ast.*;
+
+public class MAJGenerate1 {
+
+	public static void generateSerializableAspect(Class inClass, PrintStream out) {
+		
+		// Create new Aspect
+	infer serializedAspect =
+		`[	package gotech.extensions;
+
+			import java.io.*;
+
+//			aspect #(Identifier)[new Identifier(inClass.getName()+"SerializableAspect")] {
+			aspect SerializableAspect {
+			}
+		];
+
+		// Add Serializable to every type used in a method
+		int i = 0;
+		for (int meth = 0; meth < inClass.getMethods().length; meth++) {
+			Class[] methSignature = inClass.getMethods()[meth].getParameterTypes();
+			for (int parm = 0; parameter < methSignature.length; parm++) {
+				if (!parmType.primitive() &&
+					!methSignature[parm].toSource().equals("java.io.Serializable")) {
+
+					serializedAspect.addMember(
+						`[	declare parents:
+								#(Identifier)[new Identifier(methSignature[parm].getName())]
+									implements java.io.Serializable;
+						]
+					);
+				}
+			}
+		}
+		out.print(newAspect.toSource());
+	}
+}

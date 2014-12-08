@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>12. Lambda</title><link rel="stylesheet" href="reference.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.48"><link rel="home" href="fcpp.html" title="Boost.FC++"><link rel="up" href="fcpp.html" title="Boost.FC++"><link rel="previous" href="fcpp.sectrelation.html" title="11. Relationships with other libraries"><link rel="next" href="fcpp.sectmonads.html" title="13. Monads"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table border="1" cellpadding="2" bgcolor="#007F7F"><tr><td bgcolor="#FFFFFF"><img src="../../c++boost.gif" alt="c++boost.gif (8819 bytes)" width="277" height="86"></td><td><a href="../../index.htm"><font color="#FFFFFF" size="4" face="Arial">Home</font></a></td><td><a href="libraries.html"><font color="#FFFFFF" size="4" face="Arial">Libraries</font></a></td><td><a href="../../people/people.htm"><font color="#FFFFFF" size="4" face="Arial">People</font></a></td><td><a href="../../more/faq.htm"><font color="#FFFFFF" size="4" face="Arial">FAQ</font></a></td><td><a href="../../more/index.htm"><font color="#FFFFFF" size="4" face="Arial">More</font></a></td></tr></table><div class="section"><div class="titlepage"><div><h2 class="title" style="clear: both"><a name="fcpp.sectlambda"></a>12. Lambda</h2></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt>12.1. <a href="fcpp.sectlambda.html#id270580">Lambda in FC++</a></dt><dt>12.2. <a href="fcpp.sectlambda.html#id270886">Naming the C++ types of lambda expressions</a></dt><dt>12.3. <a href="fcpp.sectlambda.html#id271055">FC++ lambda versus 
+   boost::lambda</a></dt></dl></div><p>
+In this section, we describe the interface to FC++'s lambda
+sublanguage.  Those readers interested in the motivation and design
+rationale for FC++ lambda should read [<a href="fcpp.html#fcpp.citdpcool" title="[McN&amp;Sma03]">McN&amp;Sma03</a>],
+which discusses those issues in detail.
+</p><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id270580"></a>12.1. Lambda in FC++</h3></div></div><p>
+Here is what it looks like to do lambda in FC++.
+<a href="fcpp.sectlambda.html#fcpp.figlambda" title="Figure 2. Lambda in FC++">Figure 2</a> shows some examples of lambda.
+<div class="figure"><p><a name="fcpp.figlambda"></a><b>Figure 2. Lambda in FC++</b></p><pre class="programlisting">
+   // declaring lambda variables
+   lambda_var&lt;1&gt; X;
+   lambda_var&lt;2&gt; Y;
+   lambda_var&lt;3&gt; F;
+      
+   // basic examples
+   lambda(X,Y)[ minus[Y,X] ]       // flip(minus)
+   lambda(X)[ minus[X,3] ]         // minus(_,3)
+      
+   // infix syntax
+   lambda(X,Y)[ negate[ 3 %multiplies% X ] %plus% Y ]
+      
+   // let
+   lambda(X)[ let[ Y == X %plus% 3,
+                   F == minus[2] 
+              ].in[ F[Y] ] ]
+      
+   // if-then-else
+   lambda(X)[ if0[ X %less% 10, X, 10 ] ]   // also if1, if2
+      
+   // letrec
+   lambda(X)[ letrec[ F == lambda(Y)[ if1[ Y %equal% 0,
+                                           1,
+                                           Y %multiplies% F[Y%minus%1] ]
+              ].in[ F[X] ] ]    // factorial
+</pre></div>
+There are a few points which deserve further attention.
+</p><p>
+Inside lambda, one uses square brackets instead of round ones for
+postfix functional call.  (This works thanks to the lambda-awareness of
+full functoids, mentioned in <a href="fcpp.sectfull.html#fcpp.sectfull" title="7. Full Functoids">Section 7</a>.)
+Similarly, the percent sign is used instead of the caret for infix
+function call.  Note that the alternate function-call syntaxes inside
+lambda correspond to the alternate semantics:
+<pre class="programlisting">
+   f(x,y)   // execute this call now
+   f[x,y]   // bind up this function and its args to call later
+</pre>
+Note also that
+<pre class="programlisting">
+   x ^f^ y   means   f(x,y)
+   X %f% Y   means   f[X,Y]
+</pre>
+</p><p>
+Since <tt>operator[]</tt> takes only one argument
+in C++, we overload the comma operator to simulate multiple arguments.
+Occassionally this can cause an early evaluation problem, as seen in
+the code here:
+<pre class="programlisting">
+   // assume f takes 3 integer arguments
+   lambda(X)[ f[1,2,X] ]    // oops! comma expression &quot;1,2,X&quot; means &quot;2,X&quot;
+   lambda(X)[ f[1][2][X] ]  // ok; use currying to avoid the issue
+</pre>
+Unfortunately, C++ sees the expression &quot;<tt>1,2</tt>&quot; and evaluates it
+eagerly as a comma expression on integers.<sup>[<a name="id270731" href="#ftn.id270731">4</a>]</sup> Fortunately, there is a simple solution: since all
+full functoids are curryable, we can use currying to avoid comma.  The
+issues with comma suggest another problem, though: how do we call a
+zero-argument function inside lambda?  We found no pretty solution, and
+ended up inventing this syntax:
+<pre class="programlisting">
+   // assume g takes no arguments and returns an int
+   // lambda(X)[ X %plus% g[] ]   // illegal: g[] doesn't parse
+   lambda(X)[ X %plus% g[_*_] ]   // _*_ means &quot;no argument here&quot;
+</pre>
+It's better to have an ugly solution than none at all.
+</p><p>
+The if-then-else construct deserves discussion, as we provide three
+versions: <tt>if0</tt>, <tt>if1</tt>, and <tt>if2</tt>.
+<tt>if0</tt> is the typical version, and can be used in most
+instances.  It checks to make sure that its second and third arguments
+(the &quot;then&quot; branch and the &quot;else&quot; branch) will have the same type
+when evaluated (and issues a helpful custom error message if they
+won't).  The other two ifs are used for difficult type-inferencing
+issues that come from <tt>letrec</tt>.  In the factorial example at
+the end of <a href="fcpp.sectlambda.html#fcpp.figlambda" title="Figure 2. Lambda in FC++">Figure 2</a>, for example, the &quot;else&quot;
+branch is too difficult for FC++ to predict the type of, owing to the
+recursive call to <tt>F</tt>.  This results in <tt>if0</tt>
+generating an error.  Thus we have <tt>if1</tt> and
+<tt>if2</tt> to deal with situations like these:  <tt>if1</tt>
+works like <tt>if0</tt>, but just assumes the expression's type
+will be the same as the type of the &quot;then&quot; part, whereas
+<tt>if2</tt> assumes the type is that of the &quot;else&quot; part.  In the
+factorial example, <tt>if1</tt> is used, and thus the &quot;then&quot;
+branch (the <tt>int</tt> value <tt>1</tt>) is used to predict
+that the type of the whole <tt>if1</tt> expression will be
+<tt>int</tt>.
+</p></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id270886"></a>12.2. Naming the C++ types of lambda expressions</h3></div></div><p>
+Expression templates often yield objects with complex type names, and
+FC++ lambdas are no different.  For example, the C++ type of
+<pre class="programlisting">
+   // assume:  LambdaVar&lt;1&gt; X;  LambdaVar&lt;2&gt; Y;
+   lambda(X,Y)[ (3 %multiplies% X) %plus% Y ]
+</pre>
+is something awful like
+<pre class="programlisting">
+   fcpp::Full2&lt;fcpp::fcpp_lambda::Lambda2&lt;fcpp::fcpp_lambda::exp::
+   Call&lt;fcpp::fcpp_lambda::exp::Call&lt;fcpp::fcpp_lambda::exp::Value&lt;
+   fcpp::Full2&lt;fcpp::impl::XPlus&gt; &gt;,fcpp::fcpp_lambda::exp::CONS&lt;
+   fcpp::fcpp_lambda::exp::Call&lt;fcpp::fcpp_lambda::exp::Call&lt;fcpp::
+   fcpp_lambda::exp::Value&lt;fcpp::Full2&lt;fcpp::impl::XMultiplies&gt; &gt;,
+   fcpp::fcpp_lambda::exp::CONS&lt;fcpp::fcpp_lambda::exp::Value&lt;int&gt;,
+   fcpp::fcpp_lambda::exp::NIL&gt; &gt;,fcpp::fcpp_lambda::exp::CONS&lt;fcpp
+   ::fcpp_lambda::exp::LambdaVar&lt;1&gt;,fcpp::fcpp_lambda::exp::NIL&gt; &gt;,
+   fcpp::fcpp_lambda::exp::NIL&gt; &gt;,fcpp::fcpp_lambda::exp::CONS&lt;fcpp
+   ::fcpp_lambda::exp::LambdaVar&lt;2&gt;,fcpp::fcpp_lambda::exp::NIL&gt; &gt;,1,2&gt; &gt;
+</pre>
+</p><p>
+In the vast majority of cases, the user never needs to name the type of
+a lambda, since usually the lambda is just being passed off to another
+template function.  Occasionally, however, you want to store a lambda
+in a temporary variable or return it from a function, and in these cases,
+you'll need to name its type.  For those cases, we have designed the
+<tt>LE</tt> type computer, which provides a way to name the type of a
+lambda expression.  In the example above, the type of
+<pre class="programlisting">
+   lambda(X,Y)[ (3 %multiplies% X) %plus% Y ]
+   // desugared: lambda(X,Y)[ plus[ multiplies[3,X], Y ] ]
+</pre>
+is
+<pre class="programlisting">
+   LE&lt; LAM&lt; LV&lt;1&gt;, LV&lt;2&gt;,   CALL&lt;plus_type,
+      CALL&lt;multiplies_type,int,LV&lt;1&gt; &gt;, LV&lt;2&gt; &gt; &gt; &gt;::type 
+</pre>
+The general idea is that
+<pre class="programlisting">
+   LE&lt; Translated_LambdaExp &gt;::type
+</pre>
+names the type of <tt>LambdaExp</tt>.  Each of our primitive constructs in
+lambda has a corresponding translated version understood by
+<tt>LE</tt>:
+<pre class="programlisting">
+   CALL            [] (function call)
+   LV              lambda_var
+   IF0,IF1,IF2     if0[],if1[],if2[]
+   LAM             lambda()[]
+   LET             let[].in[]
+   LETREC          letrec[].in[]
+   BIND            lambda_var == value
+</pre>
+With <tt>LE</tt>, the task of naming the type of a lambda
+expression is still onerous, but <tt>LE</tt> at least makes it
+possible.  Without the <tt>LE</tt> type computer, the type of
+lambda expressions could only be named by examining the library
+implementation, which may change from version to version.
+<tt>LE</tt> guarantees a consistent interface for naming the types
+of lambda expressions.
+</p><p>
+Finally, it should be noted that if the lambda only needs to be used
+monomorphically, it is far simpler (though potentially less efficient) 
+to just use an indirect functoid:
+<pre class="programlisting">
+   // Can name the monomorphic &quot;(int,int)-&gt;int&quot; functoid type easily:
+   Fun2&lt;int,int,int&gt; f = lambda(X,Y)[ (3 %multiplies% X) %plus% Y ];
+</pre>
+</p></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id271055"></a>12.3. FC++ lambda versus 
+   <tt>boost::lambda</tt></h3></div></div><p>
+Whereas FC++'s lambda and
+<tt>boost::lambda</tt> superficially
+appear to do the same thing, they are actually quite different.  FC++'s
+lambda uses explicit lambda syntax to create a minimal sublanguage with
+language constructs found in pure functional languages (e.g.
+<tt>letrec</tt>).  On the other hand,
+<tt>boost::lambda</tt> supplies almost
+the entire C++ language in its lambda, overloading every possible
+operator in lambda expressions, which can be created implicitly just by
+using a placeholder variable (like <tt>_1</tt>) in the midst of an
+expression.  For more discussion about the differences, see
+[<a href="fcpp.html#fcpp.citdpcool" title="[McN&amp;Sma03]">McN&amp;Sma03</a>].  For more info about the lambda
+library, see [<a href="fcpp.html#fcpp.citjarvispe" title="[Jär&amp;Pow03]">Jär&amp;Pow03</a>] or
+[<a href="fcpp.html#fcpp.citjarvitmpw" title="[Jär&amp;Pow01]">Jär&amp;Pow01</a>].
+</p></div><div class="footnotes"><br><hr width="100" align="left"><div class="footnote"><p><sup>[<a name="ftn.id270731" href="#id270731">4</a>] </sup>Some C++ compilers,
+like g++, will provide a useful warning diagnostic (&quot;left-hand-side of
+comma expression has no effect&quot;), alerting the user to the
+problem.</p></div></div></div><table width="100%"><tr><td align="left"><small>Last revised: October 03, 2003 at 23:27:22 GMT</small></td><td align="right"><small>Copyright © 2000-2003 Brian McNamara and Yannis Smaragdakis</small></td></tr></table><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="fcpp.sectrelation.html"><img src="images/prev.png" alt="Prev"></a> </td><td width="20%" align="center"><a accesskey="u" href="fcpp.html"><img src="images/up.png" alt="Up"></a></td><td width="40%" align="right"> <a accesskey="n" href="fcpp.sectmonads.html"><img src="images/next.png" alt="Next"></a></td></tr><tr><td width="40%" align="left" valign="top">11. Relationships with other libraries </td><td width="20%" align="center"><a accesskey="h" href="fcpp.html"><img src="images/home.png" alt="Home"></a></td><td width="40%" align="right" valign="top"> 13. Monads</td></tr></table></div></body></html>

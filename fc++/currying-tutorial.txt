@@ -1,0 +1,194 @@
+"Currying" basically refers to the ability to call a function on some
+subset of its arguments; such a function can be referred to as
+"curryable".  The result of calling a function with only some of its
+arguments is a new function, which expects the rest of the arguments.  
+
+As an example, consider the function
+
+   int sub( int x, int y ) { return x-y; }
+
+It can be called with two arguments:
+
+   sub(4,1)   // 3
+
+A "curried" or "curryable" version of this function (let's call it
+"Csub" for "curryable-subtract") could also be called with just one
+argument:
+
+   Csub(4)   // returns a new function f, where f is 
+             //    int f( int y ) { return 4-y; }
+             // effectively "x" has been bound to the value 4
+
+Here we've passed a subset of the arguments to sub (the first, but not
+the second), so the result is a new function which expects the rest of
+the arguments (in this case, just "y").  Since the result is another
+function, we can call that function in turn, supplying the rest of the
+arguments:
+
+   Csub(4)(1)  // 3
+
+Being curryable doesn't mean we can no longer call the function
+normally:
+
+   Csub(4,1)   // 3
+
+is still fine, too.
+
+
+If you are familiar with the STL <functional>s, then 
+
+   Csub(4)
+
+is effectively the same as
+
+   bind1st( ptr_fun(sub), 4 )
+
+ptr_fun() turns the original "sub" function into an STL "adaptable
+binary function", and then bind1st() binds the first argument of a
+binary function to a particular value, returning an "adaptable unary
+function".
+
+
+Currying can thus be seen as a shorthand generalization of the STL
+"bind" functions.  For example, if we want to express a function which
+takes an int and returns that value minus one, we could either say
+
+   bind2nd( ptr_fun(sub), 1 )
+
+with STL, or
+
+   ptr_to_fun(sub)(_,1)
+
+in FC++.  This last example demonstrates two new things in FC++.  First
+ptr_to_fun() is the analog of STL's ptr_fun(); it takes a pointer to a
+normal function and returns an FC++ "function object" or "functoid".
+Second, the underscore (_) notation in FC++ is used to curry arguments
+other than the first one.  You can think of underscore as a "placeholder"
+which says "I haven't supplied this argument yet; it will come later".
+As a result, if you keep in mind that
+
+   ptr_to_fun(sub)
+
+returns an FC++ functoid (basically just the Csub() that we discussed
+before), then
+
+   ptr_to_fun(sub)(_,1)
+
+just means
+
+   Csub(_,1)   // returns a new function f, where f is 
+               // int f( int x ) { return x-1; }
+
+Thus, this is just like the currying example we looked at before, except
+that we have supplied the second argument instead ("y", not "x").  As
+you may suspect,
+
+   Csub(4)     // recall: a new unary function "4-y"
+
+is just shorthand for
+
+   Csub(4,_)   // same as previous example
+
+which makes the duality with
+
+   Csub(_,1)   // a new unary function "x-1"
+
+clearer.
+
+
+Of course, we'd never actually write functions like sub(), since such
+basic general functions come "prepackaged" in libraries.  In the STL,
+
+   std::minus<int>()
+
+is a function which does the same thing as sub(), whereas in FC++,
+
+   fcpp::minus
+
+does the same thing.  The FC++ version is "polymorphic" (this is the
+functional programmer's word to mean "templated"), though; we don't need
+to tell fcpp::minus that it's going to be applied to ints (or strings or
+whatever); it can deduce this for itself when it's used.
+
+
+<quick digression>
+The utility of all this is that it's easier to express some common
+functions.  For example, to subtract one from all the elements of a
+vector of integers, in STL we can use
+
+   transform( v.begin(), v.end(), v.begin(), bind2nd( minus<int>(), 1 ) );
+
+whereas using FC++, it's just
+
+   transform( v.begin(), v.end(), v.begin(), minus(_,1) );
+
+the difference being
+
+   bind2nd( minus<int>(), 1 )   // STL's   "x-1"
+versus
+   minus(_,1)                   // FC++'s  "x-1"
+
+This particular instance is rather trivial, but it is an example of one
+of the general strengths of the functional programming paradigm.  In
+functional programming, rather than build new functions "from scratch",
+you often compose new functions "on the fly" out of existing
+functions.  This is only reasonable to do on a large scale if you have
+an effective way to compose new functions with a short and simple
+notation.  Consider a slightly more complex example, where we have a
+vector of doubles and we want to perform the function "3*x+1" on each
+element.  In STL, this function is expressed as
+
+   compose1(bind1st(plus<double>(),1.0),bind1st(multiplies<double>(),3.0))
+
+which is huge, whereas in FC++, it is
+
+   compose(plus(1.0),multiplies(3.0))
+
+which is shorter.  (In the functional language Haskell, it would just be
+
+   (1.0 +) . (3.0 *)     // '.' means unary-compose in Haskell
+
+or (using lambdas) just
+
+   (\x -> 3.0*x+1.0)
+
+which is tiny yet readable.)  Unfortunately these examples are all a
+little contrived; I've restricted the domain to mathematical functions
+to avoid having to present any more new functions from the "prelude".
+In any case, the point is that it's easier to compose new functions
+on-the-fly with features like currying; and the functional programming
+paradigm is all about rapidly composing new functions out of existing
+general ones to solve the specific problem at hand.
+<end disgression>
+
+
+Currying in FC++ generalizes to all functoids.  The examples at
+
+   http://www.cc.gatech.edu/~yannis/fc++/currying.html
+
+are meant to suggest that, given a function "f" declared as
+
+   R f( X x, Y y, Z z );   // R, X, Y, and Z are types
+
+we can call "f" on a subset of its arguments a bunch of different ways.
+In this message, I've already described the "prefix" style (where you
+pass fewer than the expected number of parameters) and the "underscore"
+style (where you use underscore as a placeholder for arguments you want
+to curry).  The "binder" style is like what you find in the STL (what
+STL calls bind1st() we refer to as bind1of2(); both mean "bind the
+first of two arguments to a function").  The "curry" style is much like
+the prefix style except that (1) you explicitly say "curry" and (2) if
+you pass all of the expected arguments (not a subset), then rather than
+calling the function and returning that result, the result is a new
+zero-argument function, which will invoke the underlying function on
+the supplied arguments when you call it.  For example,
+
+   curry2(Csub,4,1)
+
+does not return 3, rather, it returns a zero-argument function, which
+will return 3 when it's called:
+
+   curry2(Csub,4,1)()   // 3
+
+This can be useful for lazy evaluation.
+

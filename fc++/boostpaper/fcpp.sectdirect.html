@@ -1,0 +1,168 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>5. Direct Functoids</title><link rel="stylesheet" href="reference.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.48"><link rel="home" href="fcpp.html" title="Boost.FC++"><link rel="up" href="fcpp.html" title="Boost.FC++"><link rel="previous" href="fcpp.sectoverview.html" title="4. Overview Examples"><link rel="next" href="fcpp.sectindirect.html" title="6. Indirect Functoids"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table border="1" cellpadding="2" bgcolor="#007F7F"><tr><td bgcolor="#FFFFFF"><img src="../../c++boost.gif" alt="c++boost.gif (8819 bytes)" width="277" height="86"></td><td><a href="../../index.htm"><font color="#FFFFFF" size="4" face="Arial">Home</font></a></td><td><a href="libraries.html"><font color="#FFFFFF" size="4" face="Arial">Libraries</font></a></td><td><a href="../../people/people.htm"><font color="#FFFFFF" size="4" face="Arial">People</font></a></td><td><a href="../../more/faq.htm"><font color="#FFFFFF" size="4" face="Arial">FAQ</font></a></td><td><a href="../../more/index.htm"><font color="#FFFFFF" size="4" face="Arial">More</font></a></td></tr></table><div class="section"><div class="titlepage"><div><h2 class="title" style="clear: both"><a name="fcpp.sectdirect"></a>5. Direct Functoids</h2></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt>5.1. <a href="fcpp.sectdirect.html#id188762">Issues with representing higher-order polymorphic
+functions</a></dt><dt>5.2. <a href="fcpp.sectdirect.html#id189053">The past and the future</a></dt><dt>5.3. <a href="fcpp.sectdirect.html#id189101">Defining a direct functoid</a></dt></dl></div><p>
+Direct functoids enable the creation of functions which are
+simultaneously higher-order and polymorphic.  Consider the
+<tt>map()</tt> function described in the previous section:
+<tt>map()</tt> takes two arguments&#8212;a function and a
+list&#8212;and applies the function to every element of the list.  In
+Haskell we would describe the type signature of map like this:
+<pre class="programlisting">
+   map :: [a] -&gt; (a -&gt; b) -&gt; [b]
+</pre>
+The letters <tt>a</tt> and <tt>b</tt> are placeholder type
+variables (like the <tt>T</tt> in <tt>template &lt;class
+T&gt;</tt>).  The signature says that <tt>map()</tt> takes two
+arguments&#8212;a list of <tt>a</tt> objects and a function from
+<tt>a</tt> objects to <tt>b</tt> objects&#8212;and returns a
+list of <tt>b</tt> objects.  Thus <tt>map()</tt> is an example
+of a higher-order (it takes a function as an argument) polymorphic (it
+can be instantiated for all types <tt>a</tt> and <tt>b</tt>)
+function.
+</p><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id188762"></a>5.1. Issues with representing higher-order polymorphic
+functions</h3></div></div><p>
+Representing such a function in C++ is non-trivial.  Suppose we try to
+implement <tt>map</tt> ourselves, and we call our version
+<tt>mymap</tt>.  
+There are two key issues.  The first issue is this: if we represent 
+<tt>mymap</tt> as a template function:
+<pre class="programlisting">
+   template &lt;class F, class T&gt;
+   ... mymap( F some_func, list&lt;T&gt; some_list ) { ... }
+</pre>
+then the symbol <tt>mymap</tt> does not name a C++ object.  This means we
+cannot pass <tt>mymap</tt> to another higher-order function:
+<pre class="programlisting">
+   some_other_func( mymap, ... );  // illegal if mymap is template function
+</pre>
+This problem is relatively straightforward to surmount using a function
+object:
+<pre class="programlisting">
+   struct mymap_type {
+      template &lt;class F, class T&gt;
+      ... operator()( F some_func, list&lt;T&gt; some_list ) const { ... }
+   } mymap;
+</pre>
+Now <tt>mymap</tt> is an instance of <tt>struct
+mymap_type</tt>, which has a template member
+<tt>operator()</tt>.  As a result, we can call <tt>mymap</tt>
+using the same syntax as before, but now the symbol <tt>mymap</tt>
+does name a C++ object, and thus it can itself be passed as a
+parameter.
+</p><p>
+The second issue has to do with the return type.  What should the
+return type of <tt>mymap</tt> be?  It should be a
+<tt>list&lt;U&gt;</tt>, where <tt>U</tt> is the result type of
+applying an <tt>F</tt> function to a <tt>T</tt> object.  Since
+the C++ language lacks a <tt>typeof</tt> operator, we need to
+represent the return type information ourselves.  By convention, in
+FC++, we represent the return type of a function using a nested
+template member <tt>struct</tt> named <tt>sig</tt>:
+<pre class="programlisting">
+   struct mymap_type {
+      template &lt;class F, class L&gt;
+      struct sig {
+         typedef list&lt; typename F::template sig&lt;
+                           typename L::value_type &gt;::result_type &gt;
+            result_type;
+      };
+      ... 
+   } mymap;
+</pre>
+More generally, the expression
+<pre class="programlisting">
+   typename F::template sig&lt;X&gt;::result_type
+   // F::sig&lt;X&gt;::result_type   without the &quot;noise&quot; words
+</pre>
+represents the result type when a function of type <tt>F</tt> is applied
+to an argument of type <tt>X</tt>.
+</p><p>
+As a result, we could define <tt>mymap</tt> as
+<pre class="programlisting">
+   struct mymap_type {
+      template &lt;class F, class L&gt;
+      struct sig {
+         typedef list&lt; typename F::template sig&lt;
+                           typename L::value_type &gt;::result_type &gt;
+            result_type;
+      };
+      template &lt;class F, class T&gt;
+      typename sig&lt; F, list&lt;T&gt; &gt;::result_type
+      operator()( F some_func, list&lt;T&gt; some_list ) const { ... }
+   } mymap;
+</pre>
+This is our first example of a <span class="emphasis"><i>functoid</i></span>.  A
+functoid is an instance of a struct which contains a (possibly
+templated) <tt>operator()</tt> method, as well as a nested template
+member struct named <tt>sig</tt> which works as a return-type
+computer.
+</p><p>
+To simplify naming return types, we have the <tt>RT</tt> helper.
+Rather than say
+<pre class="programlisting">
+   typename F::template sig&lt;X,Y&gt;::result_type
+</pre>
+we just say
+<pre class="programlisting">
+   typename RT&lt;F,X,Y&gt;::result_type
+</pre>
+That is, <tt>RT&lt;F,A1,...An&gt;</tt>
+computes the result type of a function of
+type <tt>F</tt> being applied to arguments with type <tt>Ai</tt>.
+</p></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id189053"></a>5.2. The past and the future</h3></div></div><p>
+FC++ was the first C++ library to use this scheme as a general
+mechanism for representing higher-order polymorphic functions.  Since
+then, a number of other libraries have arisen that all use variations
+of the same trick to enable return-type deduction.
+</p><p>
+A relatively new proposal standardizes the return-type deduction
+methods.  It uses conventions and syntax different from FC++.  FC++
+&quot;full functoids&quot; (<a href="fcpp.sectfull.html#fcpp.sectfull" title="7. Full Functoids">Section 7</a>) ensure that functoids are
+forward-compatible with the new standard.   At the same time, the 
+<tt>RT</tt> type computer makes FC++ code backward compatible with
+functoids using the extant <tt>sig</tt> structures.  As a result, FC++
+interoperates with other libraries like
+<tt>boost::bind</tt>.
+</p></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id189101"></a>5.3. Defining a direct functoid</h3></div></div><p>
+Now, with all of the explanation out of the way, we can finally show
+the definition of the <tt>mymap</tt> functoid (<a href="fcpp.sectdirect.html#fcpp.figmymap" title="Figure 1. The mymap functoid">Figure 1</a>).  This is an example of a polymorphic direct
+functoid.  It has a <tt>sig</tt> structure, which is a template
+over the parameter types which computes the result type, as well as a
+templated <tt>operator()</tt> function, which uses the
+<tt>sig</tt> to name its own result type.  Note that, rather than
+defining the <tt>result_type</tt> typedef directly, we can inherit
+it from the <tt>fun_type</tt> class.
+</p><div class="figure"><p><a name="fcpp.figmymap"></a><b>Figure 1. The <tt>mymap</tt> functoid</b></p><pre class="programlisting">
+   struct mymap_type {
+      template &lt;class F, class L&gt; struct sig : public fun_type&lt;
+         list&lt;typename RT&lt;F,typename L::value_type&gt;::result_type&gt; &gt; {};
+      template &lt;class F, class T&gt; 
+      typename sig&lt;F, list&lt;T&gt; &gt;::result_type 
+      operator()( const F&amp; f, const list&lt;T&gt;&amp; l ) const {
+         // code to actually implement mymap() function elided
+      }
+   } mymap;
+</pre></div><p>
+The definition of <tt>mymap</tt> given here is what we call a
+<span class="emphasis"><i>basic</i></span> direct functoid.  In <a href="fcpp.sectfull.html#fcpp.sectfull" title="7. Full Functoids">Section 7</a>, we will show how to promote
+<tt>mymap</tt> into a <span class="emphasis"><i>full</i></span> direct functoid,
+which adds useful capabilities.
+</p><p>
+Finally, it should be noted that <span class="emphasis"><i>monomorphic</i></span>
+direct functoids can be defined without explicitly coding a
+<tt>sig</tt> structure, by inheriting from the
+<tt>c_fun_type</tt> template class.  For example, here is the
+definition of a function that increments an integer:
+<pre class="programlisting">
+   struct inc_type : public c_fun_type&lt;int,int&gt; {
+      int operator()( int x ) const {
+         return x+1;
+      }
+   } inc;
+</pre>
+The <tt>c_fun_type</tt> class defines a monomorphic <tt>sig</tt>
+structure which is inherited by the functoid directly.  Note that the
+<tt>c_fun_type</tt> class takes (<span class="emphasis"><i>N+1</i></span>) template 
+arguments which represent the <span class="emphasis"><i>N</i></span> parameter types and 
+the result type.
+</p></div></div><table width="100%"><tr><td align="left"><small>Last revised: October 03, 2003 at 23:27:22 GMT</small></td><td align="right"><small>Copyright © 2000-2003 Brian McNamara and Yannis Smaragdakis</small></td></tr></table><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="fcpp.sectoverview.html"><img src="images/prev.png" alt="Prev"></a> </td><td width="20%" align="center"><a accesskey="u" href="fcpp.html"><img src="images/up.png" alt="Up"></a></td><td width="40%" align="right"> <a accesskey="n" href="fcpp.sectindirect.html"><img src="images/next.png" alt="Next"></a></td></tr><tr><td width="40%" align="left" valign="top">4. Overview Examples </td><td width="20%" align="center"><a accesskey="h" href="fcpp.html"><img src="images/home.png" alt="Home"></a></td><td width="40%" align="right" valign="top"> 6. Indirect Functoids</td></tr></table></div></body></html>

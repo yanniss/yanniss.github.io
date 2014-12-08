@@ -1,0 +1,58 @@
+<project name="jorchestra" default="compile-jorch" basedir=".">
+    <description>
+        
+    </description>
+
+  <!-- set global properties for this build -->
+  <property name="jorch-home" location="/jorchestra"/>
+  <property name="src" location="${jorch-home}/src"/>
+  <property name="build" location="./build"/>
+  <property name="classes" location="${build}/classes"/>
+  <property name="lib" location="${jorch-home}/lib"/>
+
+  <path id="jorch-classpath">
+    <pathelement path="${classpath}"/>
+    <pathelement location="${classes}"/>
+    <fileset dir="${build}/lib">
+       <include name="*.jar"/>
+    </fileset>
+  </path>
+  
+
+  <target name="init">
+    <mkdir dir="${build}"/>
+    <mkdir dir="${build}/lib"/>
+    <mkdir dir="${classes}"/>
+
+    <copy todir="${build}/lib">
+      <fileset dir="${lib}"/>
+    </copy>
+
+  </target>
+
+  <target name="compile-jorch" depends="init">
+    <javac srcdir="${src}" debug="off" destdir="${classes}">
+      <classpath refid="jorch-classpath" />
+    </javac>
+
+     <rmic classname="jorchestra.runtime.ObjectFactory.ObjectFactoryImpl" base="${classes}">
+       <classpath refid="jorch-classpath"/>
+    </rmic>
+  </target>
+
+  
+  <target name="jar" depends="compile-jorch">
+    <jar destfile="${build}/jorchestra.jar" index="true">
+      <fileset dir="${classes}" />
+    </jar>
+  </target>
+
+  <target name="clean">
+    <delete dir="${classes}/com"/>
+  </target>
+
+  <target name="reallyclean">
+    <delete dir="${build}"/>
+  </target>
+
+</project>

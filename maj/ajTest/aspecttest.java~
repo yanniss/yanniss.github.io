@@ -1,0 +1,22 @@
+package maj.ajTest;
+
+
+import java.io.*;
+import org.aspectj.compiler.base.*;
+import org.aspectj.compiler.base.ast.*;
+import org.aspectj.compiler.base.cst.*;
+import org.aspectj.compiler.crosscuts.ast.*;
+
+public class aspecttest {
+	public static void main(String[] myargs)  {
+		ASTObject aspect1 = new AspectDec(null, "Foo", null, null, null, null, new Decs(new Dec[] {new PrecedenceDec(new GenTypeNames(new GenTypeName[] {new SimpleTypeName(new ResolvedTypeD(new MajUncheckedType(new Identifier("Security")))), new SimpleTypeName(new ResolvedTypeD(new MajUncheckedType(new Identifier("Logging"))))})), new BeforeAdviceDec(null, new Formals(new FormalDec[] {}), null, new FieldGetPcd(new FieldPattern(null, new SimpleTypeName(new ResolvedTypeD(new MajUncheckedType(new Identifier("int")))), null, new SimpleName(new Identifier(new Identifier("Foo"), new Identifier("y"))))), new CodeBody(new Stmts(new Stmt[] {}))), new PointcutDec(new Modifiers(1024), "pc", null, new Formals(new FormalDec[] {new FormalDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("Object"))), "o")}), null), new AroundAdviceDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("Object"))), new Formals(new FormalDec[] {}), null, new CallPcd(new MethodPattern(null, null, new SimpleTypeName(new ResolvedTypeD(new MajUncheckedType(new Identifier("int")))), new SimpleName(new Identifier(new Identifier("Foo"), new Identifier("m"))), new FormalsPattern(new GenTypeNames(new GenTypeName[] {new SimpleTypeName(new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))))})), null)), new CodeBody(new Stmts(new Stmt[] {}))), new AroundAdviceDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))), new Formals(new FormalDec[] {}), null, new CallPcd(new MethodPattern(null, null, new SimpleTypeName(new ResolvedTypeD(new MajUncheckedType(new Identifier("int")))), new SimpleName(new Identifier(new Identifier("Foo"), new Identifier("m"))), new FormalsPattern(new GenTypeNames(new GenTypeName[] {new SimpleTypeName(new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))))})), null)), new CodeBody(new Stmts(new Stmt[] {}))), new VarDec(new Modifiers(1), new ResolvedTypeD(new MajUncheckedType(new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))))), new Identifier("x")), new MethodDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))), "foo", new Formals(new FormalDec[] {new FormalDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))), "x"), new FormalDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))), "y")}), null, new CodeBody(new Stmts(new Stmt[] {new VarDec(null, new ResolvedTypeD(new MajUncheckedType(new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))))), new Identifier("z")), new ExprStmt(new PostfixExpr(new VarExpr(new Identifier("x")), "++")), new ReturnStmt(new VarExpr(new Identifier("x")))})))}));
+		ASTObject pdec1 = new PointcutDec(new Modifiers(2), "pc", null, new Formals(new FormalDec[] {}), null);
+		ASTObject adv1 = new BeforeAdviceDec(null, new Formals(new FormalDec[] {}), null, new FieldGetPcd(new FieldPattern(null, new SimpleTypeName(new ResolvedTypeD(new MajUncheckedType(new Identifier("int")))), null, new SimpleName(new Identifier(new Identifier("Foo"), new Identifier("y"))))), new CodeBody(new Stmts(new Stmt[] {})));
+		ASTObject var1 = new VarDec(null, new ResolvedTypeD(new MajUncheckedType(new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))))), new Identifier("x"));
+		ASTObject mods1 = new Modifiers(9);
+		ASTObject meth1 = new MethodDec(null, new ResolvedTypeD(new MajUncheckedType(new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))))), "foo", new Formals(new FormalDec[] {new FormalDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))), "x"), new FormalDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))), "y")}), null, new CodeBody(new Stmts(new Stmt[] {new VarDec((Modifiers)mods1, new ResolvedTypeD(new MajUncheckedType(new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))))), new Identifier("z")), new ExprStmt(new PostfixExpr(new VarExpr(new Identifier("x")), "++")), new ReturnStmt(new VarExpr(new Identifier("x")))})));
+		ASTObject aspect2 = new AspectDec(null, "Foo", null, null, null, null, new Decs(new Dec[] {(Dec)pdec1, (AdviceDec)adv1, (PointcutDec)pdec1, (VarDec)var1, (MethodDec)meth1}));
+		System.out.println(aspect1.unparse());
+		System.out.println(aspect2.unparse());
+	}
+}

@@ -1,0 +1,133 @@
+<html>
+<head>
+<title>FC++ Reusers</title>
+</head>
+
+<body>
+
+<h1>FC++ Reusers</h1>
+
+<p>
+To introduce the topic of reusers, consider this definition of
+<code>Map</code>:
+<pre>
+struct Map {
+   template &lt;class F, class L&gt;
+   struct Sig : public FunType&lt;F,L,
+      OddList&lt;typename RT&lt;F,typename L::ElementType&gt;::ResultType&gt; &gt; {};
+
+   template &lt;class F, class L&gt;
+   OddList&lt;typename RT&lt;F,typename L::ElementType&gt;::ResultType&gt;
+   operator()( const F& f, const L& l ) const {
+      if( null(l) )
+         return NIL;
+      else
+         return cons( f(head(l)), curry2( Map(), f, tail(l) ) );
+   }
+};
+</pre>
+This definition works, but it is rather wasteful with memory.  For each
+recursive call, the call to <code>curry2()</code> passed to
+<code>cons()</code> creates a new
+thunk object on the heap.  When evaluation of the list is requested, the
+thunk is called to produce the next node of the list, and the thunk is
+then discarded because it is no longer needed.  However, in the process
+of calling the thunk, we again pass the result of another call to
+<code>curry2()</code> to <code>cons()</code>, creating a new thunk on the heap.
+</p>
+
+<p>
+We can get rid of this waste with a <code>Reuser</code>:
+<pre>
+struct Map {
+   template &lt;class F, class L&gt;
+   struct Sig : public FunType&lt;F,L,
+      OddList&lt;typename RT&lt;F,typename L::ElementType&gt;::ResultType&gt; &gt; {};
+
+   template &lt;class F, class L&gt;
+   OddList&lt;typename RT&lt;F,typename L::ElementType&gt;::ResultType&gt;
+   operator()( const F& f, const L& l,
+               <b>Reuser2&lt;Inv,Inv,Var,Map,F,List&lt;typename L::ElementType&gt; &gt;
+               r = NIL</b> ) const {
+      if( null(l) )
+         return NIL;
+      else
+         return cons( f(head(l)), <b>r</b>( Map(), f, tail(l) ) );
+   }
+};
+</pre>
+The reuser is an extra parameter with a default value.  When clients
+call <code>map</code>, they will only pass two parameters, and
+<code>r</code> is initialized with the value <code>NIL</code> (which,
+in this context, has nothing to do with lists; it is just a convenient
+dummy value).  This puts <code>r</code> in a state where it behaves
+very similar to <code>curry2()</code>; when called, <code>r</code> will
+create a functoid on the heap.
+</p>
+
+<p>
+The difference is, unlike <code>curry2(f,x,y)</code>, which creates a
+thunk that will call <code>f(x,y)</code> when invoked,
+<code>r(f,x,y)</code> creates a thunk which will call
+<code>f(x,y,r)</code> when invoked.  <code>r</code> effectively passes
+a reference to itself as the extra third parameter during recursive
+calls; this enables it to reuse the memory allocated for the thunk.
+The mechanism is a bit more complicated than that, but that's the basic
+idea.
+</p>
+
+<p>
+The only difficult thing about using a <code>Reuser</code> is
+specifying its type.  In the example with <code>Map</code> above, it
+was
+<pre>
+   Reuser2&lt;Inv,Inv,Var,Map,F,List&lt;typename L::ElementType&gt; &gt;
+</pre>
+Here's the general explanation.  A <code>ReuserN</code> is similar to
+<code>curryN</code>. Recall that <code>curryN</code> is a functoid which
+can take N+1
+parameters--the first parameter is an N-argument function and the other
+N parameters are its arguments.  However, rather than a
+<code>ReuserN</code> having N+1 template parameters, it has twice that
+many.  Thus, in the example above, <code>Reuser2</code> has 6 template
+parameters, not 3.  The last three are the expected types: they specify the
+types of arguments that will be passed in the call to <code>r()</code>
+that replaces the call to <code>curry2()</code>.  The first three
+parameters specify (in the same order) which of the parameters are
+variant and which are invariant between recursive calls.  In the
+example of <code>Map</code>, the recursion is defined in this line of
+code:
+<pre>
+   return cons( f(head(l)), r( Map(), f, tail(l) ) );
+</pre>
+We can see that during each successive recursiove call, the value of
+the first parameter (<code>Map()</code>) and the value of the second
+parameter (<code>f</code>) are fixed; each call uses the same values of
+these arguments.  Only the third parameter (<code>tail(l)</code>)
+changes between calls.  We thus use <code>Inv,Inv,Var</code> as the
+first three template parameters to the <code>Reuser</code>; this tells
+it that it needn't bother re-copying the values for the first two
+parameters into the heap thunk during each call--once they are
+originally supplied, they don't change.
+</p>
+
+<h3>More info</h3>
+
+<p>
+You don't have to use <code>Reusers</code>; they just help make FC++
+code more efficient.  For more examples of <code>Reusers</code>, have a
+look at the code in <code>prelude.h</code>.  Also, the article 
+<a href="../fcpptw.pdf">Functional Programming with the FC++ Library</a>
+quantifies the performance improvement from <code>Reusers</code>.
+</p>
+
+<hr>
+
+
+<h6>
+Last updated on July 26, 2001 by <a
+href="mailto:lorgon@cc.gatech.edu">Brian McNamara</a></h6>
+
+</body>
+</html>
+

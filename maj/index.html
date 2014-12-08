@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Meta-AspectJ Web Page</title>
+  <link rel="stylesheet" href="main.css" type="text/css">
+</head>
+<body>
+<div class="header">
+<center>
+<h1>Meta-AspectJ</h1>
+<small> <a href="http://www.cc.gatech.edu/%7Edzook" class="hlink">David
+Zook</a>, <a href="http://www.cc.gatech.edu/%7Essh" class="hlink">Shan
+Shan Huang</a>, <a href="http://smaragd.org"
+ class="hlink">Yannis Smaragdakis</a> </small> </center>
+</div>
+<div class="menu"> Home <br>
+&nbsp;&nbsp;<a
+ href="index.html#ov"
+ class="hlink">Overview</a> <br>
+&nbsp;&nbsp;<a
+ href="index.html#why"
+ class="hlink"><nobr>Why MAJ?</nobr></a> <br>
+&nbsp;&nbsp;<a
+ href="index.html#app"
+ class="hlink">Applications</a>
+<p> Using MAJ <br>
+&nbsp;&nbsp;<a href="get.html"
+ class="hlink">Download/Install</a> <br>
+&nbsp;&nbsp;<a
+ href="tutorial.html"
+ class="hlink">MAJ Tutorial</a> <br>
+&nbsp;&nbsp;<a
+ href="examples.html"
+ class="hlink">Examples</a> <br>
+&nbsp;&nbsp;<a href="doc/"
+ class="hlink">API</a> </p>
+<p> </p>
+</div>
+<div class="body"> <a name="ov"></a>
+<h2><a name="ov">Overview</a></h2>
+<a name="ov">Meta-AspectJ, MAJ, is a language tool for generating
+syntactically correct AspectJ (and Java) programs.  MAJ can be used to: </a>
+<ul>
+  <li><a name="ov">implement generators using AspectJ </a></li>
+  <li><a name="ov">extend the power of AspectJ using generation</a></li>
+</ul>
+<p> <a name="ov">MAJ extends Java with 3 keywords: </a></p>
+<ul>
+  <li><a name="ov"><font face="courier"><b>`</b></font> : pronounced
+"quote", this keyword allows the user to generate the abstract syntax
+tree for a piece of AspectJ code. </a></li>
+  <li><a name="ov"><font face="courier"><b>#</b></font> : pronounced
+"unquote", allows the user to splice a previously defined piece of code
+into a piece of quoted code. </a></li>
+  <li><a name="ov"><font face="courier"><b>infer</b></font> : allows the
+user to declare a variable whose type, initiated with a quoted piece of
+code, should be inferred by MAJ. </a></li>
+</ul>
+MAJ guarantees the syntactic correctness of all generated code by
+type-checking the generator. A <a
+ href="http://smaragd.org/maj.pdf">research paper
+("Generating AspectJ Programs with Meta-AspectJ"--GPCE'04 Best Paper award)</a> describes
+MAJ in detail.<br>
+<p> <a name="why"></a></p>
+<h2><a name="why">Why Meta-AspectJ?</a></h2>
+<a name="why">Meta-AspectJ combines AspectJ with code-generation.  The
+value of MAJ is thus found in the reasons why neither AspectJ nor
+code-generation alone is sufficient. </a>
+<p> <a name="why">AspectJ is a great tool for addressing cross-cutting
+concerns such as security and persistence.  While it provides some
+syntax for dealing with the dynamic creation of aspects, such as
+wildcard (<font face="courier">*</font>) characters in specifying names,
+it does not provide any support for adapting an application based on
+characteristics not evident in the names.  For example, you cannot
+create an aspect that only applies to classes that do not already
+implement a particular interface.  Using MAJ, a user can leverage the
+full power of Java to create complex joinpoints that AspectJ does not
+support. </a></p>
+<p> <a name="why">Why then, can we not use code-generation alone? We
+could, but AspectJ provides a convenient and mature vocabulary for
+talking about many commonly used program transformations.  It is a
+sufficient abstraction that code generation can work on top of to
+provide the extra flexibility. </a></p>
+<h2>MAJ as Meta-Java</h2>
+MAJ can also be used to generate plain Java programs. In
+fact, MAJ is possibly the most advanced meta-programming tool for Java.
+MAJ's inference capabilities make it very user-friendly because the user
+does not need to remember the types of syntax tree entities.</a>
+<p> <a name="app"></a></p>
+<h2><a name="app">MAJ Applications</a></h2>
+<a name="app">We have used MAJ to reimplement </a><a
+ href="http://j-orchestra.org/GOTech/index.htm">GOTECH</a>, a framework
+used for turning existing Java classes into EJB's with minimum user
+guidance. The original GOTECH framework uses XDoclet, which is a
+text-based tool, to generate AspectJ. A complete GOTECH package
+implemented with MAJ will be posted here.&nbsp; </p>
+<p>
+See also a <a href="maj-app05.pdf">recent paper describing possible uses of MAJ for implementing
+small, annotation-based languages</a>.</p>
+ </div>
+</body>
+</html>

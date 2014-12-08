@@ -1,0 +1,53 @@
+<html>
+<head>
+<title>FC++ library structure</title>
+</head>
+
+<body>
+
+
+<h6>See info for the <a href="header_dependencies.1.4.html">previous 
+version</a>.</h6>
+<hr>
+
+<h1>FC++ library structure</h1>
+
+For most applications, the easiest way to use the library is just to
+<pre>
+   #include "prelude.h"
+</pre>
+but here is the v1.5 header dependency diagram, in case you are interested.
+<pre>
+        &lt;functional&gt;   config
+                 \      /  |
+                 signature |
+                 /  \      |
+   pre_lambda smart curry  |
+             \   \  /      |
+&lt;iterator&gt;,   `- full      |
+&lt;iostream&gt;,        |       |
+&lt;utility&gt;       lambda     |
+        \        /         |
+         operator     ref_count
+               \      /
+               function
+                 |
+               reuse  &lt;new&gt;,&lt;cstdlib&gt;,&lt;exception&gt;
+                 |    /
+                 |   /
+                 list  
+                  |       -- monad (included at bottom of prelude)
+                prelude -/
+</pre>
+<a href="http://www.cs.umass.edu/~yannis/fc++/tutorial.html#Sec2">Look
+here</a> for more description of the actual contents of each library
+header.
+
+<hr>
+
+<h6>
+Last updated on May 23, 2003 by <a
+href="mailto:lorgon@cc.gatech.edu">Brian McNamara</a></h6>
+
+</body>
+</html>

@@ -1,0 +1,139 @@
+package maj.ajTest;
+
+import java.io.*;
+import org.aspectj.compiler.base.*;
+import org.aspectj.compiler.base.ast.*;
+import org.aspectj.compiler.base.cst.*;
+import org.aspectj.compiler.crosscuts.ast.*;
+
+public class classdec {
+
+    public static void main(String myargs[]) {
+
+	// Class Declaration
+	infer class0 =
+	    `[class foo 
+	      implements interface1, interface2  {
+		int foo(int x, int y) throws exception1, exception2 {
+		    int z;
+		    x++;
+		    return x;
+		}
+	    }];
+
+	infer classes1 = `[
+			   class foo implements interface1 {
+			       int foo() {}
+			       public foo() {}
+			   }
+			   class foo2 { }
+	];
+
+	infer classes2 = `[
+			   class foo implements interface1 {
+			       int foo() {}
+			       public foo() {} }
+			   class foo2 { }
+			   interface foointer {}
+                           #classes1
+	];
+
+	infer inter1 =
+	    `[interface foo {
+		public int x;
+		
+		int foo(int x, int y);
+	    } ];
+
+	infer class1 =
+	    `[class foo {
+		public int x;
+		
+		int foo(int x, int y) {
+		    int z;
+		    x++;
+		    return x;
+		}
+		} ];
+
+	infer mods1 = `[public static];
+	Modifiers mods2 = `[public static];
+
+	infer var1 =  `[int x;];
+	infer class2 =
+		`[class foo {
+			#var1
+
+			int foo(int x, int y) {
+				int z;
+				x++;
+				return x;
+			}
+			} ];
+
+	infer meth1 =
+		`[int foo(int x, int y) {
+                       #mods1 int z;
+			x++;
+			return x;
+		}
+		];
+
+	infer class3 =
+		`[class foo extends MySuperClass implements interface1, interfac2 {
+			public int x;
+		    
+		        #meth1
+			
+		} ];
+
+	infer class4 =  `[class foo { int x; #var1 } ];
+
+	infer selfclass1 = `[#class1];
+
+	infer id1 = `[foo];
+	infer class5 =
+		`[class #id1 {
+			public int x;
+
+			int foo(int x, int y) {
+				int z;
+				x++;
+				return x;
+			}
+		} ];
+
+	infer class6 =
+	    `[class foo {
+                #mods1 int x;
+		
+                #mods2 foo(int x, int y) {
+		    int z;
+		    x++;
+		    return x;
+		}
+	    } ];
+
+	infer modclass1 = `[public static #class1];
+	infer modclass2 = `[#mods1 #class1];	
+	infer modinter1 = `[#mods1 static interface foo {}];
+
+	System.out.println(class0.unparse());
+	System.out.println(class1.unparse());
+	System.out.println(class2.unparse());
+	System.out.println(class3.unparse());
+	System.out.println(class4.unparse());
+	System.out.println(class5.unparse());
+	System.out.println(class6.unparse());
+
+	for (int i=0; i<classes1.length; i++) {
+		System.out.println(classes1[i].unparse());
+	}
+
+	for (int i=0; i<classes2.length; i++) {
+		System.out.println(classes2[i].unparse());		
+	}
+
+	System.out.println(inter1.unparse());
+    }
+}

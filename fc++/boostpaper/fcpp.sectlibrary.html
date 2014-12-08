@@ -1,0 +1,320 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>10. Library</title><link rel="stylesheet" href="reference.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.48"><link rel="home" href="fcpp.html" title="Boost.FC++"><link rel="up" href="fcpp.html" title="Boost.FC++"><link rel="previous" href="fcpp.sectlazy.html" title="9. Lists and lazy evaluation"><link rel="next" href="fcpp.sectrelation.html" title="11. Relationships with other libraries"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table border="1" cellpadding="2" bgcolor="#007F7F"><tr><td bgcolor="#FFFFFF"><img src="../../c++boost.gif" alt="c++boost.gif (8819 bytes)" width="277" height="86"></td><td><a href="../../index.htm"><font color="#FFFFFF" size="4" face="Arial">Home</font></a></td><td><a href="libraries.html"><font color="#FFFFFF" size="4" face="Arial">Libraries</font></a></td><td><a href="../../people/people.htm"><font color="#FFFFFF" size="4" face="Arial">People</font></a></td><td><a href="../../more/faq.htm"><font color="#FFFFFF" size="4" face="Arial">FAQ</font></a></td><td><a href="../../more/index.htm"><font color="#FFFFFF" size="4" face="Arial">More</font></a></td></tr></table><div class="section"><div class="titlepage"><div><h2 class="title" style="clear: both"><a name="fcpp.sectlibrary"></a>10. Library</h2></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt>10.1. <a href="fcpp.sectlibrary.html#id269529">Nuts and bolts</a></dt><dt>10.2. <a href="fcpp.sectlibrary.html#id269602">Constants</a></dt><dt>10.3. <a href="fcpp.sectlibrary.html#id269622">Data types</a></dt><dt>10.4. <a href="fcpp.sectlibrary.html#id269740">Basic list functions</a></dt><dt>10.5. <a href="fcpp.sectlibrary.html#id269814">Haskell standard prelude</a></dt><dt>10.6. <a href="fcpp.sectlibrary.html#id269860">Operators</a></dt><dt>10.7. <a href="fcpp.sectlibrary.html#id269930">Currying, thunks, and effect combinators</a></dt><dt>10.8. <a href="fcpp.sectlibrary.html#id269959">General combinators</a></dt><dt>10.9. <a href="fcpp.sectlibrary.html#id270006">Functoid promotion</a></dt><dt>10.10. <a href="fcpp.sectlibrary.html#id270034">Other</a></dt><dt>10.11. <a href="fcpp.sectlibrary.html#id270060">Note about lambda/monads</a></dt></dl></div><p>
+In this section, we briefly describe each of the components in the
+library's interface.
+</p><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id269529"></a>10.1. Nuts and bolts</h3></div></div><p>
+To use the Boost FC++ library, just add the line
+<pre class="programlisting">
+   #include &quot;boost/fcpp/prelude.hpp&quot;
+</pre>
+to the top of your program.  This file includes all of the other header
+files.  All of the library interface is in <tt>namespace
+boost::fcpp</tt>.
+</p><p>
+Note that, by default, the &quot;lambda&quot; and &quot;monad&quot; portions of the
+library are not enabled.  This is both because some compilers cannot 
+handle the crazy templates there, and also because they slow down
+compilation a little, even if they're not being used.  To enable these
+portions of the library, say
+<pre class="programlisting">
+   #define BOOST_FCPP_ENABLE_LAMBDA
+</pre>
+before <tt>#include</tt>-ing the library.
+</p><p>
+The library comes with dozens of example client files (the
+<tt>.cpp</tt> files in the FC++ directory).  When in doubt about
+how to use something, check the client examples, which exhibit coverage
+of most of the library's features.
+</p><p>
+There are a few other <tt>#define</tt> flags worth mentioning.
+These flags are all disabled by default.
+<pre class="programlisting">
+   BOOST_FCPP_DEBUG   
+   Throws an exception if you try to take the head() or tail() of 
+   an empty list.  By default, these operations just result in 
+   undefined behavior.
+   
+   BOOST_FCPP_LAMBDA_DEBUG
+   Turns on various extra compile-time checking and custom error
+   messages in lambda code.  This is useful for debugging type errors
+   with lambda, but slows down compilation, which is why it is disabled
+   by default.
+
+   BOOST_FCPP_SAFE_LIST
+   Makes all list destructors iterative, rather than recursive.  If you
+   have a really long list, you may blow the stack when the list goes
+   out of scope.  Setting this flag ensures against this problem, but
+   degrades the overall performance of lists, which is why it is
+   disabled by default.  If you just need to safely destroy one
+   specific instance of a list, just do
+      while(l) l = tail(l);   // iteratively destroys l
+   
+   BOOST_FCPP_DEFER_DEFINITIONS
+   Setting this flag makes all the functoids get declared as &quot;extern&quot;
+   variables, but not defined.  You then need to link against a separate
+   object file with the definitions.  Use this when you are using FC++
+   in mutiple translation units, and you do not want each TU to have its
+   own copy of all the functoids.
+   
+   BOOST_FCPP_ENABLE_LAMBDA
+   Turns on the &quot;lambda&quot; and &quot;monad&quot; portions of the library, as
+   described above.
+   
+   BOOST_FCPP_1_3_LIST_IMPL
+   BOOST_FCPP_OOI_DEBUG
+   Deprecated flags; the first one switches to the old (deprecated) list
+   implementation, and the second one turns on various debugging code
+   for that implementation.
+</pre>
+</p></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id269602"></a>10.2. Constants</h3></div></div><p>
+FC++ defines the following constants:
+<pre class="programlisting">
+   _          // placeholder for currying
+   empty      // an empty struct (empty tuple)
+   NIL        // the empty list (zero of the list_m monad)
+   NOTHING    // an empty maybe (zero of the maybe_m monad)
+</pre>
+</p></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id269622"></a>10.3. Data types</h3></div></div><p>
+FC++ defines these data types:
+<pre class="programlisting">
+   // Useful data types
+   list             // for lazy lists
+   list_iterator   
+   maybe            // represents 1 or 0 elements of some type
+   odd_list         // (see <a href="fcpp.sectlazy.html#fcpp.sectlazy" title="9. Lists and lazy evaluation">Section 9</a> for details)
+   strict_list      // eager (non-lazy) version of &quot;list&quot;
+   
+   // Utility (see <a href="fcpp.sectdirect.html#fcpp.sectdirect" title="5. Direct Functoids">Section 5</a> and <a href="fcpp.sectfull.html#fcpp.sectfull" title="7. Full Functoids">Section 7</a>)
+   RT               // Return type computer (e.g.  RT&lt;F,X,Y&gt;::result_type)
+   functoid_traits  // for seeing how many arguments a functoid accepts
+   c_fun_type       // typedefs for monomorphic functoids
+   fun_type         // typedefs for polymorphic functoids
+   monomorphic_traits  // for reading argument types from monomorphic functoids
+   
+   // Miscellaneous
+   fullN            // full functoid wrapper classes (<a href="fcpp.sectfull.html#fcpp.sectfull" title="7. Full Functoids">Section 7</a>)
+   funN             // indirect functoid classes (<a href="fcpp.sectindirect.html#fcpp.sectindirect" title="6. Indirect Functoids">Section 6</a>)
+   fcpp_exception   // used, e.g., when taking head() of an empty list
+</pre>
+Note also that every functoid has a corresponding data type.  For
+instance, the <tt>map()</tt> functoid is an instance of type
+<tt>map_type</tt>.  
+</p></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id269740"></a>10.4. Basic list functions</h3></div></div><p>
+Here are the basic functions that work on lists.
+<pre class="programlisting">
+   head           // first element
+   tail           // all but first element
+   cons           // add element
+   null           // test for empty
+   cat            // concatenate
+   ==             // compare for equality
+   &lt;              // lexicographical ordering
+</pre>
+as well as some other miscellaneous list functions:
+<pre class="programlisting">
+   list_with      // helper for creating small lists
+   force          // odd_list-ify       (see <a href="fcpp.sectlazy.html#fcpp.sectlazy" title="9. Lists and lazy evaluation">Section 9</a>)
+   delay          // (even) list-ify    (see <a href="fcpp.sectlazy.html#fcpp.sectlazy" title="9. Lists and lazy evaluation">Section 9</a>)
+   
+   list_until( pred, f, x )
+      // create a list of [x, f(x), f(f(x)), ...] until pred is true
+      // Example:   list_until( greater(_,20), plus(3), 1 )
+      // yields     [1,4,7,10,13,16,19]
+</pre>
+</p></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id269814"></a>10.5. Haskell standard prelude</h3></div></div><p>
+A great many FC++ functions are borrowed from Haskell.  See
+[<a href="fcpp.html#fcpp.citprelude" title="[Haskell]">Haskell</a>] for their definitions.
+<pre class="programlisting">
+   until
+   last
+   init
+   length    // Note: also used to force evaluation of an entire list
+   at
+   filter
+   concat
+   foldr
+   foldr1
+   foldl
+   foldl1
+   scanr
+   scanr1
+   scanl
+   scanl1
+   iterate
+   repeat
+   map
+   take
+   drop
+   take_while
+   drop_while
+   replicate
+   cycle
+   split_at
+   span
+   break
+   flip
+   reverse
+   all
+   any
+   elem
+   not_elem
+   sum
+   product
+   minimum
+   maximum
+   zip_with
+   zip
+   fst
+   snd
+   unzip
+   gcd
+   odd
+   even
+   enum_from
+   enum_from_to
+   just
+   // These approximate the corresponding Haskell functions
+   and
+   or
+   h_curry
+   h_uncurry
+</pre>
+</p></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id269860"></a>10.6. Operators</h3></div></div><p>
+The following named functoids mimic C++ operators:
+<pre class="programlisting">
+   // (T,T) -&gt; T
+   plus
+   minus
+   multiplies
+   divides
+   modulus
+   
+   // (T) -&gt; T
+   negate
+   
+   // (T,T) -&gt; bool
+   equal
+   not_equal
+   greater
+   less
+   greater_equal
+   less_equal
+   
+   // (T,T) -&gt; bool    (where T is convertible to bool)
+   logical_and
+   logical_or
+   logical_not
+   
+   dereference    // T -&gt; U   (where U has typeof(*T) )
+   address_of     // T -&gt; T*
+   delete_        // T* -&gt; void
+</pre>
+</p><p>
+The following operators require extra explanation:
+<pre class="programlisting">
+   out_stream
+   in_stream
+      // These are like operator&lt;&lt;() and operator&gt;&gt;(), but they take a
+      // <span class="emphasis"><i>pointer</i></span> to a stream as the left-hand side.  Examples:
+      //    &amp;cout ^out_stream^ x
+      //    &amp;cin ^in_stream^ y
+      // The indirection is necessary to encapsulate the effects within
+      // the library (see <a href="fcpp.secteffects.html#fcpp.secteffects" title="8. Effects and thunks">Section 8</a>)
+   
+   dynamic_cast_
+      // This is a family of functoids, templatized by the destination
+      // type.  Example use:
+      //    dynamic_cast_&lt;dog*&gt;()( an_animal_ptr )
+      // Note that the functoid
+      //    dynamic_cast_&lt;T&gt;()
+      // has type
+      //    dynamic_cast_x_type&lt;T&gt;::type
+   
+   constructN
+   newN
+      // These call constructors.  Like dynamic_cast_ above, they define
+      // a family of functoids.  Examples:
+      //    construct2&lt;std::pair&lt;int,char&gt; &gt;()( 3, 'c' )
+      //    new1&lt;int&gt;()( 3 )
+      // Note that, e.g.,
+      //    new3&lt;T&gt;()
+      // has type
+      //    new3_type&lt;T&gt;::type
+</pre>
+</p></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id269930"></a>10.7. Currying, thunks, and effect combinators</h3></div></div><p>
+<pre class="programlisting">
+   const_   // Turns a value into a thunk
+      // Ex:   const_(3)  yields a new function &quot;f&quot;:  f()=3
+   
+   konst    // Turns a value into a constant unary function
+      // Ex:   konst(3)  yields a new function &quot;f&quot;:  f(anything)=3
+   
+   thunkN   // binds all N arguments of a function into a thunk
+      // Ex:   thunk2(plus,1,2) yields a new function: f()=1+2
+   
+   no_op    // do-nothing thunk
+   
+   before   // before(f,g)(args) = { f(); return g(args); }
+   after    // after(f,g)(args)  = { r = f(args); g(); return r; }
+   
+   emptify  // throws away a functions result, returning &quot;empty&quot; instead
+      // Example use:
+      //    length( map( emptify(effectFunctoid), someList ) )
+      // applies effectFunctoid to each element of someList, even if
+      // effectFunctoid returns void
+   
+   split_args  // split_args(f)(x,y,z)  means  f(x)(y)(z)
+      // This is rarely useful, but occasionally necessary
+</pre>
+</p></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id269959"></a>10.8. General combinators</h3></div></div><p>
+These are some generally applicable combinators.
+<pre class="programlisting">
+   compose     // compose(f,g)(args)  means  f( g(args) )
+   
+   of          // same as compose, but also works on function pointers
+               // Good for infix:   f ^of^ g
+   
+   thunk_func_to_func
+      // thunk_func_to_func(f)(args)  means  f()(args)
+      // f is a thunk that returns a functoid; this combinator hides
+      // the thunk.  This can be useful to break what would otherwise 
+      // be infinite recursion in &quot;letrec&quot; expressions.
+   
+   duplicate   // duplicate(f)(x)     means  f(x)(x)
+   
+   ignore      // ignore(f)(x)(args)  means  f(args)
+</pre>
+</p></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id270006"></a>10.9. Functoid promotion</h3></div></div><p>
+These functions promote non-functoids into functoids.
+<pre class="programlisting">
+   make_fullN  // promotes an instance of a basic functoid into a full functoid
+   
+   stl_to_fun1 // promotes a std:: unary adaptable into a functoid
+   stl_to_fun2 // promotes a std:: binary adaptable into a functoid
+   
+   ptr_to_fun  // converts C++ function/method pointers into functoids
+   
+   funify      // Converts function pointers into functoids, but is
+               // the identity function on functoids.  Use this when
+               // you're not sure exactly what &quot;f&quot; is, but you want it
+               // to be a functoid.
+</pre>
+</p></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id270034"></a>10.10. Other</h3></div></div><p>
+There are a few other miscellaneous functoids:
+<pre class="programlisting">
+   make_pair      // creates a std::pair
+   min            // lesser of two args
+   max            // greater of two args
+   inc            // returns ++x
+   dec            // returns --x
+   id             // identity function
+   
+   make_manip     // make_manip(aStream)(aManip) returns the manipulator 
+                  // for that stream.  Necessary because names like
+                  // &quot;std::endl&quot; are not C++ objects.  Ugh.
+                  // Example: make_manip(cout)(endl)
+</pre>
+</p></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id270060"></a>10.11. Note about lambda/monads</h3></div></div><p>
+We do not describe the interface to the FC++'s lambda and monad
+constructs here.  See <a href="fcpp.sectlambda.html#fcpp.sectlambda" title="12. Lambda">Section 12</a> and <a href="fcpp.sectmonads.html#fcpp.sectmonads" title="13. Monads">Section 13</a> for that info.
+</p></div></div><table width="100%"><tr><td align="left"><small>Last revised: October 03, 2003 at 23:27:22 GMT</small></td><td align="right"><small>Copyright © 2000-2003 Brian McNamara and Yannis Smaragdakis</small></td></tr></table><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="fcpp.sectlazy.html"><img src="images/prev.png" alt="Prev"></a> </td><td width="20%" align="center"><a accesskey="u" href="fcpp.html"><img src="images/up.png" alt="Up"></a></td><td width="40%" align="right"> <a accesskey="n" href="fcpp.sectrelation.html"><img src="images/next.png" alt="Next"></a></td></tr><tr><td width="40%" align="left" valign="top">9. Lists and lazy evaluation </td><td width="20%" align="center"><a accesskey="h" href="fcpp.html"><img src="images/home.png" alt="Home"></a></td><td width="40%" align="right" valign="top"> 11. Relationships with other libraries</td></tr></table></div></body></html>

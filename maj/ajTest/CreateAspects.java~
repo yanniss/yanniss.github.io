@@ -1,0 +1,20 @@
+import java.io.*;
+import java.lang.reflect.*;
+import org.aspectj.compiler.base.ast.*;
+
+public class CreateAspects {
+    
+    public static void main (String[] myArgs) {
+
+	String className = myArgs[0];
+
+
+	String aspectName = className + "_Aspect";
+	
+    }
+    /*    public static void main(String[] args) {
+	Foo x = new Foo();
+	generateSerializableAspect(x.getClass(), System.out);
+	generateBean(x.getClass(), System.out);
+	}*/
+}

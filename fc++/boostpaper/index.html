@@ -1,0 +1,59 @@
+<html>
+<head>
+<title>Boost FC++</title>
+</head>
+
+<body>
+
+<h6>Go back to the <a href="http://www.cs.umass.edu/~yannis/fc++/">main
+FC++ web page</a></h6>
+
+<hr>
+
+<h1>Boost FC++ Documentation</h1>
+Choose one:
+<ul>
+<li><a href="fcpp.html">HTML (broken up by section)</a></li>
+<li><a href="fcpp-one-huge-file.html">HTML (one big file)</a></li>
+<li><a href="zip.html">Zipped (for downloading)</a></li>
+</ul>
+Here is the <a href="review_notice.html">announcement</a> regarding the
+formal review.
+
+<h1>Boost FC++ Library Download</h1>
+
+<p>
+Just choose one:
+<ul>
+<li><a href="fcpp.zip">fcpp.zip</a> - original version</li>
+<li><a href="fcpp1.zip">fcpp1.zip</a> - updated version (2/13/2004) with
+   minor fixes that smooth compilation for gcc-3.4.0 
+   (thanks to Giovanni Bajo)</li>
+</ul>
+</p>
+
+<p>
+The zip file will expand into these subdirectories:
+<pre>
+   fcpp/fcpp/               # the library (.hpp) files
+   fcpp/fcpp_clients/       # the example (.cpp) files
+</pre>
+Running the examples just involves invoking the complier
+with the right #include paths; for example,
+<pre>
+   # in the fcpp_clients directory
+   g++  -I/path/to/boost  -I../fcpp  some_example.cpp
+</pre>
+</p>
+
+<hr>
+
+<H6>
+Last updated on
+Fri Feb 13 19:54:33 EST 2004
+by <A HREF="http://www.prism.gatech.edu/~gt5163b/">Brian McNamara</A>
+</H6>
+
+</body>
+</html>
+

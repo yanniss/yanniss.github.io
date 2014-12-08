@@ -1,0 +1,77 @@
+<h1 id="doop---framework-for-java-pointer-analysis">Doop - Framework for Java Pointer Analysis</h1>
+<h3 id="authors">Authors</h3>
+<p><script type="text/javascript">
+<!--
+h='&#x73;&#x6d;&#x61;&#114;&#x61;&#x67;&#100;&#46;&#x6f;&#114;&#x67;';a='&#64;';n='&#x79;&#x61;&#110;&#110;&#x69;&#x73;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'Yannis Smaragdakis'+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#x59;&#x61;&#110;&#110;&#x69;&#x73;&#32;&#x53;&#x6d;&#x61;&#114;&#x61;&#x67;&#100;&#x61;&#x6b;&#x69;&#x73;&#32;&#40;&#x79;&#x61;&#110;&#110;&#x69;&#x73;&#32;&#x61;&#116;&#32;&#x73;&#x6d;&#x61;&#114;&#x61;&#x67;&#100;&#32;&#100;&#x6f;&#116;&#32;&#x6f;&#114;&#x67;&#x29;</noscript><br /><script type="text/javascript">
+<!--
+h='&#100;&#x69;&#46;&#x75;&#x6f;&#x61;&#46;&#x67;&#114;';a='&#64;';n='&#x67;&#98;&#x61;&#108;&#x61;&#116;&#x73;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'George Balatsouras'+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#x47;&#x65;&#x6f;&#114;&#x67;&#x65;&#32;&#66;&#x61;&#108;&#x61;&#116;&#x73;&#x6f;&#x75;&#114;&#x61;&#x73;&#32;&#40;&#x67;&#98;&#x61;&#108;&#x61;&#116;&#x73;&#32;&#x61;&#116;&#32;&#100;&#x69;&#32;&#100;&#x6f;&#116;&#32;&#x75;&#x6f;&#x61;&#32;&#100;&#x6f;&#116;&#32;&#x67;&#114;&#x29;</noscript><br /><script type="text/javascript">
+<!--
+h='&#100;&#x69;&#46;&#x75;&#x6f;&#x61;&#46;&#x67;&#114;';a='&#64;';n='&#x67;&#x6b;&#x61;&#x73;&#116;&#114;&#x69;&#110;&#x69;&#x73;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'George Kastrinis'+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#x47;&#x65;&#x6f;&#114;&#x67;&#x65;&#32;&#x4b;&#x61;&#x73;&#116;&#114;&#x69;&#110;&#x69;&#x73;&#32;&#40;&#x67;&#x6b;&#x61;&#x73;&#116;&#114;&#x69;&#110;&#x69;&#x73;&#32;&#x61;&#116;&#32;&#100;&#x69;&#32;&#100;&#x6f;&#116;&#32;&#x75;&#x6f;&#x61;&#32;&#100;&#x6f;&#116;&#32;&#x67;&#114;&#x29;</noscript></p>
+<p>This is a specialized version of the <a href="http://doop.program-analysis.org/">Doop framework</a>, submitted for the PLDI'14 artifact evaluation process.</p>
+<p>The code in this archive is a subset and specialization of the latest Doop code distribution (the &quot;beta&quot; version in the <a href="http://doop.program-analysis.org/download.html">Doop download page</a>). However, this archive is streamlined in order to easily reproduce the experiments of our PLDI'14 paper: it only includes analyses that appear in the paper, it names them clearly (as opposed to requiring flags and/or code changes), and it integrates the JDK and Dacapo benchmark files as needed for the experiments.</p>
+<p>Evaluators should feel free to also experiment with the full Doop code for other analyses/benchmarks. Doop is really the &quot;artifact&quot; of our work.</p>
+<h2 id="installation-instructions-for-evaluators">Installation Instructions for Evaluators</h2>
+<h3 id="prerequisites">Prerequisites</h3>
+<p>You need a 64-bit Linux machine, preferably with 16GB of RAM, and a recent Java distribution installed. It is recommended to set your <code>JAVA_HOME</code> environment variable to point to your Java installation.</p>
+<h3 id="logicblox">LogicBlox</h3>
+<p>The LogicBlox engine needs to be installed. We cannot distribute it because it requires a binary license, obtained freely for research purposes. Please <a href="http://www.logicblox.com/academic-request-form.html">request a license</a> and <a href="https://developer.logicblox.com/logicblox-academic-license-acceptance/">accept the agreement</a>. (The above steps are normally separate but are listed here together to streamline the process. Both forms need to be filled.)</p>
+<p>The forms require your name and affiliation and hence will violate your anonymity. If you wish to remain anonymous, please find someone who trusts you to sign the license (and to assume responsibility for its terms). We have discussed this topic with the Artifact Evaluation committee Chairs and have not found a better way to do this. One of the Chairs may be willing to sign the form.</p>
+<p>Please download <em>engine version 3.9</em>. (Version 3.10 will also work but will issue annoying warning messages.)</p>
+<p>Set the environment variable <code>LOGICBLOX_HOME</code> to point to the directory where you unpacked the LogicBlox engine. E.g., if you are using bash as your shell:</p>
+<pre><code>$ export LOGICBLOX_HOME=/path/to/LogicBlox-3.9.0</code></pre>
+<p>You may want to include the above in your startup scripts (<code>.bashrc</code>).</p>
+<p>The <code>run</code> script of Doop will take care of setting additional environment variables, such as <code>PATH</code> and <code>LD_LIBRARY_PATH</code>. (In case you want to use the LogicBlox engine without the <code>run</code> script, you can set these variables yourself to point to the bin subdirectory of your LogicBlox installation.)</p>
+<h3 id="optional-doop-conveniences">Optional: Doop Conveniences</h3>
+<p>If you have root access and want to install global man pages and bash completion scripts for Doop usage, do (from the Doop home directory, where the <code>run</code> script lives):</p>
+<pre><code>$ sudo bin/install-utils.sh</code></pre>
+<p>For bash completion, you also want to create a command <code>doop</code> that invokes the <code>run</code> script.</p>
+<h2 id="running-experiments">Running Experiments</h2>
+<p>An analysis is run using the command:</p>
+<pre><code>$ ./run -jre1.6 &lt;analysis-name&gt; &lt;program-jar-to-analyze&gt;</code></pre>
+<p>The analyses supported in this archive are:</p>
+<ul>
+<li>context-insensitive<br /></li>
+<li>2-object-sensitive+heap<br /></li>
+<li>2-call-site-sensitive+heap<br /></li>
+<li>2-type-sensitive+heap<br /></li>
+<li>refA-2-object-sensitive+heap<br /></li>
+<li>refA-2-type-sensitive+heap<br /></li>
+<li>refA-2-call-site-sensitive+heap<br /></li>
+<li>refB-2-object-sensitive+heap<br /></li>
+<li>refB-2-type-sensitive+heap<br /></li>
+<li>refB-2-call-site-sensitive+heap</li>
+</ul>
+<p>(The supported analyses are also shown with <code>./run -h</code> .)</p>
+<p>The last six are the new analyses introduced in the PLDI paper, the first four are the baselines we compare against. The paper describes the idea of introspective analysis with two flavors, called Heuristic A (IntroA in Figures 4-6) and Heuristic B (IntroB in Figures 4-6). These analyses are named &quot;refA-...&quot; and &quot;refB-...&quot; (for &quot;refinement-based&quot;) in the code.</p>
+<p>The benchmark programs to analyze are in subdirectory jars/dacapo. For instance, to get the numbers for the IntroA analysis (red column) of Figure 4 for bloat, one writes:</p>
+<pre><code>$ ./run -jre1.6 refA-2-object-sensitive+heap jars/dacapo/bloat.jar</code></pre>
+<p>The analysis running time is reported as:</p>
+<pre><code>MBBENCH logicblox START
+elapsed time: 105.24s
+MBBENCH logicblox STOP</code></pre>
+<p>(For refA... and refB... analyses there are two MBBENCH blocks as above. The second one is the one of interest. Generally, for all analyses, wall-clock time is a few minutes longer than pure analysis time, due to constant overheads. Removing these overheads requires caching the facts and/or analysis database, which is beyond the scope of these instructions.)</p>
+<p>After this timing report, several precision statistics will be output. For instance,</p>
+<pre><code>$ ./run -jre1.6 refA-2-type-sensitive+heap jars/dacapo/hsqldb.jar
+... // lots of other output
+MBBENCH logicblox START
+elapsed time: 136.61s
+MBBENCH logicblox STOP
+loading statistics (simple) ...
+...     
+reachable methods                  11,373 (insens) / 36,944 (sens)
+...     
+polymorphic virtual call sites     1,495
+...     
+reachable casts that may fail      1,578
+...</code></pre>
+<p>These last three metrics are what is being reported in the paper, in Figures 4, 5, and 6. The above run corresponds to the red bars of Figure 5 (it's the IntroA flavor of a 2-type-sensitive analysis, for the three metrics in the bottom three charts of the figure, in different order).</p>
+<p>Note that many analyses take a long time to run (refer to Figures 4, 5, 6). If the evaluator wants to reproduce some of the paper's findings, we recommend focusing on analysis+benchmark combinations that terminate relatively quickly. This usually has the side benefit that the analysis can be performed on a machine with just 8GB of RAM (instead of requiring &gt;16GB, as for the heavier instances). Approximating such heavy-duty analyses is precisely the focus of our paper.</p>

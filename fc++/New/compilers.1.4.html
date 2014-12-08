@@ -1,0 +1,107 @@
+<html>
+<head>
+<title>FC++ compiler support</title>
+</head>
+
+<body>
+
+<h1>FC++ compiler support</h1>
+
+<p>
+FC++ is written in Standard C++, and therefore should work with any
+compliant C++ compiler.  Fully compliant C++ compilers are still pretty 
+rare beasts, however.  As a result, we maintain this page, which
+documents how the FC++ library works with different compilers.
+</p>
+
+<p>
+If you have tried using FC++ with a compiler other than the ones listed
+here, please <a href="mailto:lorgon@cc.gatech.edu">mail us</a> with
+information about your experience (regardless of whether it was successful 
+or not).
+</p>
+
+<hr>
+
+<p>
+Note: all information in the table applies to the current release (v1.4)
+of the FC++ library.  (You can see some old info 
+<a href="compilers.1.3.html">here</a>.)
+</p>
+
+<table border>
+<tr>
+<td><b>Compiler</b></td>
+<td><b>FC++ status</b></td>
+<td><b>Other notes</b></td>
+</tr>
+
+<tr>
+<td><a href="http://gcc.gnu.org/">g++2.95.2</a></td>
+<td>It all works</td>
+<td>There are a couple bugs in g++2.95.2 that we have work-arounds for.
+First, bugs in the compiler prevent portions of FC++ from being put into
+<code>namespace fcpp</code>.  As a result, those portions are just
+dumped into the global namespace.  Second, g++ has a non-conforming
+<code>&lt;iterator&gt;</code> library, which we correct for.  The
+<code>config.h</code> file automatically detects this compiler version
+and sets up the fixes, so FC++ works "out of the box" with this compiler
+anyway.</td>
+</tr>
+
+<tr>
+<td><a href="http://gcc.gnu.org/">g++3.0</a></td>
+<td>It all works</td>
+</tr>
+
+<tr>
+<td><a href="http://gcc.gnu.org/">g++3.1</a></td>
+<td>It all works</td>
+</tr>
+
+<tr>
+<td><a href="
+http://www.intel.com/software/products/compilers/c60/index.htm">Intel C++ 6.0</a></td>
+<td>It all works</td>
+</tr>
+
+<tr>
+<td><a href="http://www.comeaucomputing.com/">Comeau C++ 4.2.45.2</a></td>
+<td>We think it works</td>
+<td>We don't have a copy of the compiler, but Comeau has an awesome 
+<a href="http://www.comeaucomputing.com/tryitout/">web form</a> where
+you can try out code.  Also, Comeau and Intel both share the same
+compiler front-end.</td>
+</tr>
+
+<tr>
+<td><a href="http://www.borland.com/bcppbuilder/freecompiler/">Borland
+C++ Builder Compiler 5.5</a> (also 5.5.1)</td>
+<td>Doesn't work</td>
+<td>This compiler doesn't have enough template support.</td>
+</tr>
+
+<tr>
+<td><a href="http://wwwwswest.sun.com:80/forte/cplusplus/">Sun
+Workshop 6.0 C++ compiler (Forte 6.1)</a></td>
+<td>Doesn't work</td>
+<td>This compiler doesn't have enough template support.</td>
+</tr>
+
+<tr>
+<td>Visual C++ 6.0 (also 7beta2) </td>
+<td>Doesn't work</td>
+<td>This compiler doesn't have enough template support.</td>
+</tr>
+
+</table>
+
+<hr>
+
+<h6>
+Last updated on Jul 5, 2002 by <a
+href="mailto:lorgon@cc.gatech.edu">Brian McNamara</a></h6>
+
+</body>
+</html>
+

@@ -1,0 +1,63 @@
+<html>
+<head>
+<title>LC++ version history</title>
+</head>
+
+<body>
+
+<h1>LC++ version history</h1>
+
+<p>
+This document summarizes the changes across different versions of the
+LC++ library.
+</p>
+
+<h2>Version 1.0</h2>
+
+<p>
+The initial release of LC++ lays the basic foundation for logic
+programming in C++.  This includes:
+<ul>
+<li>Logic variables (declared with <code>LogicVariable</code> or the
+   <code>DECLARE</code> macro) and the "don't care" logic variable
+   (underscore: <code>_</code>)</li>
+<li>Functors (declared with <code>Functor</code> or the
+   <code>FUNn</code> macros)</li>
+<li>The <code>lassert()</code> function for adding facts to the
+   respository</li>
+<li>The <code>query()</code> functions for running queries</li>
+<li>Overloaded operators for conjunction, disjunction, implication</li>
+<li>The <code>not_provable()</code> predicate</li>
+<li>The atomic predicates <code>fail</code> and
+   <code>succeed</code></li>
+<li>Environments and facades for inspecting results, as well as the
+   <code>QRT</code> type computer</li>
+<li>The <code>is()</code> method for logic variables to do
+   computation</li>
+</ul>
+</p>
+
+<p>
+There are a number of practical necessities still missing, including:
+<ul>
+<li>Parametric Polymorphism</li>
+<li>Library of useful functors</li>
+</ul>
+as well as some other obvious "wish list" items:
+<ul>
+<li>Support for functors of arity greater than 3</li>
+<li>cut</li>
+<li>efficiency/optimizations</li>
+</ul>
+which will hopefully be added in the next version.  Nevertheless the
+library as it stands is sufficiently useful to warrant a release.
+Hopefully we will get some useful feedback.
+</p>
+
+<hr>
+
+<a href="http://www.cs.umass.edu/~yannis/fc++/lc++">LC++ homepage</a>
+
+</body>
+</html>
+

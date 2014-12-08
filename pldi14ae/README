@@ -1,0 +1,151 @@
+This is a specialized version of the Doop framework
+(http://doop.program-analysis.org/) submitted for the PLDI'14 artifact
+evaluation process.
+
+The code in this archive is a subset and specialization of the latest
+Doop code distribution (the "beta" version in
+http://doop.program-analysis.org/download.html). However, this archive
+is streamlined in order to easily reproduce the experiments of our
+PLDI'14 paper: it only includes analyses that appear in the paper, it
+names them clearly (as opposed to requiring flags and/or code
+changes), and it integrates the JDK and Dacapo benchmark files as
+needed for the experiments.
+
+Evaluators should feel free to also experiment with the full Doop code
+for other analyses/benchmarks. Doop is really the "artifact" of our work.
+
+
+Installation Instruction for Evaluators
+----------------------------------------------------------------------
+
+  Prerequisites
+  ------------
+
+  You need a 64-bit Linux machine, preferably with 16GB of RAM, and a
+  recent Java distribution installed. It is recommended to set your
+  JAVA_HOME environment variable to point to your Java installation.
+
+
+  LogicBlox
+  ------------
+
+  The LogicBlox engine needs to be installed. We cannot distribute it
+  because it requires a binary license, obtained freely for research
+  purposes. Please request a license:
+    http://www.logicblox.com/academic-request-form.html
+  and accept the agreement:
+    https://developer.logicblox.com/logicblox-academic-license-acceptance/ 
+  (The above steps are normally separate but are listed here together
+  to streamline the process. Both forms need to be filled.)
+
+  The forms require your name and affiliation and hence will violate
+  your anonymity. If you wish to remain anonymous, please find someone
+  who trusts you to sign the license (and to assume responsibility for
+  its terms). We have discussed this topic with the Artifact
+  Evaluation committee Chairs and have not found a better way to do
+  this. One of the Chairs may be willing to sign the form.
+
+  Please download engine version 3.9. (Version 3.10 will also work but
+  will issue annoying warning messages.)
+
+  Set the environment variable LOGICBLOX_HOME to point to the directory
+  where you unpacked the LogicBlox engine. E.g., if you are using bash
+  as your shell:
+  $ export LOGICBLOX_HOME=/path/to/LogicBlox-3.9.0
+
+  You may want to include the above in your startup scripts (.bashrc).
+  
+  The "run" script of Doop will take care of setting additional
+  environment variables, such as PATH and LD_LIBRARY_PATH. (In case
+  you want to use the LogicBlox engine without the "run" script, you
+  can set these variables yourself to point to the bin subdirectory of
+  your LogicBlox installation.)
+
+
+  Optional: Doop Conveniences
+  ---------------------------
+
+  If you have root access and want to install global man pages and
+  bash completion scripts for Doop usage, do (from the Doop home
+  directory, where the "run" script lives):
+
+  $ sudo bin/install-utils.sh
+
+  For bash completion, you also want to create a command "doop"
+  that invokes the "run" script.
+
+
+
+Running Experiments
+----------------------------------------------------------------------
+
+  An analysis is run using the command:
+      $ ./run -jre1.6 <analysis-name> <program-jar-to-analyze>
+     
+  The analyses supported in this archive are:
+      context-insensitive
+      2-object-sensitive+heap
+      2-call-site-sensitive+heap
+      2-type-sensitive+heap                 
+      refA-2-object-sensitive+heap
+      refA-2-type-sensitive+heap  
+      refA-2-call-site-sensitive+heap
+      refB-2-object-sensitive+heap
+      refB-2-type-sensitive+heap
+      refB-2-call-site-sensitive+heap
+
+  (The supported analyses are also shown with "./run -h" .)
+
+  The last six are the new analyses introduced in the PLDI paper, the
+  first four are the baselines we compare against. The paper describes
+  the idea of introspective analysis with two flavors, called
+  Heuristic A (IntroA in Figures 4-6) and Heuristic B (IntroB in
+  Figures 4-6). These analyses are named "refA-..." and "refB-..."  in
+  the code.
+
+  The benchmark programs to analyze are in subdirectory jars/dacapo.
+  For instance, to get the numbers for the IntroA analysis (red column)
+  of Figure 4 for bloat, one writes:
+      $ ./run -jre1.6 refA-2-object-sensitive+heap jars/dacapo/bloat.jar
+
+  The analysis running time is reported as:
+      MBBENCH logicblox START
+      elapsed time: 105.24s
+      MBBENCH logicblox STOP
+
+  (For refA... and refB... analyses there are two MBBENCH blocks as
+  above.  The second one is the one of interest. Generally, for all
+  analyses, wall-clock time is a few minutes longer than pure analysis
+  time, due to constant overheads. Removing these overheads requires
+  caching the facts and/or analysis database, which is beyond the
+  scope of these instructions.)
+
+  After this timing report, several precision statistics will be output.
+  For instance, 
+      $ ./run -jre1.6 refA-2-type-sensitive+heap jars/dacapo/hsqldb.jar
+  ... // lots of other output
+      MBBENCH logicblox START
+      elapsed time: 136.61s
+      MBBENCH logicblox STOP
+      loading statistics (simple) ...
+  ...     
+      reachable methods                  11,373 (insens) / 36,944 (sens)
+  ...     
+      polymorphic virtual call sites     1,495
+  ...     
+      reachable casts that may fail      1,578
+  ...
+
+  These last three metrics are what is being reported in the paper, in
+  Figures 4, 5, and 6. The above run corresponds to the red bars of Figure
+  5 (it's the IntroA flavor of a 2-type-sensitive analysis, for the three
+  metrics in the bottom three charts of the figure, in different order).
+
+  Note that many analyses take a long time to run (refer to Figures 4,
+  5, 6). If the evaluator wants to reproduce some of the paper's
+  findings, we recommend focusing on analysis+benchmark combinations
+  that terminate relatively quickly. This usually has the side benefit
+  that the analysis can be performed on a machine with just 8GB of RAM
+  (instead of requiring >16GB, as for the heavier instances).
+  Approximating such heavy-duty analyses is precisely the focus of our
+  paper.

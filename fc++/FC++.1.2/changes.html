@@ -1,0 +1,96 @@
+<html>
+<head>
+<title>FC++ Changes since last version</title>
+</head>
+
+<body>
+
+This document summarizes the changes since the previous release of the
+FC++ library.
+
+<h2>New additions</h2>
+
+<ul>
+
+<li><b>Automatic currying</b>.  Now (practically) all functoids are
+curryable by default.  For example, 
+<pre>
+   minus(3,2);   // yields 1
+   minus(3);     // yields a new function f, where f(x) = 3-x
+   minus(3,_);   // same as above
+   minus(_,2);   // yields a new function f, where f(x) = x-2
+</pre>
+This is accomplished by the <code>CurryableN</code> classes, which
+serve as wrappers around normal functions.  The function
+<code>makeCurryableN()</code> turns an uncurryable function into an
+automatically curryable version.  See <a
+href="http://www.cs.umass.edu/~yannis/fc++/currying.html">http://www.cs.umass.edu/~yannis/fc++/currying.html</a>
+for more info.</li>
+
+<li><b>Namespaces</b>.  Now the library is in namespace
+<code>fcpp</code>.  However, bugs in the g++2.95.2 compiler force us to keep
+part of the library in the global namespace.  If you have a working
+compiler, use the compiler option -DFCPP_USE_NAMESPACE to have the whole 
+library be in the namespace.  There's a 
+<pre>
+   using namespace fcpp;
+</pre> 
+at the bottom of <code>prelude.h</code>, which dumps it all
+into the global namespace anyway.  We've done that for backwards
+compatibility (you can drop in the new library and your old code should
+still work without changes), but feel free to remove it (we certainly
+will, in a future revision).</li>
+
+<li>There is now an implicit conversion from direct
+functoids to indirect functoids (<code>FunN</code>s).  For example,
+<pre>
+   Fun1&lt;int,int,int&gt; f          = fcpp::plus;
+   Fun1&lt;double,double,double&gt; g = fcpp::plus;
+</pre>
+both "do the right thing".</li>
+
+<li>A number of "holes" in the library have been filled in; now
+practically all of the general functions/classes (like
+<code>ptr_to_fun()</code>, <code>monomorphizeN()</code>,
+<code>CurryableN</code>, etc.) work for all sets of functions with 0-3
+arguments.  (Previous versions of FC++ had spotty support.)</li>
+
+<li>This file: we plan to keep track of changes between versions from
+now on, and put the changes in the distribution.</li>
+
+</ul>
+
+<h2>Changes</h2>
+
+<ul>
+
+<li>The <code>List</code> class has been completely re-implemented.
+The old version had a number of problems (the major ones being that (1)
+it was too eager (not lazy enough) in a number of cases, and (2) that
+functions like <code>cons</code> had un-intuitive interfaces) that have
+now been solved.  In our limited tests, the new <code>List</code> seems
+to perform comparably with the old, but let us know if you notice a
+speed difference.</li>
+
+<li><code>List::WrappedType</code> has been renamed to 
+<code>List::ElementType</code>.  The new name makes more sense,
+especially in papers/tutorials.</li>
+
+<li>Header dependencies have been minimized; the library should only
+suck in the headers it needs now, which means faster compile-times.</li>
+
+<li>A number of minor bugs have been fixed throughout the library.</li>
+
+<li>The function <code>list_until</code> has been renamed
+<code>listUntil</code> (consistent with
+naming convention of other list functions).</li>
+
+</ul>
+
+<hr>
+
+<a href="http://www.cs.umass.edu/~yannis/fc++/">FC++ homepage</a>
+
+</body>
+</html>
+

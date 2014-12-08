@@ -1,0 +1,86 @@
+<html>
+<head>
+<title>New infix syntax</title>
+</head>
+
+<body>
+
+<h1>New infix syntax</h1>
+
+<p>
+FC++ v1.5 offers a new infix syntax that can be used with <a
+href="full.html">full functoids</a>.  The syntax is inspired by the 
+Haskell programming language.
+</p>
+
+<p>
+Given a two-argument full functoid which can normally be called as
+<pre>
+   f(x,y)
+</pre>
+you can now (as of v1.5) call the functoid using infix syntax as
+<pre>
+   x ^f^ y
+</pre>
+We overload <code>operator^</code> for full functoids to make this work.
+The goal is to write more readable code, as some named functions "read"
+best infix (rather than prefix).  For example,
+<pre>
+   plus(2,3)
+</pre>
+is ok, but
+<pre>
+   2 ^plus^ 3
+</pre>
+reads more nicely.
+</p>
+
+<p>
+(Note that this also works for 3-argument functoids using implicit
+currying.  Here's an example using the 3-ary functoid <code>foldl</code>:
+<pre>
+   plus ^foldl^ 0
+</pre>
+means the same as
+<pre>
+   foldl( plus, 0 )
+</pre>
+which results in a function which sums the values in an integer list.)
+</p>
+
+<p>
+For <a href="lambda.html">lambda expressions</a>, we overload
+<code>operator%</code> so that instead of
+<pre>
+   f[X,Y]
+</pre>
+you can write
+<pre>
+   X %f% Y
+</pre>
+See the discussion about <a href="lambda.html">lambda</a> for more
+details.
+</p>
+
+<p>
+<b>Important:</b> note that infix functions adopt the precedence and
+associativity of their C++ operators.  So unless you know C++ operator 
+precedence and associativity rules very well, we recommend that you use
+parentheses:
+<pre>
+   // desired: y+3*x   ( Note: equals  y+(3*x) )
+   y ^plus^ (3 ^multiplies^ x)   // good
+   // probably wrong:   y ^plus^ 3^multiplies^x
+</pre>
+</p>
+
+<hr>
+
+<H6>
+Last updated on May 20, 2003 by <a 
+href="mailto:lorgon@cc.gatech.edu">Brian McNamara</a>
+</H6>
+
+</body>
+</html>
+

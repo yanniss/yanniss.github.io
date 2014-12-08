@@ -1,0 +1,173 @@
+/**
+ * @author David Zook
+ *
+ * Class:
+ * Purpose:
+ */
+import java.io.*;
+import java.lang.reflect.*;
+import org.aspectj.compiler.base.ast.*;
+
+
+public class ExampleMAJ {
+    public static void generateBean(Class inClass, PrintStream out) {
+	
+	//??? Hmmm. We don't support arrays of members (i.e. the grammar calls these "Fields").
+	Member[]	newBeanMethods;	// Special methods required by a Bean
+	int		beanMember = 0;	// Number of new methods so far.
+	
+	// Create name for the bean
+	Identifier inClassName = new Identifier(inClass.getName());
+	Identifier newBeanName = new Identifier(inClass.getName() + 
+						"BeanClass");
+	
+	
+	// Allow i/o Exception in each method in the class.
+	
+	// For each method in the class
+	Method[] classMethods = inClass.getMethods();
+	for (int meth = 0; meth < classMethods.length; meth++) {
+	    Method	thisMeth = classMethods[meth];
+	    
+	    // For each parameter in the method
+	    Identifier methodName = new Identifier(thisMeth.getName());
+	    Modifiers newModifiers = new Modifiers(thisMeth.getModifiers());
+	    Class[]	methodParmTypes = thisMeth.getParameterTypes();
+	    Class	methodReturnType = thisMeth.getReturnTypes();
+	    
+	    if (thisMeth.getModifiers() & PUBLIC != 0) {
+		Modifers newModifers = new Modifiers(methodModifiers);
+
+		  if (methodReturnType == null) {
+		    infer newMethod = `[
+			  public #newModifiers void #methodName ( #methodParms ) {
+					    super.#methodName(#methodParms);
+					}
+		    ];
+		}
+		else {
+		    infer newMethod = `[
+					public #newModifiers #methodReturnType #methodName ( #methodParms ) {
+					    return super.#methodName(#methodParms);
+					}
+		    ];
+		    }
+		//??? Hmmm. Java reflection doesn't allow capture of method variable names.
+		//??? Hmmm. How do we support putting a list of method parameters in there.
+		//??? Hmmm. It would be so much more convenient to allow construction of Identifiers from Strings inline.
+		//??? Hmmm. We should have a constructor for Modifiers that takes the encoded integer used by Java.
+		
+	    }
+	    newBeanMethods[beanMember++] = newMethod;
+	}
+	
+	//Put the new Class together
+	infer newAspect = `[
+			    package GOTECH.extensions;
+			    
+			    import java.beans.*;
+			    
+                             #(Members[]) beanMethods
+			    
+			    public class #(Identifier)newBeanName
+			    extends #(Identifier)inClassName
+			    implements javax.ejb.SessionBean {
+				
+                                #newBeanMethods
+				
+				public void ejbActivate()
+				    throws javax.ejb.EJBException, java.rmi.RemoteException {
+				}
+				
+				public void ejbPassivate()
+					throws javax.ejb.EJBException, java.rmi.RemoteException {
+				}
+
+				public void ejbRemove()
+					throws javax.ejb.EJBException, java.rmi.RemoteException {
+				}
+
+				public void setSessionContext(javax.ejb.SessionContext arg0)
+					throws javax.ejb.EJBException, java.rmi.RemoteException {
+				}
+    
+				public void ejbCreate() {
+				}
+			}
+		];
+//??? Hmmm. Java reflection doesn't allow capture of import specs or package statement.
+
+	out.print(newAspect.toSource());
+
+	}
+
+
+    public static void generateSerializableAspect(Class inClass, PrintStream out) {
+	
+	//??? Hmmm. We don't support arrays of members (i.e. the grammar calls these "Fields").
+	Member[] newDeclares;	// Members of the new Aspect
+	int member = 0;
+	
+	// Create name for the aspect
+	Identifier newAspectName = new Identifier(inClass.getName() + "SerializableAspect");
+		
+	// Create a serializable declaration for each type in each method in the original class.
+	
+	// For each method in the class
+	Method[] classMethods = inClass.getMethods();
+	for (int meth = 0; meth < classMethods.length; meth++) {
+	    Method thisMeth = classMethods[meth];
+	    
+	    // For each parameter in the method
+	    Class[] methodParmTypes = thisMeth.getParameterTypes();
+	    for (int typ = 0; typ < methodParmTypes.length; typ++) {
+		Identifier parmTypeName = new Identifier(methodParmTypes[typ].getName());
+		infer parmType = `(TypeSpec)[#parmTypeName];
+		
+		//If not primitive and not already Serializable,
+		if (!parmType.primitive() && !parmType.toSource().equals("java.io.Serializable")) {
+		    
+		    // If of type Object, then
+		    if (!parmType.toSource().equals("java.lang.Object")) {
+			
+			// the class *implements* Serializable
+			infer aspectDeclare = `[declare parents: #(TypeSpec)parmType implements java.io.Serializable;];
+		    }
+		    
+		    // Otherwise,
+		    else {
+			
+			// the class *extends* Serializable
+			infer aspectDeclare = `[declare parents: #(TypeSpec)parmType extends java.io.Serializable;];
+		    }
+		    newDeclares[member++] = aspectDeclare;
+		}
+	    }
+	}
+	
+	//Put the new Aspect together
+	infer newAspect = `[
+			    package GOTECH.extensions;
+			    
+			    import java.io.Serializable;
+			    
+			    aspect #(Identifier)newAspectName {
+				
+                                 #(Members[]) newDeclares
+				
+			    }
+	];
+	out.print(newAspect.toSource());
+	}
+
+	public class Foo {
+		public Foo() {
+		}
+	}
+		
+	public static void main(String[] args) {
+	    Foo x = new Foo();
+	    generateSerializableAspect(x.getClass(), System.out);
+	    generateBean(x.getClass(), System.out);
+	}
+}

@@ -1,0 +1,118 @@
+<html>
+<head>
+<title>Meta-AspectJ Tutorial</title>
+<LINK REL=stylesheet HREF="main.css" TYPE="text/css">
+</head>
+<body>
+<div class="header">
+<center>
+<h1>Meta-AspectJ</h1>
+<small>
+<a href="http://www.cc.gatech.edu/~dzook" class="hlink">David Zook</a>,
+<a href="http://www.cc.gatech.edu/~ssh" class="hlink">Shan Shan Huang</a>,
+<a href="http://www.cs.uoregon.edu/~yannis" class="hlink">Yannis Smaragdakis</a>
+</small>
+</center>
+</div>
+<div class="menu">
+<a href="index.html" class="hlink">Home</a>
+<br>
+&nbsp;&nbsp;<a href="index.html#ov" class="hlink">Overview</a>
+<br>
+&nbsp;&nbsp;<a href="index.html#why" class="hlink"><nobr>Why MAJ?</nobr></a>
+<br>
+&nbsp;&nbsp;<a href="index.html#app" class="hlink">Applications</a>
+<p>
+Using MAJ
+<br>
+&nbsp;&nbsp;<a href="get.html" class="hlink">Download/Install</a>
+<br>
+&nbsp;&nbsp;<a href="tutorial.html" class="hlink">MAJ Tutorial</a
+<br>
+&nbsp;&nbsp;<a href="examples.html" class="hlink">Examples</a>
+<br>
+&nbsp;&nbsp;<a href="doc/" class="hlink">API</a>
+<p>
+</div>
+<div class="body">
+<a name="array"><h3>Unquote Splice</h3>
+Unquote splice comes in handy when you have a dynamic array of elements you 
+would like to include in a quoted piece of code.  The entry points that can be
+used for unquote splice are:
+<ul>
+<table>
+<tr>
+<td class="code">Import[]</td>
+<td>array of imports</td>
+</tr>
+<tr>
+<td class="code">FormalDec[]</td>
+<td>array of method argmuments</td>
+</tr>
+<tr>
+<td class="code">JavaExpr[]</td>
+<td>array of expressions</td>
+</tr>
+<tr>
+<td class="code">Stmt[]</td>
+<td>array of statements</td>
+</tr>
+<tr>
+<td class="code">MethodDec[]</td>
+<td>array of method declarations</td>
+</tr>
+<tr>
+<td class="code">ConstructorDec[]</td>
+<td>array of constructor declarations</td>
+</tr>
+<tr>
+<td class="code">ClassMember[]</td>
+<td>array of methods, field declarations</td>
+</tr>
+<tr>
+<td class="code">AspectMember[]</td>
+<td>array of methods, field declarations, pointcuts</td>
+</tr>
+<tr>
+<td class="code">JavaCompUnitMember[]</td>
+<td>array of class declarations, interface declarations, or aspect declarations
+</td>
+</tr>
+</table>
+</ul>
+<p>
+You can then put the variable of the above type anywhere that might be 
+gramatically correct. For example:
+<pre>
+    // Method m is declared
+    ...
+    Class[] mParms = m.getParameterTypes();
+
+    FormalDec[] formals = new FormalDec[mParms.length];
+    JavaExpr[] arguments = new JavaExpr[mParms.length];
+    for ( int j=0; j &lt; formals.length; j++) {
+        formals[j] = `[#[mParms[j].getName()] #["arg"+i]];
+	arguments[j] = `[#[mParms[j].getName()]];
+    }
+
+    ...
+
+    String mName = m.getName();
+    infer aMethod =
+        `[
+	     public void #mName ( #formals ) {
+                 #["super." + mName] ( #arguments );
+	     }
+         ];    
+</pre>
+The above piece of code utilizes unquote splice for Formal Declaration and
+Expression, to produce a new method (<font class="code">infer aMethod</font>).
+<p>
+<div class="next">
+<a href="infer.html"><< Prev: Using <font class="code">infer</font></a>
+&nbsp;|&nbsp;
+<a href="convmeth.html">Next >>: Convenience Methods</a>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,314 @@
+import java.lang.reflect.*;
+import java.lang.*;
+import java.util.*;
+import org.aspectj.compiler.base.ast.*;
+import org.aspectj.compiler.crosscuts.ast.*;
+
+class GOTECHGenerator {
+        
+    // Bean types
+    static final int BEAN_STATEFUL = 1;
+    static final int BEAN_STATELESS = 2;
+    
+
+    // ------------------------------------------------
+    // generateBean: Generate an EJB from the given class.
+    // 	??? Should we worry about specifying which methods are 
+    //  interface methods???
+    // ------------------------------------------------
+    public static CompUnit generateBean( Class beanClass ) {
+	String	pack = beanClass.getPackage().getName();
+	String		cName = beanClass.getName();
+	String		beanName = "GOTECH_" + cName + "BeanClass";
+	int[] 		bInt = null;
+	MethodDec[]	bMethods = 
+	    new MethodDec[beanClass.getMethods().length];
+	
+	java.lang.reflect.Method[] beanMethods = beanClass.getMethods();
+	
+	for (int i = 0; i < beanMethods.length; i++) {
+	    java.lang.reflect.Method m = beanMethods[i];
+	    
+	    String mName = m.getName();
+	    String mReturn = m.getReturnType().getName();
+	    Class[] mParms = m.getParameterTypes();
+	    
+	    // make formal decs out of parameter types.
+	    FormalDec[] formals = null;
+	    JavaExpr[] arguments = null;
+	    
+	    if ( mParms != null ) {
+		formals = new FormalDec[mParms.length];
+		arguments = new JavaExpr[mParms.length];
+		for ( int j=0; j<formals.length; j++) {
+		    formals[j] = `[
+                        #[mParms[j].getName()] #["arg"+i]
+		    ];
+		    arguments[j] = `[ #["arg" + i]];
+		}
+	    }
+
+	    if (mReturn.equals(Void.TYPE.getName())) {	
+		bMethods[i] =  `[
+				 public void #mName ( #[formals] ) {
+                                     #["super." + mName] ( #arguments );
+				 }
+		];
+	    } else {
+		bMethods[i] = `[
+				public #mReturn #mName( #[formals] ) {
+				    return #["super." + mName] ( #arguments );
+				}
+		];
+	    }
+		}
+
+
+	infer out = `[
+		      package #pack;
+		      
+		      import #cName;
+		      
+		      public class #beanName extends #cName
+		      implements javax.ejb.SessionBean {
+			  
+                          #bMethods	
+			  
+			  public void ejbActivate()
+			      throws javax.ejb.EJBException, 
+			             java.rmi.RemoteException {
+			  }	
+			  
+			  public void ejbPassivate()
+			      throws javax.ejb.EJBException, 
+			             java.rmi.RemoteException {
+			  }
+			  
+			  public void ejbRemove()
+			      throws javax.ejb.EJBException, 
+			             java.rmi.RemoteException {
+			  }
+			  
+			  public void setSessionContext(javax.ejb.SessionContext arg0)
+			      throws javax.ejb.EJBException, 
+			             java.rmi.RemoteException {
+			  }
+			  
+			  public void ejbCreate() {
+			  }
+		      }
+	];
+	return out;
+    }
+
+    // ------------------------------------------------
+    // generateWrapper: Generate an aspect which modifies the original class to act as a proxy.
+    // ------------------------------------------------
+    public static CompUnit generateWrapper(
+			     Class beanClass,
+			     int beanType, 
+			     String beanName,
+			     String jndiName
+			     ) {
+	String		pack = beanClass.getPackage().getName();
+	String		cName = beanClass.getName();
+	String		bHome = beanName + "HOME";
+	String		aName = "GOTECH_" + cName + "WrapperAspect";
+	String		JNDIName = "\"" + jndiName + "\"";
+	
+	infer newMethod = 
+	    `[
+	      Object around() : target(#cName) && 
+	                        call(* *(..)) && 
+	                        (!cflow(within(#[aName]))) 
+		{
+		    try {
+			java.lang.reflect.Method m =
+			ep.getClass().getMethod(
+						thisJoinPoint.getSignature().getName(),
+						((org.aspectj.lang.reflect.MethodSignature)
+						 thisJoinPoint.getSignature()).getParameterTypes()
+						);
+		    	Object result = m.invoke(ep, thisJoinPoint.getArgs());
+			System.out.println("Calling from " + 
+					   thisJoinPoint.getSourceLocation().getWithinType().toString() + 
+					   " to method " + 
+					   thisJoinPoint.getSignature().getName());
+			return result;
+		    }
+		    catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		    }
+		}
+	    ];
+	
+	VarDec epDec = null;
+	MethodDec   newConstr = null;
+
+	switch ( beanType ) {
+	    
+	case BEAN_STATEFUL: 
+	    epDec = `[ private #beanName ep; ];
+	    newConstr = 
+		`[
+		  public #aName () {		               
+		      try {
+                          #bHome sh; 
+			  javax.naming.InitialContext initContext = null;
+			  System.out.println("\nClient is executing ...");
+			  System.out.println("Retrieving JNDI initial context");
+			  initContext = new javax.naming.InitialContext();
+			  System.out.println("Looking up bean home interface");
+			  System.out.println("Looking up: " + #JNDIName);
+
+			  // after translation, looses initializer
+			  //  SSH
+			  Object obj = initContext.lookup(#JNDIName);
+			  sh =
+			  (#bHome) javax.rmi.PortableRemoteObject.narrow (
+									  obj,
+                                                                          #[bHome + ".class"]
+									  );
+			  
+			  System.out.println("Creating instance...");
+			  ep = sh.create();
+		      } catch (Exception e) {
+			  e.printStackTrace();
+			  System.exit(1);
+		      }
+		  }
+		];
+	    break;
+
+	case BEAN_STATELESS:
+	    epDec = `[ private static #beanName ep=null; ];
+	    
+	    newConstr = `[ public #aName () {		               
+		if (ep == null) 
+		try {
+                    #[bHome] sh;
+		    javax.naming.InitialContext initContext = null;
+		    System.out.println("\nClient is executing ...");
+		    System.out.println("Retrieving JNDI initial context");
+		    initContext = new javax.naming.InitialContext();
+		    System.out.println("Looking up bean home interface");
+		    String JNDIName = "#jndiName";
+		    System.out.println("Looking up: " + JNDIName);
+		    Object obj = initContext.lookup(JNDIName);
+		    sh =
+		    (#bHome) javax.rmi.PortableRemoteObject.narrow(
+								   obj,
+                                                                   #[bHome + ".class"]
+								   );
+		    System.out.println("Creating instance...");
+		    ep = sh.create();
+		} catch (Exception e) {
+		    e.printStackTrace();
+		    System.exit(1);
+		}
+	    } ];
+	    break;
+	}	//end switch
+	
+	infer out = `[
+		      package #pack;
+		      import java.lang.reflect.*;
+		      
+		      public aspect #aName
+		      pertarget(target(#cName) && !cflow(within(#aName)))
+	{
+                           #epDec
+	    		   #newConstr	
+                           #newMethod
+	}
+    	];
+
+	return out;
+    }
+
+
+    // ------------------------------------------------
+    // generateSerialization: Generate an aspect which adds Serialization to passed parameters.
+    // ??? Hmmm -- Does this work for system classes (like object?) ???
+    // ------------------------------------------------
+    public static CompUnit generateSerialization( Class beanClass ) {
+	String		pack = beanClass.getPackage().getName();
+	String		cName = beanClass.getName();
+	String		aName = cName + "SerializableAspect";
+	DeclareDec[] 	aDeclares = null;
+	Vector 		vDeclares = new Vector();
+
+	int			k = 0;
+	java.lang.reflect.Method[] beanMethods = beanClass.getMethods();
+
+	for (int i = 0; i < beanMethods.length; i++) {
+	    java.lang.reflect.Method m = beanMethods[i];
+	    String mName = m.getName();
+	    String mReturn = m.getReturnType().getName();
+	    java.lang.Class[] mParms = m.getParameterTypes();
+	    
+	    for (int j=0; j<mParms.length; j++) {
+		java.lang.Class pType = mParms[j];
+		if (!pType.isPrimitive() 
+		    && !java.io.Serializable.class.isAssignableFrom(pType)) {
+		    DeclareDec d = null;
+		    if (pType.isInterface()) {
+			 d = `[
+					   declare parents: #[pType.getName()] 
+					   extends java.io.Serializable;
+			 ];
+		    }
+		    else {
+			d =  `[
+					   declare parents: #[pType.getName()] 
+					   implements java.io.Serializable;
+			];
+		    }
+
+		    vDeclares.add(d);
+		}
+	    }
+	}
+	
+	aDeclares = new DeclareDec[vDeclares.size()];
+	aDeclares = (DeclareDec[]) vDeclares.toArray(aDeclares);
+
+	infer out = `[
+		      package #pack;
+		      import #cName;
+		      
+		      public aspect #aName  {
+                          #aDeclares
+		      }
+	];
+	
+	return out;
+    }
+
+    
+    public static void main(String[] argv) {
+	try {
+	Class stringClass = Class.forName("java.lang.String");
+
+	CompUnit cu1 = generateBean(stringClass);
+	System.out.println(cu1.unparse());
+
+	CompUnit cu2 = generateWrapper(stringClass, BEAN_STATELESS,
+					"StringBean", "RemoteStringBean");
+	System.out.println(cu2.unparse());
+
+	CompUnit cu3 = generateWrapper(stringClass, BEAN_STATEFUL,
+					"StringBean", "RemoteStringBean");
+	System.out.println(cu3.unparse());
+
+	CompUnit cu4 = generateSerialization(stringClass);
+	System.out.println(cu4.unparse());
+
+        } catch (ClassNotFoundException e) {
+	 	System.out.println("ClassNotFound: " + e.getMessage());
+	}	
+    }
+
+}
+    

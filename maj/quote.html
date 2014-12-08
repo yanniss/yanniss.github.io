@@ -1,0 +1,70 @@
+<html>
+<head>
+<title>Meta-AspectJ Tutorial</title>
+<LINK REL=stylesheet HREF="main.css" TYPE="text/css">
+</head>
+<body>
+<div class="header">
+<center>
+<h1>Meta-AspectJ</h1>
+<small>
+<a href="http://www.cc.gatech.edu/~dzook" class="hlink">David Zook</a>,
+<a href="http://www.cc.gatech.edu/~ssh" class="hlink">Shan Shan Huang</a>,
+<a href="http://www.cs.uoregon.edu/~yannis" class="hlink">Yannis Smaragdakis</a>
+</small>
+</center>
+</div>
+<div class="menu">
+<a href="index.html" class="hlink">Home</a>
+<br>
+&nbsp;&nbsp;<a href="index.html#ov" class="hlink">Overview</a>
+<br>
+&nbsp;&nbsp;<a href="index.html#why" class="hlink"><nobr>Why MAJ?</nobr></a>
+<br>
+&nbsp;&nbsp;<a href="index.html#app" class="hlink">Applications</a>
+<p>
+Using MAJ
+<br>
+&nbsp;&nbsp;<a href="get.html" class="hlink">Download/Install</a>
+<br>
+&nbsp;&nbsp;<a href="tutorial.html" class="hlink">MAJ Tutorial</a
+<br>
+&nbsp;&nbsp;<a href="examples.html" class="hlink">Examples</a>
+<br>
+&nbsp;&nbsp;<a href="doc/" class="hlink">API</a>
+<p>
+</div>
+<div class="body">
+<a name="unquote"><h3>Using <font face="courier">`</font> and 
+<font face="courier">#</font></h3>
+The <font class="code">`</font> keyward allows you to quote a piece of code,
+and store the representation of that code in a variable.  For example,
+<pre>
+    Identifier myIdent = `[ foo ];
+</pre>
+The <a href="tutorial.html">entry points table<a/> lists more examples of how 
+to use <font class="code">`</font> to quote different entry points.
+<p>
+The <font face="courier">#</font> keyword allows you to splice in previously
+defined code pieces into the code that you are currently quoting.  For
+example:
+<pre>
+    Identifier myIdent = `[ foo ];
+    VarDec myVar = `[ int #myIdent = 0; ];
+</pre>
+There are two ways to use <font class="code">#</font>: 
+<font class="code">#id</font>, or <font class="code">#[expression]</font>,
+where <font class="code">id</font> is a meta-variable previously defined with
+a piece of quoted code.  <font class="code">expression</font> can be any
+java expression that returns the correct type -- AST types listed in the 
+<a href="tutorial.html">entry points table</a>.
+<p>
+<font class="code">#</font> must be used within a <font class="code">`</font>.
+<div class="next">
+<a href="tutorial.html"><< Prev: Entry Points</a>
+&nbsp;|&nbsp;
+<a href="infer.html">Next >>: Using <font class="code">infer</font></a>
+</div>
+</div>
+</body>
+</html>

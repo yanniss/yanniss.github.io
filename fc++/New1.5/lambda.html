@@ -1,0 +1,362 @@
+<html>
+<head>
+<title>FC++ Lambda</title>
+</head>
+
+<body>
+
+<h6>Jump down to <a href="#monad">monads</a>.</h6>
+<hr>
+
+<h1>FC++ Lambda</h1>
+
+<p>
+The main new feature in v1.5 of the FC++ library is "lambda".
+Like some other C++ template libraries, we use expression templates to
+mimic "lambda" functionality (the ability to create new anonymous
+functions on the fly) found in many functional languages.  Our approach
+is a little different from other C++ lambda libraries.
+</p>
+
+<p>
+<ul>
+<li>
+<b>Note:</b> To enable the lambda portion of the library, you must say
+<pre>
+#define FCPP_ENABLE_LAMBDA
+</pre>
+to get the lambda portions of the library included.
+</li>
+</ul>
+</p>
+
+<h3>Example</h3>
+
+<p>
+Here is a short example to introduce lambda:
+<pre>
+   LambdaVar&lt;1&gt; X;
+   LambdaVar&lt;2&gt; Y;
+   // The next line prints 10:
+   cout << lambda(X,Y)[ plus[ multiplies[3,X], Y ] ] (3,1) << endl;
+   // or  "lambda(X,Y)[ (3 %multiplies% X) %plus% Y ]"  using <a href="infix.html">infix syntax</a>
+</pre>
+There are three main components to the example:
+<ul>
+
+<li>the use of <code>LambdaVar</code> to declare variables to be used in
+lambda expressions</li>
+
+<li><code>lambda(</code><i>lambdaVars</i><code>)[</code><i>lambdaExp</i><code>]</code>,
+which creates a lambda (anonymous function) on-the-fly</li>
+
+<li>lambda expressions, which have functoids use <code>operator[]</code>
+rather than <code>operator()</code> (and <code>%</code> instead of
+<code>^</code>) for function calls</li>
+
+</ul>
+Those are the basics.  You can declare as many <code>LambdaVar</code>s
+as you like, but make sure that each one uses a distinct integer
+template argument.
+</p>
+
+<p>
+Unlike some other C++ lambda libraries, which try to integrate lambda
+into C++ in a way that makes "lambda code" look almost like normal C++
+code, we choose to try to distinguish lambda code from normal C++ code 
+in a number of ways.  By convention, we name lambda variables with
+capital letters to make them stand out.  We use square brackets instead
+of parentheses for function calls.  And we use the percent sign instead
+of the carat for our "infix" syntax.  We think all of these syntax
+choices and conventions make "lambda code" stand out from normal C++
+code, so that it's easy to tell the difference between what's lambda
+code and what's normal C++ code.  We think this is a good thing, due to
+the caveats that come with trying to mimic lambda in C++, which we
+explain next.
+</p>
+
+<h3>Caveats</h3>
+
+<p>
+Every C++ lambda library carries with it two worrisome
+issues.  First, C++ will always try to eagerly evaluate expressions when
+it knows how, so unless an expression involves some of our "special
+lambda syntax" (a <code>LambdaVar</code>, <code>[]</code>, or
+<code>%</code>), it will be evaluated immediately by C++ rather than
+"delayed" as intended by the FC++ lambda library.  Here are some
+examples:
+<pre>
+   lambda()[ doSomething(3) ]  // oops, used () instead of []
+   // If doSomething has a side-effect, that effect will happen once,
+   // right now, rather than being delayed
+    
+   lambda()[ doSomething[3] ]  // Ok, calls doSomething when lambda invoked
+   
+   
+   lambda(X)[ foldl[ plus, 0, X ] ]  // oops, "plus, 0" is a comma-expression
+   // The above does not create a function to sum the integers in a list
+   
+   lambda(X)[ foldl[plus][0][X] ]    // Ok, use currying to avoid commas
+   
+   lambda(X)[ foldl[ plus, X, someList ] ]  // Ok, comma-exp involves X
+</pre>
+Note that calls like <code>f[x,y,z]</code> use <code>operator,</code>
+(comma operator) because the C++ <code>operator[]</code> must take
+exactly one argument.  This begs the question of how to create a lambda
+expression representing a no-argument call.  We have invented the
+following (admittedly ugly) syntax:
+<pre>
+   lambda()[ someZeroArgumentFunctoid[_*_] ]  
+</pre>
+where <code>_*_</code> represents the absence of an argument.  The
+example above is rather trivial and pointless, but using zero-argument
+functions in a lambda can be useful in cases like
+<pre>
+   lambda(X)[ X %plus% getCurrentTime[_*_] ]
+</pre>
+which results in a new function which takes a number (representing a
+time offset) and returns the current time plus the offset.
+</p>
+
+<p>
+The second big issue common to C++ lambda libraries is that compiler
+error messages tend to be especially verbose when you do something wrong
+(owing to the use of expression templates to create the "delayed
+evaluation" effect).  The library tries to inject useful identifiers
+which explain the error for certain common types of errors, but making
+sense of verbose C++ compiler diagnostics typically takes a little
+practice.  The <code>main()</code> function in the <code>lam2.cc</code> 
+client file contains a number of examples of erroneous uses of lambda;
+you might want to have a look and see what kinds of errors your compiler
+generates on these examples to get accustomed to the types of diagnostics 
+you may encounter when debugging your own lambda code.
+</p>
+
+<h3>Advanced features</h3>
+
+<p>
+The examples above have shown basic use of
+lambda.  Now we show some of the more advanced features of lambda and
+introduce the syntax of our inner "lambda language".
+</p>
+
+<p>
+Lambdas exhibit variable <b>capture</b>.  That is, you can say
+<pre>
+   lambda(Y)[ lambda(X)[ (3 %multiplies% X) %plus% Y ] ]
+</pre>
+and the result is a one-argument function which takes a number, and
+returns a new one-argument function which multiplies its argument by 3
+and then adds the original number.  Note that the variable
+<code>Y</code> is "captured" by the inner lambda.
+</p>
+
+<p>
+Lambdas have an <b>if-then-else expression</b> construct:
+<pre>
+   if0[ boolLambdaExp, trueLambdaExp, falseLambdaExp ]
+   if1[ boolLambdaExp, trueLambdaExp, falseLambdaExp ]
+   if2[ boolLambdaExp, trueLambdaExp, falseLambdaExp ]
+</pre>
+There are three versions of "if" which differ in the way they infer the
+result type of the entire lambda expression.  <code>if0</code> ensures
+that both the "true" and "false" branches have the same type.
+<code>if1</code> uses just the "true" branch to infer the result type of
+the whole expression; conversely <code>if2</code> uses the "false"
+branch.  The utility of these will become more apparent when we
+introduce <code>letrec</code> below.
+</p>
+
+<p>
+Like many functional languages, we have a way to <b>bind variables</b> to
+values:
+<pre>
+   let[ X == someLambdaExp,
+        Y == someOtherLambdaExpWhichMayInvolveX ]
+   .in[ someLambdaExpInvolvingXandY ]
+</pre>
+We also have <b>letrec</b>, to do concurrent assignments, which
+are especially useful for recursive functions like
+<pre>
+   lambda(X)[ 
+      letrec[ F == lambda(Y)[ if1[ Y %equals% 0, 
+                                   1, 
+                                   Y %multiplies% F[Y %minus% 1] ] ] ]
+      .in[ F[X] ] ]
+</pre>
+which defines the factorial function on-the-fly.  <code>letrec</code> is
+needed because the definition of <code>F</code> refers to
+<code>F</code> itself.  Here we use <code>if1</code> to tell FC++ to
+determine the result type of the whole "if" expression based on the type
+of the "true" branch (the <code>int</code> <code>1</code>).  We do this
+because FC++ isn't smart enough to figure out the type of the "false"
+branch (because of the recursive call).
+</p>
+
+<hr>
+
+<a name="monad">
+<h3>Monads</h3>
+</a>
+
+<p>
+Lambda makes it practical to define monads in FC++.  This portion of
+this document assumes the reader has some familiarity with monads in
+Haskell.  (To learn more about monads, check out
+the links at 
+<a href="http://www.haskell.org/bookshelf/">The Haskell Bookshelf</a>
+under the heading "Using Monads".)
+</p>
+
+<p>
+The <code>monad.h</code> FC++ header file defines monads for FC++.  We
+create the monad functoids: <code>unit</code>, <code>bind</code>,
+<code>bind_</code>, <code>map</code>, and <code>join</code>, and we
+define lambda-syntax for do-notation and comprehensions.  FC++ defines
+the following monads: <code>ListM</code>, <code>MaybeM</code>,
+<code>IdentityM</code>, <code>StateM</code>, and <code>ByNeedM</code>.  
+(Note that
+<code>List</code> is the name of a datatype whereas <code>ListM</code>
+is the name (tag) for the list monad.  See the end of
+<code>monad.h</code> to see what corresponds to "instance declarations"
+in Haskell.)  Instances of monads can be "inferrable" when the types
+are explicit (rather than just type synonyms or aliases);
+<code>List</code>, <code>Maybe</code>, and <code>ByNeed</code> 
+are inferrable monads.
+(Non-inferrable monads require that the monad be passed explicitly as a
+template parameter to some constructs; the examples below will clarify
+this.)  Monads may also have a <code>zero</code>; again
+<code>List</code> and <code>Maybe</code> are examples.  </p>
+
+<p>
+Here are a list of the monad functoids defines by FC++.  The ones whose
+names end in <code>M</code> require that the C++ tag for the monad be
+passed explicitly as a parameter.
+<pre>
+   bind bind_ unitM bindM bindM_ zeroM mapM joinM
+</pre>
+Here is the syntax for "do" and "comprehensions":
+<pre>
+   doM[ <i>thing</i>, <i>thing</i>, ..., <i>thing</i> ]
+      where <i>thing</i> is one of these
+       - a lambda expression (bind_)
+       - a "gets" expression of the form "LV <= lambdaExp" (bind)
+      the final <code>thing</code> is typically a call to unitM
+      Note: doM can only be used with inferrable monads.
+
+   compM&lt;<i>someMonad</i>&gt;()[ <i>lambdaExp</i> | <i>stuff</i>, <i>stuff</i>, ..., <i>stuff</i> ]
+   	where <i>stuff</i> is one of these
+       - a lambda expression (bind_)
+       - a "gets" expression of the form "LV <= lambdaExp" (bind)
+       - a "guard" expression of the form "guard[boolLambdaExp]"
+      Note: guards can only be used in monads with a zero.
+</pre>
+</p>
+
+<p>
+Now some examples.  Here's a <code>lambdaExp</code> to describe all
+pair of integers where the first integer is selected from the list
+[1,2] and the second from the list [3,4] using "do" notation:
+<pre>
+   doM[ X &lt;= list_with(1,2), Y &lt;= list_with(3,4), 
+           unitM&lt;ListM&gt;()[ makePair[X,Y] ] ]
+</pre>
+and here's the same thing using a comprehension in the list monad:
+<pre>
+   compM&lt;ListM&gt;()[ makePair[X,Y] | X&lt;=list_with(1,2), Y&lt;=list_with(3,4) ]
+</pre>
+Here's an example where the comprehension has guards:
+<pre>
+   compM&lt;ListM&gt;()[ makePair[X,Y] | X&lt;=list_with(1,2), guard[true], 
+          Y&lt;=list_with(3,4), guard[ (Y %divides% X) %equal% 3 ] ] ]
+</pre>
+Unlike Haskell, in FC++, we can do comprehensions in any monad (not
+just lists).  Here's an example with some surrounding C++ code:
+<pre>
+   Maybe&lt;int&gt; mx = just(2);
+   Maybe&lt;int&gt; my = just(3);
+   mx = lambda()[ compM&lt;MaybeM&gt;()[ plus[X,Y] | X&lt;=mx, Y&lt;=my, guard[false] ] ]();
+   cout &lt;&lt; mx &lt;&lt; endl;   // Nothing
+</pre>
+Hopefully these examples give an idea of what it's like to program with
+monads in FC++.
+</p>
+
+
+<h3>C++ types for lambdas (the "LEType" type computer)</h3>
+
+<p>
+As with practically every C++ expression-template library, the C++ types
+of the resulting values tend to have hideously long names.  Trying to
+spell out by hand the type name of even a simple lambda expression 
+is practically impossible.  But if we want to write a tiny
+(contrived) function which returns a lambda, like
+<pre>
+/* ??? */ foo() {
+   LambdaVar&lt;1&gt; X;
+   LambdaVar&lt;2&gt; Y;
+   return lambda()[ let[ X == 4, Y == 1 ].in[ minus[X,Y] ] ];
+}
+</pre>
+then we need a way to name the result type.  Thus we supply a type
+computer called <code>LEType</code>.  It uses a special sub-language
+which mimics our lambda language to compute the types of lambda
+expressions.  Thus we can name the type of the lambda expression above
+with
+<pre>
+LEType&lt;LAM&lt;LET&lt;BIND&lt;1,int&gt;,BIND&lt;2,int&gt;,
+               CALL&lt;Minus,LV&lt;1&gt;,LV&lt;2&gt; &gt; &gt; &gt; &gt;::Type
+</pre>
+This is still rather long and ugly, but at least it makes the task
+feasible.
+</p>
+
+<p>
+There are <code>LEType</code> names for each piece of lambda syntax;
+here is the entire list:
+<pre>
+   CALL      [] (function call)
+   LV        LambdaVar
+   IF0       if0[]
+   IF1       if1[]
+   IF2       if2[]
+   LAM       lambda()[]
+   BIND      LambdaVar == value
+   LET       let[].in[]
+   LETREC    letrec[].in[]
+   DOM       doM[]
+   GETS      LambdaVar &lt;= value
+   GUARD     guard[]
+   COMP      compM&lt;monad&gt;[]
+</pre>
+You can look at the examples in some of the client files to see more
+details about using <code>LEType</code>; the discussion here is
+sufficient to describe the basics.  Fortunately, it is typically only
+necessary to name the C++ type of a lambda expression when you need to
+return a lambda expression from a function.
+</p>
+
+<h3>Further examples and information</h3>
+
+<p>
+The FC++ client files <code>lam2.cc</code>, <code>monad.cc</code>,
+<code>parser.cc</code>, <code>by_need_monad.cc</code>, 
+and <code>rep_min.cc</code> use the lambda
+portion of the library in some examples.  
+</p>
+
+<p>
+Our latest <a href="../fcpp-lambda.pdf">paper</a> describes lambda and
+monads in more detail.
+</p>
+
+<hr>
+
+<H6>
+Last updated on Aug 7, 2003 by <a 
+href="mailto:lorgon@cc.gatech.edu">Brian McNamara</a>
+</H6>
+
+</body>
+</html>
+

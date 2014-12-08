@@ -1,0 +1,455 @@
+--------------------------------------------------------------------------
+Good morning.  My name is Brian McNamara, and I'll be presenting "Syntax
+sugar for FC++: lambda, infix, monads, and more".  The FC++ library is
+work I've done with my advisor, Yannis Smaragdakis, at Georgia Tech.
+You can find out about "everything FC++" at this YOU-ARE-ELL.
+--------------------------------------------------------------------------
+What is FC++?
+
+FC++ is a library to support functional programming in C++.  More
+specifically, FC++ supports these features.
+
+The primary feature is higher-order polymorphic functions.  Higher-order
+functions are functions that can take other functions as arguments or
+return them as results.  By "polymorphic", I mean parametric
+polymorphism--in C++ that means templates.  
+   Note that in the OO community, the term "polymorphism" usually refers
+   to "dynamic dispatch" (or "virtual function call").  Whenever I say
+   "polymorphic" today I mean templates; functions that work on arguments
+   of different types.
+
+In addition, FC++ supports features like lazy evaluation and currying,
+which are common to many functional languages.  The newest features of
+the FC++ library are its lambda mechanism for creating anonymous
+functions on-the-fly, and its support for monads.  I'll talk about these
+at length a little later.
+
+Note that effectively FC++ is both a _framework_ for supporting functional
+programming, as well as a _library_ of useful functions.
+--------------------------------------------------------------------------
+In FC++ we program with what we call "functoids".  A functoid is an
+instance of a struct which defines operator-parentheses and obeys a few
+conventions.
+
+A simple example of a functoid is "plus".  Plus takes two arguments and
+adds them together using the plus operator.  It is polymorphic: the
+examples show that plus works on both integers and strings, for
+instance.
+   Throughout the presentation, you'll see some code highlighted in
+   red.  The red indicates Haskell code; Haskell is a functional
+   programming language with remarkably clear syntax.  In this
+   instance, the Haskell code says that plus takes two arguments of
+   type "a" and returns a result of type "a", where "a" is a type
+   variable subject to the constraint that it is Addable (that is, it
+   supports the plus operator).
+
+As I mentioned, a functoid is an instance of a struct with a templated 
+operator-parentheses defined.  In addition, functoids have a nested
+template struct named "sig" which is used to compute the result type.
+This is needed for return-type deduction, since C++ does not yet have 
+a "typeof" operator.
+
+One new feature of the library is the FullN wrapper classes, which add
+various capabilities to functoids.  Full2, for example, is a wrapper
+that takes a two-argument functoid type.  By declaring "plus" to be an
+instance of a "full" functoid, it will gain various useful features,
+which I'll describe next.
+--------------------------------------------------------------------------
+
+The first feature provided by full functoids is currying.  If "f" is a
+three-argument full functoid, which can be called like this <point>
+
+then we can also leave off some of its trailing arguments.  The result
+is a new functoid which expects the remaining arguments.  For instance,
+if I call "f" with just "x", the result is a new function of two
+arguments, "y" and "z", which executes f(x,y,z) when called.  In the
+comment on the right I've again used Haskell: the backslash is Haskell's
+lambda.
+
+In addition, you can leave off any argument (not just ones at the end)
+by using an underscore.  Again the result is a new function which 
+expects the remaining arguments.
+
+All of this is implemented in the FullN wrapper classes, so by simply
+declaring your functoids to be instances of full functoids, you get
+currying "for free".
+--------------------------------------------------------------------------
+Another feature of full functoids is infix syntax.  In addition to the
+usual prefix notation, functoids can be used infix by surrounding them
+with carats.  The Haskell programming language uses the same notation,
+only with backquotes instead of carats.
+
+Infix is just syntactic sugar which aids readability.
+
+Infix notation is typically used on binary functions, but it can also be
+used on functions of three arguments--as you would expect, the last
+argument gets curried.
+
+Later I'll talk about another feature that full functoids provide.
+--------------------------------------------------------------------------
+First, a quick aside to discuss combinators.  Combinators are
+higher-order functions which combine or otherwise manipulate other
+functions.  Perhaps the most familiar example is compose(): 
+compose-of-eff-gee returns a function which calls eff-of-gee on its 
+arguments.  <point>
+
+In addition to compose(), some other basic combinators are flip(), which
+returns a new function with the order of the arguments reversed,
+duplicate(), which duplicates the first argument, and ignore, which
+throws away the first argument.
+--------------------------------------------------------------------------
+Functional programming languages almost always provide "lambda", a
+facility to create new anonymous functions on-the-fly.  Suppose in the
+midst of some code we need a function with this behavior: <point>
+
+Using _prior_ versions of FC++, you were left with two choices.  First,
+you can define the function on-the-fly using combinators, as shown here.
+However this is practically unreadable; there is no obvious relationship
+between this C++ code and this code, even though they would do the same 
+thing (if the top were real C++ code).
+
+The other option is to define a new functoid out at global scope: 
+struct foo, define a sig structure, implement operator(), typedef the
+full functoid type, create an instance... but this all takes about 10
+lines of code.
+
+This is where the convenience of lambda is undeniable.
+--------------------------------------------------------------------------
+
+So why have prior versions of FC++ not included a lambda facility?
+After all, FC++ has been around for more than 3 years now; and
+at least two other mature C++ "lambda libraries" have been 
+implemented (by people in this room). <point to Joerg/Jaakko>
+
+The reason stems from the fact that you can't actually implement lambda
+in C++ (at least without changing the language or the compiler).  A
+lambda _library_ can come close to providing lambda, but there will
+always be pitfalls.  We have always felt that C++ is already too full
+of dark corners and landmines, and we didn't want to create more.
+
+Nevertheless, examples like the one on the previous slide kept popping
+up--especially when we tried to implement monads.  So we decided to 
+implement our own lambda library, one with a minimum of pitfalls and
+traps.  Let's be a little more specific.
+--------------------------------------------------------------------------
+There are a number of problems you'll encounter if you try to implement
+lambda in C++.  The first is accidental early evaluation.  I've
+illustrated it here in the context of the Boost Lambda Library, one of
+the other popular lambda libraries I alluded to earlier.
+
+The C++ standard algorithm for_each() applies a unary function to each
+element of a container.  Here we have an array, and want to print out
+all its elements, each on its own line.  Doing so with the Boost Lambda
+Library is straightforward; the placeholder variable "underscore-one"
+turns a normal C++ expression into a lambda function, and the desired
+behavior is achieved.
+
+Suppose now, however, we decide that we want to print "X equals" on the
+front of each line.  The naive, obvious solution is to do it like this
+<point>
+
+But this doesn't work; "X equals" gets printed once--before for_each()
+even gets called--and then the numbers alone are printed out, just as
+before.
+
+There are a number of small changes we could make using Boost to get the
+desired behavior.  But that's beside the point.  The point is that the
+"principle of least surprise" has been violated.  Boost Lambda Library 
+is implemented via lots of operator overloading, so that its lambda 
+functions are designed to look just like normal C++ expressions.  This
+makes them immediately familiar to a new user, but it has the drawback
+that not every C++ expression is so easily lambdified.  Some C++
+operators are simply not overloadable; some others can be overloaded,
+but necessarily with different behavior from the builtin operators.
+On the face of it, the idea of making lambda expressions that directly
+mimic their C++ counterparts seems good, but our contention is that the
+number of "outlier" cases with non-obvious translations is high.  We
+would like something less error-prone.
+
+In addition to the "early evaluation" problem, there are other issues
+that come up in the design of any lambda library.  These include
+   "capture semantics"--that is, are variables within a lambda captured
+   by value or by reference?
+
+   "naming expression template types"--in the Boost example, what is
+   the name of the type of this resulting lambda function?
+
+   and "compiler error messages", which tend to be long and awful for
+   any expression template library.  
+In the paper we discuss these issues in more detail.
+--------------------------------------------------------------------------
+
+With these issues in mind, we were ready to design a lambda mechanism
+for FC++.  Here are some of the key points in its design:
+
+Minimalism: we want to keep it small and simple, so that it is easy for
+novices to use and also to minimize the number of problematic "outlier
+cases" found in more complicated lambda libraries.
+
+Visual distinctiveness: rather than trying to make lambda code "blend
+in" and look like normal C++ code, we try to make it stand out.  When
+you can easily see what is lambda and what is not, you'll be less likely
+to have accidents.
+
+Intuitive syntax
+
+Value semantics
+
+Custom error messages: we inject useful diagnostics into some compiler
+error messages for certain common errors.
+--------------------------------------------------------------------------
+Here's what lambda looks like in FC++.
+
+Lambda variables are declared as instance of the template type
+LambdaVar, which servers as a "placeholder variable" in an expression.
+Each LambdaVar is instantiated with a distinct integer to ensure that
+different LambdaVars have different types; this is how the expression
+templates differentiate among them.
+
+Note that, by convention, we choose to name LambdaVars with uppercase
+letters, to help make them stand out.
+
+To create a lambda, we say lambda, followed by a list of LambdaVars,
+followed by a lambda expression in square brackets.  Lambda expressions
+look like normal expressions, only with round brackets replaced by
+square ones.  The ability to call functoids using square brackets is yet
+another capability added by the "full" functoid wrapper class.  The
+semantics of the square brackets is effectively to bind up the functoid
+and its arguments into a lambda expression which can be called later
+when the lambda is invoked.
+
+Just as we overloaded operator-carat to create infix syntax for functions
+in expressions, we have overloaded operator-percent to create infix lambda
+expressions.
+
+Finally, we provide if-then-else expressions, this is the lambda
+expression corresponding to the question-mark-colon operator in C++.
+
+This is practically everything you need to know to use lambda in FC++.
+Our lambda mechanism is simple and minimal, and is designed to trade off
+some of the convenience and syntactic niceties of other lambda librarys,
+in order to avoid most of the pitfalls of a C++ lambda.
+--------------------------------------------------------------------------
+
+Once you have lambda, you can implement monads.
+
+People who are familiar with monads usually ask us, "Aren't monads just
+a way to do state or IO in a pure functional language?  Why would you
+want monads in C++?"
+
+In fact, monads provide a general way to structure functional programs
+modularly.  The applications of monads are far-reaching; in a moment 
+I'll illustrate a number of disparate domains which benefit from monads.
+
+If you're not familiar with monads, then right now you're probably
+asking "What the hell are monads?"  This is a common question--indeed,
+one of the most popular tutorials on monads is entitled "What the hell 
+are monads?"  
+
+Monads are difficult to explain in an _hour_, so rather than explain, I
+will summarize.  A monad comprises a "type constructor", as well as a
+set of operations: unit() and bind() (and sometimes also plus() and
+zero()).  By "type constructor", I mean like List; List is a type
+constructor; we need to say, e.g., List<int> to get an actual type.
+
+The unit() operation takes a normal value and "lifts" it into the monad.
+The bind() operation strings monad operations together in sequence.
+
+This description of monads is rather cryptic and incomplete, but it will
+suffice for this presentation.
+--------------------------------------------------------------------------
+Perhaps the most familiar use of monads is list comprehensions.  Lists
+are instances of monads, and comprehension notation is a special syntax
+for working with monads.  List comprehensions are built in to a number
+of programming languages, including Haskell and Python.
+
+If you have never encountered list comprehensions before, here are a few
+examples.  The first one effectively says "give me a list of all the
+values X+1, where X is selected from the list [3,4,5]".  The answer is
+[4,5,6].
+
+The next one uses a "guard": give me a list of all X, where X is
+selected from this list, subject to the constraint that X is less than
+10.  The result is the list [1,5,7].
+
+Finally, a more complicated example: give me a list of all the pairs
+(X,Y), where X comes from this list, and Y comes from this list, subject
+to the constraints X is less than Y.  The result is this list of pairs.
+
+Note that the FC++ code for each of these begins with "compM<ListM>()",
+compM is a template function which returns a comprehension for a
+particular monad; ListM is the name of the list monad.
+
+Note also that we overloaded two more operators (vertical bar and
+less-than-or-equals) as syntactic sugar for comprehensions.  
+Comprehensions in FC++ look almost exactly like they do in Haskell.
+--------------------------------------------------------------------------
+
+Another domain where monads are useful is parsing.  As an example,
+consider the all-too-familiar problem of creating a basic arithmetic
+expression evaluator.  Given a string containing an expression, we want
+to parse it and evaluate the integer expression.
+
+Here is the BNF grammar for our language; arithmetic expressions can
+contain "addOps" (plus and minus), "mulOps" (times and divide), and
+parentheses, each of which binds more tightly than the preceding one.
+The only kind of basic term is an integer, which is just a series of
+digit characters.
+
+There are lots of domain-specific languages, like yacc and ANTLR,
+designed to support parsing grammars and assigning semantic actions to
+grammar rules.  In the Haskell community, however, "monadic parser
+combinators" are all the rage.  It turns out that parsers form a monad,
+which makes it straightforward to implement parser-evaluators using
+monads and combinators.  We have translated the core of one of these
+parser libraries into FC++.
+--------------------------------------------------------------------------
+The representation type for a parser monad is typically this: <point>
+a function which takes in a string to be parsed, and returns a list of
+pairs, where each pair is the result of the parse, as well as the
+remaining (unparsed) portion of the string.  The value which results
+from the parse is a type parameter, so for instance, a "Parser of int"
+is a parser that will have an integer result.
+
+Using this monadic representation, we can build a few basic "core"
+parsers, like "charP", which parses the first character off the front of
+a string and returns that character.  (As a result, charP has type
+"Parser of char".)
+
+A more interesting fundamental function is plusP.  plusP is a parser
+combinator, as it combines two parsers into one new parser.  The
+new parser concatenates the results of the other two parsers.
+
+A very powerful combinator is "chainl", which I'll return to in a
+moment.
+
+Here is most of the code to define the arithmetic evaluator using FC++.
+We can make functoids which correspond directly to the rules of the
+grammar.
+
+Consider addOp.  addOp needs to be able to parse a "plus" or a "minus".
+So we create parsers to parse each, and combine them with plusP.  Each
+parser is defined using a comprehension in the parser monad: this parser
+<point> effectively says "if you succeed in parsing the character '+',
+then return the "plus" functoid.  Similarly, this one says "if you parse
+a '-' character, return the "minus" functoid.
+
+It is equally straightforward to implement parser functoids like mulOp
+and integer.
+
+Then the entire code for the evaluator is just this.  <point>
+
+We're now ready to see what chainl does.  chainl takes two parsers: the
+left parser parses some kind of value, and the right parser parses some
+operator which works on those values.  In then parses a list of values
+separated by the operators.  For example, in this line <point>, the
+result of combining the "term" parser and the "addOp" parser with the
+"chainl" combinator, is a new parser, which parses "term addOp term
+addOp term addOp term..." for however many there are.  The term parsers
+return integers, and the addOp parsers return functions which are used
+to combine the integer values.  Note that the 'l' in the name "chainl"
+says that this combinator applies the operators left-associatively; the
+parser combinator library also provides "chainr" which does the same
+thing right-associatively.
+
+Put another way, the "chain" combinators generalize the notion of Kleene
+star in a grammar, and associate a semantics.
+
+I've expressed the rule for "group" using another comprehension, which
+can effectively be read as "try to parse an open-parenthesis character,
+and then parse an expression, and then a close parenthesis character,
+and if you succeed, the result is just the result from the expression
+parser".
+
+I want to stress again that this is nearly _all_ the code for the 
+arithmetic evaluator; 10 lines of code tell 90% of the story.
+
+As you can see, the source code for the parser-evaluator is now at the
+same level of abstraction as the grammar.  <flip back to previous slide
+for a moment>.  
+
+I should also mention that the grammar shown on the previous slide is
+ambiguous, and the parser given here is correspondingly
+non-deterministic.  As I mentioned at the start, parsers with this
+representation return a list of all possible parses.
+
+Changing this parser to be deterministic is remarkably simple.  We just
+substitute the Maybe monad for the List monad in the parser
+representation.  
+   For those unfamiliar with the "Maybe" type, here is a quick
+   explanation.  Whereas a List<T> can hold any number of T values, a
+   Maybe<T> can old hold one or zero: that is, a Maybe either has a
+   value or it is empty.
+By changing literally one line of code in the parser
+monad, we can change any parser from non-deterministic to deterministic;
+that is, a parser which stops after finding just one successful parse.
+Note that the key change happens in the core combinator "plusP": its new
+semantics become "try to parse using the first parser, but only if that
+fails, then try the second parser instead".
+
+Monadic parser combinators are perhaps the strongest example
+application demonstrating that monads are useful for more than just
+"capturing side effects in pure languages".  Monads are a powerful and
+modular concept for structuring many kinds of programs.
+--------------------------------------------------------------------------
+
+Lazy evaluation is another area where monads are helpful.  Previous
+versions of FC++ supported lazy evaluation mainly in the lazy list class.
+Laziness allows us to represent and operate on "infinite lists".  The
+list elements are not evaluated until they are demanded.  In the
+example, enumFrom() creates the infinite list of integers starting with
+the value passed as an argument.  We then apply the function plus(3) to
+each value in the list.  None of the computations are done until someone
+later demands, for example, the head() value of list "l".
+
+Monads provide a nice way to generalize the notion of lazy evaluation.
+The data type ByNeed<T> encapsulates the idea of a lazy value of type T.
+Effectively this stores a thunk--a computation which can be used to
+produce a value when it is demanded.  The combinator bLift transforms a
+normal function into a function which does its computation lazily and
+returns a ByNeed object.  Comprehensions in the ByNeed monad make it
+easy to write lazy code which works just like the corresponding eager
+code.  The example here could be useful if the functions f(), g(), and 
+h() are expensive, and we are not sure if we will actually need the
+value of z downstream or not.
+
+This ends the presentation of the topics in the paper.  Before I stop, I
+want to quickly mention one other project we are working on.
+--------------------------------------------------------------------------
+LC++ is a library for doing logic programming in C++.  LC++ is built
+atop FC++, and uses FC++ functoids and lazy evaluation to its advantage.
+
+LC++ code looks rather similar to a statically-typed version of Prolog.
+The code here is a snippet from a larger "family relationships" example
+file.
+
+We declare the arities and types of relations, as well as the types of
+logic variables.  For example, here I have shown the declarations of two
+relations: parent() is a binary relation that operates on strings, and
+ancestor() takes three arguments--two strings and an int.  Logic
+variables are declared with a data type and a unique integer (like
+lambda vars in FC++).
+
+We can populate the database with facts or implications.  For example,
+this rule <point> asserts that marge is the parent of bart.  The next
+rule is an implication Mom is a mother of Kid is Mom is the parent and
+she is female.
+
+The ancestor relation computes the number of generations between a
+person and their ancestors.  A direct parent is one generation back, and
+we add one for each additional parent relation we must traverse.  (Note
+the use of the FC++ functoid "plus" to do the "add one" computation.)  
+For those familiar with Prolog, the relationship between LC++ code and
+prolog code should be obvious.
+
+We employ lazy evaluation to return query results as a lazy list; using
+FC++ made it straightforward to implement the continuation-passing-style
+control flow of Prolog and interface that with normal C++ code.  Just as
+in prolog, there may be an infinite number of results to a query, but
+those results are only computed on demand, as the client traverses the
+result list.
+
+There is a link to LC++ off the FC++ homepage, so check it out to learn
+more about it.
+---------------------------------------------------------------------------
+This concludes my presentation.  Let me know what questions you have.

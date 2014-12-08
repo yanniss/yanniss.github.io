@@ -1,0 +1,23 @@
+package maj.ajTest;
+
+
+import java.io.*;
+import org.aspectj.compiler.base.*;
+import org.aspectj.compiler.base.ast.*;
+import org.aspectj.compiler.base.cst.*;
+import org.aspectj.compiler.crosscuts.ast.*;
+
+public class classtest {
+	public static void main(String[] myargs)  {
+		ASTObject class0 = new ClassDec(null, "foo", null, null, new Decs(new Dec[] {null}));
+		ASTObject class1 = new ClassDec(null, "foo", null, null, new Decs(new Dec[] {new VarDec(new Modifiers(1), new ResolvedTypeD(new MajUncheckedType(new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))))), new Identifier("x")), new MethodDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))), "foo", new Formals(new FormalDec[] {new FormalDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))), "x"), new FormalDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))), "y")}), null, new CodeBody(new Stmts(new Stmt[] {new VarDec(null, new ResolvedTypeD(new MajUncheckedType(new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))))), new Identifier("z")), new ExprStmt(new PostfixExpr(new VarExpr(new Identifier("x")), "++")), new ReturnStmt(new VarExpr(new Identifier("x")))})))}));
+		ASTObject mods1 = new Modifiers(9);
+		Modifiers mods2 = new Modifiers(9);
+		ASTObject class1A = new ClassDec(null, "foo", null, null, new Decs(new Dec[] {new VarDec(mods1, new ResolvedTypeD(new MajUncheckedType(new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))))), new Identifier("x")), new MethodDec(mods2, null, "foo", new Formals(new FormalDec[] {new FormalDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))), "x"), new FormalDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))), "y")}), null, new CodeBody(new Stmts(new Stmt[] {new VarDec(null, new ResolvedTypeD(new MajUncheckedType(new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))))), new Identifier("z")), new ExprStmt(new PostfixExpr(new VarExpr(new Identifier("x")), "++")), new ReturnStmt(new VarExpr(new Identifier("x")))})))}));
+		ASTObject var1 = new VarDec(null, new ResolvedTypeD(new MajUncheckedType(new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))))), new Identifier("x"));
+		ASTObject class1C = new ClassDec(null, "foo", null, null, new Decs(new Dec[] {var1, new MethodDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))), "foo", new Formals(new FormalDec[] {new FormalDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))), "x"), new FormalDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))), "y")}), null, new CodeBody(new Stmts(new Stmt[] {new VarDec(null, new ResolvedTypeD(new MajUncheckedType(new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))))), new Identifier("z")), new ExprStmt(new PostfixExpr(new VarExpr(new Identifier("x")), "++")), new ReturnStmt(new VarExpr(new Identifier("x")))})))}));
+		System.out.println(class0.unparse());
+		System.out.println(class1.unparse());
+		System.out.println(class1A.unparse());
+	}
+}

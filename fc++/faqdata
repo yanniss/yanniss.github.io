@@ -1,0 +1,62 @@
+Why is FC++ necessary when we have function pointers? 
+There are two key reasons that FC++ is better than using function
+pointers for implementing higher-order functions in C++.  First,
+function pointers are monomorphic--you cannot create a pointer to a
+polymorphic (template) function.  (You can create a pointer to one of
+its monomorphic instances, but you lose the polymorphic power in doing
+so.)  FC++ can pass polymorphic functions as parameters.  Second,
+function pointers add a layer of run-time indirection that can slow down
+your program by hindering optimizations like inlining.  FC++ uses member
+function templates so even higher-order instantiations can be
+inlined.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+How does FC++ compare to the "functional" part of the C++ Standard Library? 
+"Functoids" in FC++ are similar to "Adaptable N-ary Functions" in the
+STL, in that they use nested typedefs to encode argument and result
+types to enable composition of higher-order functions.  The key
+difference is that the STL's "Adaptables" are all monomorphic.  For
+instance, you can pass <code>plus&lt;int&gt;()</code> as an argument to
+many STL functions, but you must fix the argument type
+(<code>int</code> in this example).  With FC++, you can just pass
+<code>Plus()</code> to a polymorphic higher-order function, and have the
+argument types be deduced later/elsewhere.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+What compiler can I use for FC++? 
+We have currently only tested the FC++ library using 
+<a href="http://gcc.gnu.org/gcc-2.95/gcc-2.95.2.html">g++2.95.2</a> on
+Solaris.  However, we intend for our code to be entirely standard C++,
+and any recent compiler with good template support should work.  If you
+have problems (or successes!) compiling FC++ using other compilers,
+please let us know.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Will FC++ make my programs slower? 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+What would functional programming in C++ be good for? 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+What does <code>take (5, map (odd, enumFrom(1)))</code> mean? 
+<p>
+The functions named above are all part of Haskell's standard library
+(called the Standard Prelude).  <a href="http://haskell.org/">Haskell</a> 
+is a modern pure functional programming language, and much of the
+functionality of FC++ mimics Haskell exactly.  This is meant to make
+FC++ more accessible to the "functional programming crowd" who may be
+less familiar with C++.
+</p>
+<p>
+In this example, <code>enumFrom(1)</code> creates an infinite list of
+integers (1, 2, 3, ...), <code>odd</code> is a function which returns
+true if its argument is odd, <code>map</code> works like
+<code>MAPCAR</code> in LISP by applying its argument to each element of
+a list, and <code>take</code> selects the first N elements of a list.
+As a result, the expression above resolves to the list (true, false,
+true, false, true).
+</p>
+<p>
+For documentation of the meaning of the FC++ functoids defined in
+<code>prelude.h</code>, you should check out the 
+<a href="http://haskell.org/onlinereport/standard-prelude.html">documentation 
+of the corresponding Haskell functions</a> (see section "A.1" that
+starts about half way down the page).
+</p>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Haven't other people done functional programming in C++ before?  How is FC++ different?

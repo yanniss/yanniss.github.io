@@ -1,0 +1,71 @@
+To my committee,
+
+Since my defense, I've taken a little time off and also completed my
+job-hunting.  Now I am back to finishing the dissertation.  This message
+provides an update on that, an overview of what remains, and other
+miscellaneous news.
+
+DISSERTATION UPDATE & SCHEDULE
+
+I have posted an update of my dissertation at
+    http://www.cc.gatech.edu/~yannis/fc++/BriDiss/
+Chapters 1 and 2 are now complete; recall that Chapter 2 (FC++)
+comprises the bulk of the whole document.  The main changes since
+you-all last saw the document are that a number of subsections in the
+FC++ chapter are finally complete (written or re-written).  The details
+of the changes are described below.  Please feel free to offer any new
+feedback on these two chapters.
+
+By the end of this month the whole document will be complete; I will
+send you-all a couple more updates along the way as other chapters
+reach completion.
+
+The final dissertation must be submitted to Georgia Tech on July 12.
+
+Georgia Tech's new policy of electronic dissertation submission has
+reduced the number of forms and papers; I think you-all will only need
+to sign a single form once everything meets your approval.  I will
+inform you of any/all the details regarding paperwork/forms when I send
+you my next update in a week or so.
+
+DISSERTATION CHANGES: DETAILS
+
+There are a number of minor changes throughout the first two chapters
+(based on proofreading and feedback from you-all), but the main changes
+involve these sections:
+
+         II. FC++: 
+         ---------
+         ...
+         Description of advanced library features
+   2.3.2  - monads                                            rewritten
+   2.3.3  - static analysis/error checking                    written
+   2.3.5  - lists: strict, generalized interface              written
+         Applications
+   2.4.3  - other (customers, everyday stuff)                 written
+         Pragmatics
+   2.5.4  - lambda, sugars                                    rewritten
+   2.6   Discussion: summarize how FC++ supports the thesis   written
+
+REMAINING WORK
+
+There are still a handful of subsections in Chapters 3, 4, & 6 that
+need work.  Chapter 5 (related work) will be lifted nearly intact from
+my proposal document.  As a reminder, you can see the state the
+dissertation was in at the time of my defense at
+   http://www.cc.gatech.edu/~yannis/fc++/BriDiss/cover-letter.txt
+
+OTHER MISCELLANY
+
+I am happy to report that I accepted an offer to work at Microsoft; I
+will probably start work there in late August.
+
+I will be out of town June 24-30, but will still be in touch via email
+(and doing work on the dissertation) during that week.
+
+You can retrieve this message and the latest draft of my dissertation at
+    http://www.cc.gatech.edu/~yannis/fc++/BriDiss/
+
+That's all for now.  Thanks for reading,
+   Brian
+

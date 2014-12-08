@@ -1,0 +1,112 @@
+<html>
+<head>
+<title>Boost FC++ Formal Review ; Notice Message</title>
+</head>
+
+<body>
+
+<pre>
+Date: Mon, 09 Feb 2004 18:07:48 -0800
+From: Mat Marcus
+Subject: [boost] Announcement: Upcoming formal review of FC++ 
+
+The formal review of fcpp by Brian McNamara and Yannis Smaragdakis
+will commence on Friday February 13th at 12 noon, PST and and run to
+Monday, February 23rd, 12 noon PST.
+
+The library is currently available at
+   <a href="http://www.cs.umass.edu/~yannis/fc++/boostpaper/">http://www.cs.umass.edu/~yannis/fc++/boostpaper/</a>
+
+
+Here is a brief introduction to the library:
+
+   FC++ is a library for doing functional programming in C++. The
+   library provides a general framework to support various functional
+   programming aspects, such as higher-order polymorphic functions,
+   currying, lazy evaluation, and lambda. In addition to the framework,
+   FC++ also provides a large library of useful functions and data
+   types.
+
+   The main utility of the library comes from its ability to implement
+   functional programming designs, especially those which use
+   higher-order polymorphic functions or lazy evaluation in significant
+   ways.  The library also contains a number of ancillary components
+   that implement features like currying and lambda for function
+   objects; these features are also useful in their own right.
+
+For information about submitting a Formal Review, see
+   <a href="http://www.boost.org/more/formal_review_process.htm">http://www.boost.org/more/formal_review_process.htm</a>
+
+Please try out the library so that you will be prepared to
+say whether or not you think the library should be accepted by
+Boost during the upcoming review period next week and why.
+
+
+Compiler notes:
+
+This library has been tested with icc7 and with gcc-3.1.1 (and various
+other gcc-3.x.y versions) on Solaris and Linux.
+
+The library is also likely to compile on VC++7.1 and Comeau (prior
+versions of the library succeeded with these compilers, but this
+particular snapshot has not been tested with them).
+
+The library covers a great deal of the C++ language and thus requires
+a high degree of standard conformance; compilers like gcc-2.95.x and
+VC++6 will not be able to compile the library.
+
+
+Getting started:
+
+The web page
+   <a href="http://www.cs.umass.edu/~yannis/fc++/boostpaper/">http://www.cs.umass.edu/~yannis/fc++/boostpaper/</a>
+mentions all the basics:
+   The zip file will expand into these subdirectories:
+      fcpp/fcpp/               # the library (.hpp) files
+      fcpp/fcpp_clients/       # the example (.cpp) files
+   Running the examples just involves invoking the complier with the
+   right #include paths; for example,
+      # in the fcpp_clients directory
+      g++  -I/path/to/boost  -I../fcpp  some_example.cpp
+
+There is also a gnu-style Makefile included with the clients (examples),
+which will compile all of the examples in batch (you will have to edit a
+tiny bit at the top of the Makefile).
+
+The examples in the clients directory are a mix of both
+(regression-type) tests cases which cover the features of the library
+and example applications which demonstrate some of the library's
+utility.  The README file in the client directory gives a short
+explanation of some of the more interesting clients.
+
+The documentation at
+   <a href="http://www.cs.umass.edu/~yannis/fc++/boostpaper/">http://www.cs.umass.edu/~yannis/fc++/boostpaper/</a>
+provides a walkthrough and reference for most of the main features of
+the library.  There are also some pointers out to other papers and
+documentation on the main FC++ web site:
+   <a href="http://www.cs.umass.edu/~yannis/fc++/">http://www.cs.umass.edu/~yannis/fc++/</a>
+
+
+Conformance to Boost guidelines:
+
+The library meets most of the requirements described at
+   <a href="http://www.boost.org/more/lib_guide.htm">http://www.boost.org/more/lib_guide.htm</a>
+Here are a few notable exceptions:
+ - the current library headers are too "monolithic"; you #include
+   "prelude.hpp" and suck in all of the library
+ - some of the lambda internals should be rewritten to use MPL rather
+   than hand-rolled metaprogramming code
+ - only a few of the example programs utilize the Boost testing
+   framework (to automate regression testing)
+Should the library be accepted into Boost, Brian will remedy these
+deficiencies.  (If you notice other major problems along these lines,
+please bring them to Brian's attention during the review.)
+
+
+The Formal Review manager is Mat Marcus.
+
+</pre>
+
+</body>
+</html>
+

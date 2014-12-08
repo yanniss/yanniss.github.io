@@ -1,0 +1,114 @@
+<html>
+<head>
+<title>LC++ tutorial</title>
+</head>
+
+<body>
+
+<h1>LC++ tutorial</h1>
+
+<p>
+This tutorial describes what you need to know to use LC++.
+</p>
+
+<h2>Declaring functors and logic variables</h2>
+
+<p>
+To declare a functor, use one of the <code>FUNn</code> macros, where
+<code>n</code> is the arity of the functor.  The macro arguments should 
+be the functor name followed by the argument types of the functor.  
+For example:
+<pre>
+   FUN2(parent,string,string)       // parent() takes 2 strings
+   FUN3(ancestor,string,string,int) // ancestor() takes 2 strings and an int
+</pre>
+By convention, we name functors with an initial lowercase letter.
+</p>
+
+<p>
+To declare a logic variable, use the <code>DECLARE</code> macro.  Its
+arguments are the logic variable name, its type, and an integer unique
+to that variable.  For example:
+<pre>
+   DECLARE( X, int, 1 );        // X is a LogicVar&lt;int&gt;
+   DECLARE( Str, string, 2 );   // Str is a LogicVar&lt;string&gt;
+</pre>
+By convention, we name logic variables with an initial capital letter.
+</p>
+
+<h2>Syntax</h2>
+
+<p>
+The syntax of LC++ is designed to be similar to Prolog.
+<pre>
+   -=                      implication
+   ==                      unification
+   &&                      conjunction
+   ||                      disjunction
+   not_provable()          not provable
+   LV.is(fun,args)         computation
+</pre>
+We'll see some examples of these below.
+</p>
+
+<h2>Adding facts to the database</h2>
+
+To add facts to the repository of rules, use <code>lassert()</code>.
+For example:
+<pre>
+   lassert( parent( homer, bart ) );
+   lassert( ancestor( Par, Kid, 1 ) -= parent( Par, Kid ) );
+</pre>
+
+<h2>Running queries</h2>
+
+<p>
+To run a query, use the <code>iquery()</code> or 
+<code>lquery()</code> function.  <code>iquery</code> prints the 
+results, and <code>lquery</code> returns them as a lazy list:
+<pre>
+   iquery( parent( Par, Kid ) );   // prints all answers
+   
+   typedef QRT<Kid_TYPE>::IE IE;
+   List<IE> l = lquery( parent( homer, Kid ) );
+   while( !null(l) ) {
+      IE env = head(l);
+      // env->show();   // one way to print entire environment
+      std::cout << "Kid is " << *env->at(Kid) << std::endl;
+      l = tail(l);
+   }
+</pre>
+<code>lquery()</code> deserves more explanation.  It returns a list of
+<code>IRef</code>s (reference-counted pointers) to
+<code>Environment</code> objects.  This type is named by the
+<code>QRT</code> type computer:
+<pre>
+   QRT&lt;LV1_TYPE, ... LVn_TYPE&gt;::IE
+</pre>
+is the type of result of a query involving the logic variables
+<code>LV1</code> thru <code>LVn</code>.  We use the FC++ list functions
+to traverse the list.  The environment object understands the messages
+<code>show()</code> (which prints the entire environment contents) and
+<code>at(SomeLV)</code> (which returns info about that logic variable's 
+binding).
+</p>
+
+<p>
+See examples like <a
+href="http://www.cs.umass.edu/~yannis/lc++/LC++v1.0/family.cc">family.cc</a>
+for more info.
+</p>
+
+<pre>
+</pre>
+
+<hr>
+
+<h6>
+Last updated on May 30, 2003 by 
+<a href="mailto:lorgon@cc.gatech.edu">Brian McNamara</a>
+</h6>
+
+</body>
+</html>
+

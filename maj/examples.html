@@ -1,0 +1,62 @@
+<html>
+<head>
+<title>Meta-AspectJ Examples</title>
+<LINK REL=stylesheet HREF="main.css" TYPE="text/css">
+</head>
+<body>
+<div class="header">
+<center>
+<h1>Meta-AspectJ</h1>
+<small>
+<a href="http://www.cc.gatech.edu/~dzook" class="hlink">David Zook</a>,
+<a href="http://www.cc.gatech.edu/~ssh" class="hlink">Shan Shan Huang</a>,
+<a href="http://www.cs.uoregon.edu/~yannis" class="hlink">Yannis Smaragdakis</a>
+</small>
+</center>
+</div>
+<div class="menu">
+<a href="index.html" class="hlink">Home</a>
+<br>
+&nbsp;&nbsp;<a href="index.html#ov" class="hlink">Overview</a>
+<br>
+&nbsp;&nbsp;<a href="index.html#why" class="hlink"><nobr>Why MAJ?</nobr></a>
+<br>
+&nbsp;&nbsp;<a href="index.html#app" class="hlink">Applications</a>
+<p>
+Using MAJ
+<br>
+&nbsp;&nbsp;<a href="get.html" class="hlink">Download/Install</a>
+<br>
+&nbsp;&nbsp;<a href="tutorial.html" class="hlink">MAJ Tutorial</a
+<br>
+&nbsp;&nbsp;Examples
+<br>
+&nbsp;&nbsp;<a href="doc/" class="hlink">API</a>
+<p>
+</div>
+<div class="body">
+<a name="conv"><h3>Examples</h3>
+Here are some example MAJ files. You can parse them by calling:
+<pre>% java maj.Main &lt;filename&gt;</pre>
+A file with the same name as the input file, but extension <font class="code">
+.java</font> instead of <font class="code">.maj</font> will be created.  All 
+the examples files create segments of code, and calls 
+<font class="code">System.out.println(myMAJCode.unparse())</font>, which
+prints out the templated code.
+<ul>
+<li><a href="examples/aspecttest.maj"><font class="code">aspecttest.maj</font></a>: 
+a file that generates a couple of aspects.
+<li><a href="examples/classdec.maj"><font class="code">classdec.maj</font></a>:
+a file that generates classes.
+<li><a href="examples/cu.maj"><font class="code">cu.maj</font></a>:
+a file that generates some compilation units (package declaration + import 
+statements + type definitions)
+<li><a href="examples/GOTECHGenerator.maj">
+<font class="code"><b>GOTECHGenarator.maj</b></font></a>:
+a file that generates aspects for making local java bean classes conform to
+J2EE RMI standards.  This is probably the most fun to look at!
+</ul>
+<p>
+</div>
+</body>
+</html>

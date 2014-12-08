@@ -1,0 +1,107 @@
+/*
+ * Created on 02.06.2003
+ *
+ * To change this generated comment go to 
+ * Window>Preferences>Java>Code Generation>Code Template
+ */
+package maj;
+
+import java.util.LinkedList;
+
+import antlr.ASTFactory;
+import antlr.BaseAST;
+import antlr.CommonAST;
+import antlr.CommonHiddenStreamToken;
+import antlr.Token;
+import antlr.collections.AST;
+
+/**
+ * @author Stephan
+ */
+public class MajMultiTypeDefsNode extends MajAST 
+    implements MetaAspectJTokenTypes {
+
+    //modified constructors come in here
+    public MajMultiTypeDefsNode() {
+        super();
+    }
+
+    public MajMultiTypeDefsNode(Token arg0) {
+        super(arg0);
+    }
+
+    public MajMultiTypeDefsNode(MetaAspectJRecognizer recog,
+				AST tyedef,
+				AST typedefs) {
+	MajASTFactory factory = (MajASTFactory) recog.getASTFactory();
+
+	// new Decs(typedef, typedefs)
+	AST result = factory.create(EXPR, "EXPR", true);
+	AST decroot = factory.create(LITERAL_new, "new", true);
+	decroot.addChild(factory.create(IDENT, "Decs", true));
+	AST params = factory.create(ELIST,"ELIST",true);
+	params.addChild(typedef);
+	params.addChild(typedefs);
+	decroot.addChild(params);
+	result.addChild(decroot);
+
+	this.initialize(result);
+	this.setFirstChild(result.getFirstChild());
+	this.setNextSibling(result.getNextSibling());
+    }
+
+
+    //new methods   
+    public void transform(MetaAspectJRecognizer recog) {
+	MajASTFactory factory = (MajASTFactory) recog.getASTFactory();
+
+	AST result = factory.create(EXPR, "EXPR", true);
+	if (this.getFirstChild() == null )
+	    result.addChild(factory.create(LITERAL_null,"null",true));
+	else {
+	    AST decsroot = factory.create(LITERAL_new, "new", true);
+	    decsroot.addChild(factory.create(IDENT, "Decs", true));
+	    
+	    AST decsparam = factory.create(ELIST, "ELIST", true);
+	    AST arrarg = factory.create(EXPR,"EXPR",true);
+	    AST decroot = factory.create(LITERAL_new, "new", true);
+	    decroot.addChild(factory.create(IDENT,"Dec",true));
+	    decroot.addChild(factory.create(ARRAY_DECLARATOR,"[", true));
+
+	    AST arrinit=factory.create(ARRAY_INIT,"{", true);
+	    arrinit.addChild(this.getFirstChild());
+
+	    decroot.addChild(arrinit);
+	    arrarg.addChild(decroot);
+	    decsparam.addChild(arrarg);
+	    decsroot.addChild(decsparam);
+	    
+	    result.addChild(decsroot);
+	}
+
+	this.initialize(result);
+	this.setFirstChild(result.getFirstChild());
+	this.setNextSibling(result.getNextSibling());
+    }
+
+    //overridden to copy the extended information of an MajMultiTypeDefsNode
+    public void initialize(AST arg0) {
+	super.initialize(arg0);
+	/*
+        if (arg0 instanceof MajMultiTypeDefsNode) {
+            hiddenAfter = ((MajMultiTypeDefsNode)arg0).getHiddenAfter();
+            hiddenBefore = ((MajMultiTypeDefsNode)arg0).getHiddenBefore();
+            sourceRight = ((MajMultiTypeDefsNode)arg0).getSourceRight();
+            sourceBefore = ((MajMultiTypeDefsNode)arg0).getSourceBefore();
+            sourceAfter = ((MajMultiTypeDefsNode)arg0).getSourceAfter();
+            sourceTrail = ((MajMultiTypeDefsNode)arg0).getSourceTrail();
+            line = ((MajMultiTypeDefsNode)arg0).getLine();
+	    }*/
+    }
+    
+    //overridden to preserve line numbers
+    public void initialize(Token arg0) {
+	//        setLine(arg0.getLine());
+        super.initialize(arg0);
+    }   
+}

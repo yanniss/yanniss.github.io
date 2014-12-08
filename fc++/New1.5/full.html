@@ -1,0 +1,93 @@
+<html>
+<head>
+<title>Full functoids</title>
+</head>
+
+<body>
+
+<h1>Full functoids</h1>
+
+<p>
+In the previous versions (prior to v1.5) of the FC++ library, to define
+a (say, 2-argument) functoid of your own, you would just say
+<pre>
+   struct MyFunctoid {
+      // Sig information
+      // operator(x,y) definition
+   } myFunctoid;
+</pre>
+You would probably also choose to add <a
+href="../currying.html">currying</a>  capabilities by wrapping
+your functoids like so:
+<pre>
+   struct MyFunctoid {
+      // Sig information
+      // operator(x,y) definition
+   };
+   Curryable2&lt;MyFunctoid&gt; myFunctoid;
+</pre>
+</p>
+
+<p>
+Now with v1.5 of the library, we introduce a new type of wrapper called 
+"full" functoids.  Full functoids wrap existing functoids with all of
+the v1.5 library functionality, namely:
+<ul>
+<li>Curryability (the ability to call a functoid with fewer arguments
+than it expects)</li>
+<li>Lambda-awareness (the ability to use functoids in <a
+href="lambda.html">lambda expressions</a> involving 
+<code>operator[]</code> calls)</li>
+<li>Smartness (the ability for functoids to know how many arguments they
+expect)</li>
+<li><a href="infix.html">Infix syntax</a> (the ability to call 
+functoids using special infix syntax)</li>
+</ul>
+To define a full functoid, do the following
+<pre>
+   namespace impl {
+      struct XMyFunctoid {
+         // Sig information
+         // operator(x,y) definition
+      };
+   }
+   typedef Full2&lt;impl::XMyFunctoid&gt; MyFunctoid;
+   MyFunctoid myFunctoid;
+</pre>
+The <code>FullN</code> wrappers work just like the
+<code>CurryableN</code> wrappers.  (The introduction of the
+<code>namespace</code> and the <code>typedef</code> are 
+not strictly necessary, but using this idiom ensures
+that the C++ type of <code>someFunctoid</code> is always just
+<code>SomeFunctoid</code> (and not, say,
+<code>Full3&lt;SomeFunctoid&gt;</code> or
+<code>Curryable2&lt;SomeFunctoid&gt;</code> or whatever).  Throughout
+the library implementation we use this idiom to create a simple way to
+name the C++ types of functoids.)
+</p>
+
+<p>
+While wrapping your functoids in the <code>FullN</code> wrappers is considered
+optional, we recommend that you wrap all of your functoids this way.
+Non-wrapped functoids will not be curryable, cannot participate fully in
+lambda expressions, cannot use infix syntax, and cannot be used with
+some of the library combinators.  
+</p>
+
+For more details about the implementation of these features, 
+inspect the code in <code>full.h</code>, <code>smart.h</code>, and
+<code>curry.h</code>.
+
+<pre>
+</pre>
+
+<hr>
+
+<H6>
+Last updated on Oct 03, 2003 by <a 
+href="mailto:lorgon@cc.gatech.edu">Brian McNamara</a>
+</H6>
+
+</body>
+</html>
+

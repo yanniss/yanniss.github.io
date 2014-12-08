@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+<body>
+<h2 id="κ24-προγραμματισμός-συστήματος-τμήμα-μονών-am">Κ24 Προγραμματισμός Συστήματος, τμήμα μονών AM</h2>
+<h3 id="βασικές-πληροφορίες">Βασικές Πληροφορίες</h3>
+<p>Εαρινό Εξάμηνο, Δευτέρα και Τρίτη 13:00-15:00, Α1.<br />Διδάσκων: <script type="text/javascript">
+<!--
+h='&#100;&#x69;&#46;&#x75;&#x6f;&#x61;&#46;&#x67;&#114;';a='&#64;';n='&#x73;&#x6d;&#x61;&#114;&#x61;&#x67;&#100;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'Γιάννης Σμαραγδάκης'+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#x393;&#x3b9;&#940;&#x3bd;&#x3bd;&#x3b7;&#962;&#32;&#x3a3;&#956;&#x3b1;&#x3c1;&#x3b1;&#x3b3;&#948;&#940;&#954;&#x3b7;&#962;&#32;&#40;&#x73;&#x6d;&#x61;&#114;&#x61;&#x67;&#100;&#32;&#x61;&#116;&#32;&#100;&#x69;&#32;&#100;&#x6f;&#116;&#32;&#x75;&#x6f;&#x61;&#32;&#100;&#x6f;&#116;&#32;&#x67;&#114;&#x29;</noscript><br />Βοηθοί: <script type="text/javascript">
+<!--
+h='&#100;&#x69;&#46;&#x75;&#x6f;&#x61;&#46;&#x67;&#114;';a='&#64;';n='&#x67;&#98;&#x61;&#108;&#x61;&#116;&#x73;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'Γιώργος Μπαλατσούρας'+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#x393;&#x3b9;&#974;&#x3c1;&#x3b3;&#x3bf;&#962;&#32;&#924;&#960;&#x3b1;&#x3bb;&#x3b1;&#964;&#x3c3;&#x3bf;&#x3cd;&#x3c1;&#x3b1;&#962;&#32;&#40;&#x67;&#98;&#x61;&#108;&#x61;&#116;&#x73;&#32;&#x61;&#116;&#32;&#100;&#x69;&#32;&#100;&#x6f;&#116;&#32;&#x75;&#x6f;&#x61;&#32;&#100;&#x6f;&#116;&#32;&#x67;&#114;&#x29;</noscript>, <script type="text/javascript">
+<!--
+h='&#100;&#x69;&#46;&#x75;&#x6f;&#x61;&#46;&#x67;&#114;';a='&#64;';n='&#116;&#x6b;&#x61;&#114;&#x61;&#x6d;&#112;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'Θωμάς Καράμπελας'+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#920;&#x3c9;&#956;&#940;&#962;&#32;&#922;&#x3b1;&#x3c1;&#940;&#956;&#960;&#x3b5;&#x3bb;&#x3b1;&#962;&#32;&#40;&#116;&#x6b;&#x61;&#114;&#x61;&#x6d;&#112;&#32;&#x61;&#116;&#32;&#100;&#x69;&#32;&#100;&#x6f;&#116;&#32;&#x75;&#x6f;&#x61;&#32;&#100;&#x6f;&#116;&#32;&#x67;&#114;&#x29;</noscript>, <script type="text/javascript">
+<!--
+h='&#100;&#x69;&#46;&#x75;&#x6f;&#x61;&#46;&#x67;&#114;';a='&#64;';n='&#x67;&#x6b;&#x61;&#x73;&#116;&#114;&#x69;&#110;&#x69;&#x73;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'Γιώργος Καστρίνης'+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#x393;&#x3b9;&#974;&#x3c1;&#x3b3;&#x3bf;&#962;&#32;&#922;&#x3b1;&#x3c3;&#964;&#x3c1;&#x3af;&#x3bd;&#x3b7;&#962;&#32;&#40;&#x67;&#x6b;&#x61;&#x73;&#116;&#114;&#x69;&#110;&#x69;&#x73;&#32;&#x61;&#116;&#32;&#100;&#x69;&#32;&#100;&#x6f;&#116;&#32;&#x75;&#x6f;&#x61;&#32;&#100;&#x6f;&#116;&#32;&#x67;&#114;&#x29;</noscript>, <script type="text/javascript">
+<!--
+h='&#100;&#x69;&#46;&#x75;&#x6f;&#x61;&#46;&#x67;&#114;';a='&#64;';n='&#112;&#108;&#x6f;&#118;&#x65;&#114;&#100;&#x6f;&#x73;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'Παναγιώτης Λοβέρδος'+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#928;&#x3b1;&#x3bd;&#x3b1;&#x3b3;&#x3b9;&#974;&#964;&#x3b7;&#962;&#32;&#x39b;&#x3bf;&#946;&#x3ad;&#x3c1;&#948;&#x3bf;&#962;&#32;&#40;&#112;&#108;&#x6f;&#118;&#x65;&#114;&#100;&#x6f;&#x73;&#32;&#x61;&#116;&#32;&#100;&#x69;&#32;&#100;&#x6f;&#116;&#32;&#x75;&#x6f;&#x61;&#32;&#100;&#x6f;&#116;&#32;&#x67;&#114;&#x29;</noscript>, <script type="text/javascript">
+<!--
+h='&#100;&#x69;&#46;&#x75;&#x6f;&#x61;&#46;&#x67;&#114;';a='&#64;';n='&#x6b;&#108;&#x65;&#x73;&#x67;&#x69;&#100;&#x69;&#x73;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'Κυριάκος Λεσγίδης'+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#922;&#x3c5;&#x3c1;&#x3b9;&#940;&#954;&#x3bf;&#962;&#32;&#x39b;&#x3b5;&#x3c3;&#x3b3;&#x3af;&#948;&#x3b7;&#962;&#32;&#40;&#x6b;&#108;&#x65;&#x73;&#x67;&#x69;&#100;&#x69;&#x73;&#32;&#x61;&#116;&#32;&#100;&#x69;&#32;&#100;&#x6f;&#116;&#32;&#x75;&#x6f;&#x61;&#32;&#100;&#x6f;&#116;&#32;&#x67;&#114;&#x29;</noscript>, <script type="text/javascript">
+<!--
+h='&#100;&#x69;&#46;&#x75;&#x6f;&#x61;&#46;&#x67;&#114;';a='&#64;';n='&#x69;&#46;&#x6b;&#x61;&#118;&#118;&#x6f;&#x75;&#114;&#x61;&#x73;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'Γιάννης Κάββουρας'+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#x393;&#x3b9;&#940;&#x3bd;&#x3bd;&#x3b7;&#962;&#32;&#922;&#940;&#946;&#946;&#x3bf;&#x3c5;&#x3c1;&#x3b1;&#962;&#32;&#40;&#x69;&#46;&#x6b;&#x61;&#118;&#118;&#x6f;&#x75;&#114;&#x61;&#x73;&#32;&#x61;&#116;&#32;&#100;&#x69;&#32;&#100;&#x6f;&#116;&#32;&#x75;&#x6f;&#x61;&#32;&#100;&#x6f;&#116;&#32;&#x67;&#114;&#x29;</noscript>, <script type="text/javascript">
+<!--
+h='&#x67;&#x6d;&#x61;&#x69;&#108;&#46;&#x63;&#x6f;&#x6d;';a='&#64;';n='&#x61;&#46;&#x61;&#110;&#116;&#x6f;&#110;&#x69;&#x61;&#100;&#x69;&#x73;&#x31;&#x39;&#56;&#x39;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'Αναστάσης Αντωνιάδης'+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#x391;&#x3bd;&#x3b1;&#x3c3;&#964;&#940;&#x3c3;&#x3b7;&#962;&#32;&#x391;&#x3bd;&#964;&#x3c9;&#x3bd;&#x3b9;&#940;&#948;&#x3b7;&#962;&#32;&#40;&#x61;&#46;&#x61;&#110;&#116;&#x6f;&#110;&#x69;&#x61;&#100;&#x69;&#x73;&#x31;&#x39;&#56;&#x39;&#32;&#x61;&#116;&#32;&#x67;&#x6d;&#x61;&#x69;&#108;&#32;&#100;&#x6f;&#116;&#32;&#x63;&#x6f;&#x6d;&#x29;</noscript>.</p>
+<p><em>Άκρως απαραίτητα</em>:</p>
+<ul>
+<li><a href="philosophy.pdf">Απαιτήσεις/Διαδικαστικά</a><br /></li>
+<li><a href="https://piazza.com/uoa.gr/spring2014/k24">Piazza signup link για το μάθημα</a>. Παρακολούθηση του Piazza είναι υποχρεωτική!</li>
+<li>Τις πρώτες 3 εβδομάδες του μαθήματος κυκλοφορεί/κυκλοφόρησε στη διάλεξη λίστα για συλλογή ονομάτων/ΑΜ/userids. Εγγραφή με email είναι δυνατή μόνο αν υπήρχε εξαιρετικός λόγος ανωτέρας βίας για να μην έρθει κανείς στο μάθημα για 3 ολόκληρες εβδομάδες.</li>
+</ul>
+<h3 id="διαφάνειες">Διαφάνειες</h3>
+<p>Ευχαριστίες για το υλικό στους κους. Δελή, Σταματόπουλο, Δεληγιαννάκη, Ευαγγελάτο.</p>
+<ul>
+<li><a href="set001.pdf">Βασικές εντολές Unix</a>, <a href="sources-set001.tar">code</a></li>
+<li><a href="set002.pdf">Scripting</a>, <a href="sources-set002.tar">code</a></li>
+<li><a href="set004.pdf">Low-level I/O, Signals</a>, <a href="sources-set004.tar">code</a></li>
+<li><a href="set005.pdf">Processes, Pipes</a>, <a href="sources-set005.tar">code</a></li>
+<li><a href="set006.pdf">Network programming</a>, <a href="sources-set006.tar">code</a></li>
+<li><a href="set007.pdf">Threads</a>, <a href="sources-set007.tar">code</a></li>
+<li><a href="advancedThreads.pdf">Monitor-Style Programming</a></li>
+<li><a href="http://cgi.di.uoa.gr/%7Emema/courses/k24/lectures/topic7-IPC.pdf">Inter-Process Communication (από την κα.Ρουσσοπούλου)</a></li>
+</ul>
+<h3 id="ασκήσεις">Ασκήσεις</h3>
+<ul>
+<li><a href="hw1.pdf">Άσκηση 1, προθεσμία 18/5</a>
+<ul>
+<li><a href="intercept.c">Δείγμα κώδικα (compile με flag -std=c99)</a> για διάβασμα χαρακτήρα χωρίς αυτός να εκτυπώνεται αφού τον πληκτρολογήσει ο χρήστης. Η χρήση της συνάρτησης getchar_silent() ως έχει είναι πιθανότατα αρκετή για τους σκοπούς της άσκησης. Ωστόσο ο οποιοσδήποτε πειραματισμός είναι ευπρόσδεκτος, αρκεί να διατηρεί το user interface που περιγράφει η εκφώνηση της άσκησης.</li>
+<li><a href="words">Αρχείο λεξικού</a></li>
+</ul></li>
+<li><a href="hw2.pdf">Άσκηση 2, προθεσμία 15/6</a></li>
+<li><a href="hw3.pdf">Άσκηση 3, προθεσμία 13/7</a></li>
+</ul>
+<h3 id="υποβολή-ασκήσεων">Υποβολή ασκήσεων</h3>
+<p>Η υποβολή γίνεται αποκλειστικά στα μηχανήματα Unix του τμήματος, με αντιγραφή αρχείου tar (και κατά προτίμηση και συμπιεσμένου με gzip) στον κατάλογο που θα δημιουργηθεί για το username σας. Π.χ.</p>
+<pre><code>$ tar -czvf ToOnomaMoy.tar.gz directoryAskhshs1               # ή /usr/local/bin/tar για πιο σίγουρα
+$ cp ToOnomaMoy.tar.gz /home/users/k24/project1/sdiMyNumber/  # ή .../stdMyNumber για τους πριν το 2011
+$ ls -lc /home/users/k24/project1/sdiMyNumber/</code></pre>
+<p>(H τελευταία εντολή είναι για να ελέγξετε τι παραδόθηκε. Είναι η ίδια εντολή που θα χρησιμοποιήσουν και οι βοηθοί για να δουν την τελευταία ώρα αλλαγής του αρχείου. Μπορείτε να επαναλάβετε τα παραπάνω αλλά μόνο το τελευταίο αρχείο που θα αντιγράψετε θα παραμείνει/βαθμολογηθεί. Προσοχή με τη χρήση του tar! Δεν θα διστάσει να γράψει πάνω στα αρχεία σας αν του δώσετε λάθος όρισμα μετά τα flags. Χρησιμοποιήστε το καλύτερα με directories, όπως παραπάνω.)</p>
+<h3 id="βιβλία">Βιβλία</h3>
+<ul>
+<li>M.J. Rochkind, <a href="http://www.amazon.com/Advanced-UNIX-Programming-Marc-Rochkind/dp/0131411543">Advanced Unix Programming</a>, Prentice-Hall Software Series, Englewood Cliffs, NJ, 2004.</li>
+<li>Kay Robbins, Steven Robbins, <a href="http://www.amazon.com/UNIX-Systems-Programming-Communication-Concurrency/dp/0130424110">Unix Systems Programming: Communication, Concurrency, and Threads</a>, Prentice Hall PTR, 2003.</li>
+</ul>
+<h3 id="χρήσιμες-αναφορές">Χρήσιμες αναφορές</h3>
+<ul>
+<li>Δωρεάν διαθεσιμότητα του Linux και FreeBSD: <a href="http://www.ubuntu.com/">Ubuntu</a>, <a href="http://www.debian.org/">Debian</a>, <a href="http://www.suse.com/">Suse</a>, <a href="http://www.redhat.com/">RedHat</a>, και <a href="http://www.freebsd.org/">FreeBSD</a></li>
+<li>Δωρεάν πρoγράμματα Virtual Machine: <a href="https://my.vmware.com/web/vmware/downloads">VMware Player</a>, <a href="https://www.virtualbox.org/wiki/Downloads">Oracle VirtualBox</a></li>
+<li><a href="http://linux.die.net/Bash-Beginners-Guide">Αρχικό εγχειρίδιο για bash</a></li>
+<li><a href="http://www.gnu.org/software/bash/manual/bashref.html">Bash Reference Manual</a></li>
+<li>Χρήσιμο F.A.Q. για την γλώσσα προγραμματισμού C - <a href="http://cgi.di.uoa.gr/%7Ead/OSdir/comp.lang.c_faq">faq-c</a></li>
+<li>Εισαγωγικά tutorials για Unix <a href="http://www.ee.surrey.ac.uk/Teaching/Unix/">1</a> <a href="http://unixhelp.ed.ac.uk/">2</a></li>
+<li><a href="http://users.actcom.co.il/%7Echoo/lupg/tutorials/">Tutorials</a> για το πώς να κάνετε compile προγράμματα στο Unix.</li>
+<li><a href="http://www.acm.uiuc.edu/webmonkeys/book/c_guide">C Standard Library</a></li>
+<li><a href="http://www.gnu.org/software/libc/manual/html_node/index.html">The GNU C Library</a></li>
+<li><a href="http://docs.oracle.com/cd/E23824_01/html/821-1463/index.html">Oracle-Solaris System Calls</a></li>
+<li>A. D. Downey, <a href="http://www.greenteapress.com/semaphores">The Little Book of Semaphores</a>, GreenTree Press, 2007.</li>
+</ul>
+<h3 id="unix-accounts">Unix Accounts:</h3>
+<p>Αν έχετε γραφτεί στο τμήμα μπορείτε να έχετε και Unix/Linux λογαριασμούς (Solaris, Linux). Μπορείτε να πάρετε τα passwords που χρειάζεστε απο τους υπεύθυνους στο Αναγνωστήριο του Τμήματος.</p>
+</body>
+</html>

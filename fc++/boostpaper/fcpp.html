@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Boost.FC++</title><link rel="stylesheet" href="reference.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.48"><link rel="home" href="fcpp.html" title="Boost.FC++"><link rel="next" href="fcpp.sectpure.html" title="2. Pure Functional Programming"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table border="1" cellpadding="2" bgcolor="#007F7F"><tr><td bgcolor="#FFFFFF"><img src="../../c++boost.gif" alt="c++boost.gif (8819 bytes)" width="277" height="86"></td><td><a href="../../index.htm"><font color="#FFFFFF" size="4" face="Arial">Home</font></a></td><td><a href="libraries.html"><font color="#FFFFFF" size="4" face="Arial">Libraries</font></a></td><td><a href="../../people/people.htm"><font color="#FFFFFF" size="4" face="Arial">People</font></a></td><td><a href="../../more/faq.htm"><font color="#FFFFFF" size="4" face="Arial">FAQ</font></a></td><td><a href="../../more/index.htm"><font color="#FFFFFF" size="4" face="Arial">More</font></a></td></tr></table><div class="chapter"><div class="titlepage"><div><h2 class="title"><a name="fcpp"></a>Boost.FC++</h2></div><div><p class="copyright">Copyright © 2000-2003 Brian McNamara and Yannis Smaragdakis</p></div><div><div class="legalnotice"><p>
+      Use, modification and distribution is subject to the Boost
+      Software License, Version 1.0. (See accompanying file
+      <tt>LICENSE_1_0.txt</tt> or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">
+      http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt>1. <a href="fcpp.html#fcpp.sectintro">Introduction, important definitions, and notes (Read this!)</a></dt><dt>2. <a href="fcpp.sectpure.html">Pure Functional Programming</a></dt><dt>3. <a href="fcpp.sectroadmap.html">Roadmap</a></dt><dt>4. <a href="fcpp.sectoverview.html">Overview Examples</a></dt><dt>5. <a href="fcpp.sectdirect.html">Direct Functoids</a></dt><dd><dl><dt>5.1. <a href="fcpp.sectdirect.html#id188762">Issues with representing higher-order polymorphic
+functions</a></dt><dt>5.2. <a href="fcpp.sectdirect.html#id189053">The past and the future</a></dt><dt>5.3. <a href="fcpp.sectdirect.html#id189101">Defining a direct functoid</a></dt></dl></dd><dt>6. <a href="fcpp.sectindirect.html">Indirect Functoids</a></dt><dd><dl><dt>6.1. <a href="fcpp.sectindirect.html#id188344">Subtype-polymorphism</a></dt><dt>6.2. <a href="fcpp.sectindirect.html#fcpp.subsectboostfun">Relation to 
+   boost::function</a></dt></dl></dd><dt>7. <a href="fcpp.sectfull.html">Full Functoids</a></dt><dd><dl><dt>7.1. <a href="fcpp.sectfull.html#id189667">Currying</a></dt><dt>7.2. <a href="fcpp.sectfull.html#id189722">Infix Syntax</a></dt><dt>7.3. <a href="fcpp.sectfull.html#id268840">Lambda Awareness</a></dt><dt>7.4. <a href="fcpp.sectfull.html#id268868">Smartness</a></dt><dt>7.5. <a href="fcpp.sectfull.html#id268983">Return-type deduction</a></dt></dl></dd><dt>8. <a href="fcpp.secteffects.html">Effects and thunks</a></dt><dt>9. <a href="fcpp.sectlazy.html">Lists and lazy evaluation</a></dt><dd><dl><dt>9.1. <a href="fcpp.sectlazy.html#id269233">Interface to list</a></dt><dt>9.2. <a href="fcpp.sectlazy.html#id269270">Writing lazy list functoids</a></dt><dt>9.3. <a href="fcpp.sectlazy.html#id269375">Other details about lazy evaluation</a></dt></dl></dd><dt>10. <a href="fcpp.sectlibrary.html">Library</a></dt><dd><dl><dt>10.1. <a href="fcpp.sectlibrary.html#id269529">Nuts and bolts</a></dt><dt>10.2. <a href="fcpp.sectlibrary.html#id269602">Constants</a></dt><dt>10.3. <a href="fcpp.sectlibrary.html#id269622">Data types</a></dt><dt>10.4. <a href="fcpp.sectlibrary.html#id269740">Basic list functions</a></dt><dt>10.5. <a href="fcpp.sectlibrary.html#id269814">Haskell standard prelude</a></dt><dt>10.6. <a href="fcpp.sectlibrary.html#id269860">Operators</a></dt><dt>10.7. <a href="fcpp.sectlibrary.html#id269930">Currying, thunks, and effect combinators</a></dt><dt>10.8. <a href="fcpp.sectlibrary.html#id269959">General combinators</a></dt><dt>10.9. <a href="fcpp.sectlibrary.html#id270006">Functoid promotion</a></dt><dt>10.10. <a href="fcpp.sectlibrary.html#id270034">Other</a></dt><dt>10.11. <a href="fcpp.sectlibrary.html#id270060">Note about lambda/monads</a></dt></dl></dd><dt>11. <a href="fcpp.sectrelation.html">Relationships with other libraries</a></dt><dd><dl><dt>11.1. <a href="fcpp.sectrelation.html#id270098">Interfaces to STL</a></dt><dt>11.2. <a href="fcpp.sectrelation.html#id270261">Relation to Boost</a></dt></dl></dd><dt>12. <a href="fcpp.sectlambda.html">Lambda</a></dt><dd><dl><dt>12.1. <a href="fcpp.sectlambda.html#id270580">Lambda in FC++</a></dt><dt>12.2. <a href="fcpp.sectlambda.html#id270886">Naming the C++ types of lambda expressions</a></dt><dt>12.3. <a href="fcpp.sectlambda.html#id271055">FC++ lambda versus 
+   boost::lambda</a></dt></dl></dd><dt>13. <a href="fcpp.sectmonads.html">Monads</a></dt><dt>14. <a href="fcpp.sectapplications.html">Applications</a></dt><dt>15. <a href="fcpp.sectperformance.html">Performance</a></dt><dt>16. <a href="fcpp.sectlimitations.html">Limitations and future work</a></dt><dd><dl><dt>16.1. <a href="fcpp.sectlimitations.html#id271456">Limitations</a></dt><dt>16.2. <a href="fcpp.sectlimitations.html#id271591">Future work</a></dt></dl></dd><dt>17. <a href="fcpp.sectacks.html">Acknowledgements</a></dt><dt>18. <a href="fcpp.sectmoreinfo.html">To find out more...</a></dt><dt><a href="fcpp.html#id271747">Bibliography</a></dt></dl></div><div class="section"><div class="titlepage"><div><h2 class="title" style="clear: both"><a name="fcpp.sectintro"></a>1. Introduction, important definitions, and notes (Read this!)</h2></div></div><p>
+FC++ is a library for doing functional programming in C++.  The library
+provides a general framework to support various functional programming
+aspects, such as higher-order<sup>[<a name="id190015" href="#ftn.id190015">1</a>]</sup> polymorphic<sup>[<a name="fcpp.footpolymorphic" href="#ftn.fcpp.footpolymorphic">2</a>]</sup>
+functions, currying, lazy evaluation, and lambda.  In addition to the
+framework, FC++ also provides a large library of useful functions and
+data types.
+</p><p>
+In FC++, we program with <span class="emphasis"><i>functoids</i></span>, which are C++
+classes or structs which overload <tt>operator()</tt> and obey
+certain other conventions.  We will describe functoids in more detail
+in <a href="fcpp.sectdirect.html#fcpp.sectdirect" title="5. Direct Functoids">Section 5</a>, <a href="fcpp.sectindirect.html#fcpp.sectindirect" title="6. Indirect Functoids">Section 6</a>, and <a href="fcpp.sectfull.html#fcpp.sectfull" title="7. Full Functoids">Section 7</a>.
+Functoids are simply our chosen representation for functions in C++;
+for now you may equate the terms &quot;functoid&quot; and &quot;function&quot; in your
+mind.  Later we shall see what exactly a functoid is and why it is
+useful.
+</p><p>
+This document describes &quot;Boost FC++&quot;.  Prior to being &quot;boostified&quot;,
+FC++ existed as a research project at Georgia Tech for a number of
+years [<a href="fcpp.html#fcpp.citfcpp" title="[FC++]">FC++</a>].  This is the first document to
+describe the boostified version of FC++.  It is important to note the
+changes made to the library between &quot;FC++&quot; and &quot;Boost FC++&quot;, in
+order to understand the old documentation.  The changes are mostly just
+a matter of naming conventions.  In <a href="fcpp.html#fcpp.fignaming" title="Table 1. Naming changes from FC++ to Boost FC++">Table 1</a>,
+we summarize the naming changes from FC++ to Boost FC++, by giving a
+sense of the general name changes as well as some particular examples.
+To avoid confusion, the reader of this document should at least be
+aware of this mapping before reading any of the prior documentation on
+FC++.
+</p><div class="table"><p><a name="fcpp.fignaming"></a><b>Table 1. Naming changes from FC++ to Boost FC++</b></p><table summary="Naming changes from FC++ to Boost FC++" border="1"><colgroup><col><col><col><col></colgroup><thead><tr><th>Original FC++</th><th>Boost FC++</th><th>Example (orig)</th><th>Example (Boost)</th></tr></thead><tbody><tr><td><tt>SomeFunctoid</tt></td><td><tt>some_functoid_type</tt></td><td><tt>EnumFrom</tt></td><td><tt>enum_from_type</tt></td></tr><tr><td><tt>someFunctoid</tt></td><td><tt>some_functoid</tt></td><td><tt>enumFrom</tt></td><td><tt>enum_from</tt></td></tr><tr><td><tt>SomeType       </tt></td><td><tt>some_type</tt></td><td><tt>Full2      </tt></td><td><tt>full2</tt></td></tr><tr><td><tt>SomeFunc_            </tt></td><td><tt>some_func_x_type</tt></td><td><tt>BindM_             </tt></td><td><tt>bind_m_x_type</tt></td></tr><tr><td><tt>NestedType</tt></td><td><tt>nested_type</tt></td><td><tt>Arg1Type</tt></td><td><tt>arg1_type</tt></td></tr><tr><td>Misc</td><td>Misc</td><td><tt>RT,LAM,COMP,...</tt></td><td>unchanged</td></tr><tr><td>Misc</td><td>Misc</td><td><tt>ElementType,LEType,Inv,Var</tt></td><td><tt>value_type,LE,INV,VAR</tt></td></tr><tr><td>Misc</td><td>Misc</td><td><tt>Ref,IRef</tt></td><td><tt>boost::shared_ptr,
+   boost::intrusive_ptr</tt></td></tr><tr><td>Misc</td><td>Misc</td><td><tt>curryN</tt></td><td><tt>thunkN</tt></td></tr></tbody></table></div><p>
+The only other major change to the library is that now the
+<tt>fun_type</tt> class only takes one argument (the result type).
+That is, code which used to say
+<pre class="programlisting">
+   template &lt;class X, class Y&gt;
+   struct sig : public fun_type&lt;X,Y,Something&gt; {};
+</pre>
+now reads
+<pre class="programlisting">
+   template &lt;class X, class Y&gt;
+   struct sig : public fun_type&lt;Something&gt; {};
+</pre>
+See <a href="fcpp.sectdirect.html#fcpp.sectdirect" title="5. Direct Functoids">Section 5</a> for details.
+</p></div><div id="id271747" class="bibliography"><div class="titlepage"><div><h2 class="title"><a name="id271747"></a>Bibliography</h2></div></div><div class="biblioentry"><a name="fcpp.citXR"></a><p>[XR] <span class="author">K. Briggs. </span><span class="title"><I>
+<a href="http://www.btexact.com/people/briggsk2/XR.html" target="_top">
+The XR Exact Real Home Page</a></I>. </span></p></div><div class="biblioentry"><a name="fcpp.citfcpp"></a><p>[FC++] <span class="title"><I>
+<a href="http://www.cs.umass.edu/~yannis/fc++/" target="_top">
+The FC++ web page</a></I>. </span></p></div><div class="biblioentry"><a name="fcpp.citprelude"></a><p>[Haskell] <span class="title"><I><a href="http://www.haskell.org/onlinereport/" target="_top">
+<span class="emphasis"><i>Haskell 98 Language Report</i></span></a></I>. </span></p></div><div class="biblioentry"><a name="fcpp.citjarvispe"></a><p>[Jär&amp;Pow03] <span class="authorgroup">Jaakko Järvi, Gary Powell, and Andrew Lumsdaine. </span><span class="title"><I>The Lambda Library: unnamed functions in C++</I>. </span><span class="publisher"><span class="publishername">
+<a href="http://www.interscience.wiley.com/jpages/0038-0644/" target="_top">
+Software: Practice and Experience</a>
+. </span></span><span class="pubdate">March, 2003. </span></p></div><div class="biblioentry"><a name="fcpp.citjarvitmpw"></a><p>[Jär&amp;Pow01] <span class="authorgroup">Jaakko Järvi and Gary Powell. </span><span class="title"><I>The Lambda Library: Lambda Abstraction in C++</I>. </span><span class="confgroup"><span class="confdates">October, 2001. </span><span class="conftitle"><a href="http://www.oonumerics.org/tmpw01/" target="_top">
+Workshop on C++ Template Programming</a>. </span><span class="confnum">2. </span><span class="address">Tampa, Florida. </span>. </span></p></div><div class="biblioentry"><a name="fcpp.citjfp"></a><p>[McN&amp;Sma to appear] <span class="authorgroup">Brian McNamara and Yannis Smaragdakis. </span><span class="title"><I>Functional Programming with the  FC++ library</I>. </span><span class="publisher"><span class="publishername">
+<a href="http://www.dcs.gla.ac.uk/jfp/" target="_top">Journal of Functional
+Programming</a>. </span></span><span class="pubdate">to appear. </span><span class="bibliomisc">Available from the
+<a href="http://www.cs.umass.edu/~yannis/fc++/" target="_top">FC++ web
+site</a>. </span></p></div><div class="biblioentry"><a name="fcpp.citstaticisa"></a><p>[McN&amp;Sma00] <span class="authorgroup">Brian McNamara and Yannis Smaragdakis. </span><span class="title"><I>Static Interfaces in C++</I>. </span><span class="confgroup"><span class="confdates">October, 2000. </span><span class="conftitle"><a href="http://www.oonumerics.org/tmpw00/" target="_top">
+Workshop on C++ Template Programming</a>. </span><span class="confnum">1. </span><span class="address">Erfurt, Germany. </span>. </span></p></div><div class="biblioentry"><a name="fcpp.citdpcool"></a><p>[McN&amp;Sma03] <span class="authorgroup">Brian McNamara and Yannis Smaragdakis. </span><span class="confgroup"><span class="confdates">August, 2003. </span><span class="conftitle"><a href="http://www.multiparadigm.org/dpcool03/" target="_top">
+DPCOOL</a>. </span><span class="confnum">1. </span><span class="address">Uppsala, Sweden. </span>. </span><span class="title"><I>Syntax sugar for FC++: lambda, infix, monads, and more</I>. </span><span class="bibliomisc">Available at the <a href="http://www.cs.umass.edu/~yannis/fc++/" target="_top">FC++ web site</a>
+. </span></p></div><div class="biblioentry"><a name="fcpp.citsiek"></a><p>[Sie&amp;Lum00] <span class="authorgroup">Jeremy Siek and Andrew Lumsdaine. </span><span class="title"><I>Concept Checking: Binding Parametric Polymorphism in C++</I>. </span><span class="confgroup"><span class="confdates">October, 2000. </span><span class="conftitle"><a href="http://www.oonumerics.org/tmpw00/" target="_top">
+Workshop on C++ Template Programming</a>. </span><span class="confnum">1. </span><span class="address">Erfurt, Germany. </span>. </span></p></div><div class="biblioentry"><a name="fcpp.citspe"></a><p>[Sma&amp;McN02] <span class="authorgroup">Yannis Smaragdakis and Brian McNamara. </span><span class="title"><I>FC++: Functional Tools for Object-Oriented Tasks</I>. </span><span class="publisher"><span class="publishername">
+<a href="http://www.interscience.wiley.com/jpages/0038-0644/" target="_top">
+Software: Practice and Experience</a>
+. </span></span><span class="pubdate">August, 2002. </span><span class="bibliomisc">A previous version of this paper is available from the
+<a href="http://www.cs.umass.edu/~yannis/fc++/" target="_top">FC++ web
+site</a>. </span></p></div><div class="biblioentry"><a name="fcpp.citreturntype"></a><p>[ReturnType] <span class="title"><I>A uniform method for computing function object return
+types</I>. </span><span class="bibliomisc">Available at
+<a href="http://anubis.dkuug.dk/jtc1/sc22/wg21/docs/papers/2003/n1454.html" target="_top">
+http://anubis.dkuug.dk/jtc1/sc22/wg21/docs/papers/2003/n1454.html</a>
+. </span></p></div></div><div class="footnotes"><br><hr width="100" align="left"><div class="footnote"><p><sup>[<a name="ftn.id190015" href="#id190015">1</a>] </sup>A higher-order function is a
+function which takes another function as an argument or returns a
+function as a result.</p></div><div class="footnote"><p><sup>[<a name="ftn.fcpp.footpolymorphic" href="#fcpp.footpolymorphic">2</a>] </sup>We use the term
+&quot;polymorphism&quot; to mean parametric polymorphism (e.g. templates).
+This is the usual definition in the sphere of functional programming.
+In object-oriented programming, the term &quot;polymorphism&quot; usually
+refers to dynamic dispatch (virtual function call).  Please note the
+definition we are using.  In contrast, a monomorphic function is a
+function which only works on one set of argument types.</p></div></div></div><table width="100%"><tr><td align="left"><small>Last revised: October 03, 2003 at 23:27:22 GMT</small></td><td align="right"><small></small></td></tr></table><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="fcpp.sectpure.html"><img src="images/next.png" alt="Next"></a></td></tr><tr><td width="40%" align="left" valign="top"> </td><td width="20%" align="center"> </td><td width="40%" align="right" valign="top"> 2. Pure Functional Programming</td></tr></table></div></body></html>

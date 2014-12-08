@@ -1,0 +1,1334 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title></title><link rel="stylesheet" href="reference.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.61.3"><link rel="home" href="index.html" title="Boost.FC++"><link rel="up" href="index.html" title="Boost.FC++"><link rel="previous" href="index.html" title="Boost.FC++"><link rel="next" href="fcpp.body.html#id324867" title="Bibliography"><link rel="chapter" href="index.html" title="Boost.FC++"><link rel="subsection" href="fcpp.body.html#id244561" title="Introduction, important definitions, and notes (Read this!)"><link rel="subsection" href="fcpp.body.html#id247019" title="Pure Functional Programming"><link rel="subsection" href="fcpp.body.html#id247055" title="Roadmap"><link rel="subsection" href="fcpp.body.html#fcpp.sectoverview" title="Overview Examples"><link rel="subsection" href="fcpp.body.html#fcpp.sectdirect" title="Direct Functoids"><link rel="subsection" href="fcpp.body.html#fcpp.sectindirect" title="Indirect Functoids"><link rel="subsection" href="fcpp.body.html#fcpp.sectfull" title="Full Functoids"><link rel="subsection" href="fcpp.body.html#fcpp.secteffects" title="Effects and thunks"><link rel="subsection" href="fcpp.body.html#fcpp.sectlazy" title="Lists and lazy evaluation"><link rel="subsection" href="fcpp.body.html#fcpp.sectlibrary" title="Library"><link rel="subsection" href="fcpp.body.html#fcpp.sectrelation" title="Relationships with other libraries"><link rel="subsection" href="fcpp.body.html#fcpp.sectlambda" title="Lambda"><link rel="subsection" href="fcpp.body.html#fcpp.sectmonads" title="Monads"><link rel="subsection" href="fcpp.body.html#fcpp.sectapplications" title="Applications"><link rel="subsection" href="fcpp.body.html#fcpp.sectperformance" title="Performance"><link rel="subsection" href="fcpp.body.html#fcpp.sectlimitations" title="Limitations and future work"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table border="1" cellpadding="2" bgcolor="#007F7F"><tr><td bgcolor="#FFFFFF"><img src="../../c++boost.gif" alt="c++boost.gif (8819 bytes)" width="277" height="86"></td><td><a href="../../index.htm"><font color="#FFFFFF" size="4" face="Arial">Home</font></a></td><td><a href="libraries.html"><font color="#FFFFFF" size="4" face="Arial">Libraries</font></a></td><td><a href="../../people/people.htm"><font color="#FFFFFF" size="4" face="Arial">People</font></a></td><td><a href="../../more/faq.htm"><font color="#FFFFFF" size="4" face="Arial">FAQ</font></a></td><td><a href="../../more/index.htm"><font color="#FFFFFF" size="4" face="Arial">More</font></a></td></tr></table><div class="section" lang="en"><div class="titlepage"><div></div><div></div></div><div class="toc"><dl><dt><a href="fcpp.body.html#id244561">Introduction, important definitions, and notes (Read this!)</a></dt><dt><a href="fcpp.body.html#id247019">Pure Functional Programming</a></dt><dt><a href="fcpp.body.html#id247055">Roadmap</a></dt><dt><a href="fcpp.body.html#fcpp.sectoverview">Overview Examples</a></dt><dt><a href="fcpp.body.html#fcpp.sectdirect">Direct Functoids</a></dt><dt><a href="fcpp.body.html#fcpp.sectindirect">Indirect Functoids</a></dt><dt><a href="fcpp.body.html#fcpp.sectfull">Full Functoids</a></dt><dt><a href="fcpp.body.html#fcpp.secteffects">Effects and thunks</a></dt><dt><a href="fcpp.body.html#fcpp.sectlazy">Lists and lazy evaluation</a></dt><dt><a href="fcpp.body.html#fcpp.sectlibrary">Library</a></dt><dt><a href="fcpp.body.html#fcpp.sectrelation">Relationships with other libraries</a></dt><dt><a href="fcpp.body.html#fcpp.sectlambda">Lambda</a></dt><dt><a href="fcpp.body.html#fcpp.sectmonads">Monads</a></dt><dt><a href="fcpp.body.html#fcpp.sectapplications">Applications</a></dt><dt><a href="fcpp.body.html#fcpp.sectperformance">Performance</a></dt><dt><a href="fcpp.body.html#fcpp.sectlimitations">Limitations and future work</a></dt></dl></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id244561"></a>Introduction, important definitions, and notes (Read this!)</h3></div></div><div></div></div><p>
+FC++ is a library for doing functional programming in C++.  The library
+provides a general framework to support various functional programming
+aspects, such as higher-order<sup>[<a name="id244576" href="#ftn.id244576">1</a>]</sup> polymorphic<sup>[<a name="id244582" href="#ftn.id244582">2</a>]</sup>
+functions, currying, lazy evaluation, and lambda.  In addition to the
+framework, FC++ also provides a large library of useful functions and
+data types.
+</p><p>
+In FC++, we program with <span class="emphasis"><em>functoids</em></span>, which are C++
+classes or structs which overload <tt class="computeroutput">operator()</tt> and obey
+certain other conventions.  We will describe functoids in more detail
+in <a href="fcpp.body.html#fcpp.sectdirect" title="Direct Functoids">the section called &#8220;Direct Functoids&#8221;</a>, <a href="fcpp.body.html#fcpp.sectindirect" title="Indirect Functoids">the section called &#8220;Indirect Functoids&#8221;</a>, and <a href="fcpp.body.html#fcpp.sectfull" title="Full Functoids">the section called &#8220;Full Functoids&#8221;</a>.
+Functoids are simply our chosen representation for functions in C++;
+for now you may equate the terms ``functoid'' and ``function'' in your
+mind.  Later we shall see what exactly a functoid is and why it is
+useful.
+</p><p>
+This document describes ``Boost FC++''.  Prior to being ``boostified'',
+FC++ existed as a research project at Georgia Tech for a number of
+years [<span class="citation">fc++</span>].  This is the first document to
+describe the boostified version of FC++.  It is important to note the
+changes made to the library between ``FC++'' and ``Boost FC++'', in
+order to understand the old documentation.  The changes are mostly just
+a matter of naming conventions.  In <a href="fcpp.body.html#fcpp.fignaming" title="Table 1. Naming changes from FC++ to Boost FC++">Table 1</a>,
+we summarize the naming changes from FC++ to Boost FC++, by giving a
+sense of the general name changes as well as some particular examples.
+To avoid confusion, the reader of this document should at least be
+aware of this mapping before reading any of the prior documentation on
+FC++.
+</p><div class="table"><a name="fcpp.fignaming"></a><p class="title"><b>Table 1. Naming changes from FC++ to Boost FC++</b></p><table summary="Naming changes from FC++ to Boost FC++" border="1"><colgroup><col><col><col><col></colgroup><thead><tr><th>Original FC++</th><th>Boost FC++</th><th>Example (orig)</th><th>Example (Boost)</th></tr></thead><tbody><tr><td>SomeFunctoid someFunctoid; </td><td>some_functoid_type some_functoid;</td><td>EnumFrom enumFrom;</td><td>enum_from_type enum_from;</td></tr><tr><td>SomeType                   </td><td>some_type</td><td>Full2                   </td><td>full2</td></tr><tr><td>SomeFunc_                  </td><td>some_func_x_type</td><td>BindM_                  </td><td>bind_m_x_type</td></tr><tr><td>NestedType                 </td><td>nested_type</td><td>Arg1Type                </td><td>arg1_type</td></tr><tr><td>Misc</td><td>Misc</td><td>RT,LAM,COMP,... </td><td>unchanged</td></tr><tr><td>Misc</td><td>Misc</td><td>ElementType,LEType,Inv,Var  </td><td>value_type,LE,INV,VAR</td></tr><tr><td>Misc</td><td>Misc</td><td>Ref,IRef   </td><td>boost::shared_ptr, boost::intrusive_ptr</td></tr><tr><td>Misc</td><td>Misc</td><td>curryN </td><td>thunkN</td></tr></tbody></table></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id247019"></a>Pure Functional Programming</h3></div></div><div></div></div><p>
+Many of the functions and data types in the FC++ library are designed
+to mimic those in the Haskell programming language.  Haskell is a
+<span class="emphasis"><em>pure</em></span> functional programming language: there are no
+effects, global variables, or destructive updates in the language.
+Programming in this pure style ensures referential transparency.
+</p><p>
+The FC++ library uses this ``pure'' style for the most part.  All
+parameters to FC++ functoids are passed by <tt class="computeroutput">const&amp;</tt> by
+default, for example.  Nevertheless, since this is C++, you can use
+FC++ to create side-effecting functoids in a number of ways, which we
+will see later (<a href="fcpp.body.html#fcpp.secteffects" title="Effects and thunks">the section called &#8220;Effects and thunks&#8221;</a>).  The introductory
+examples will all be effect-free, however.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id247055"></a>Roadmap</h3></div></div><div></div></div><p>
+Here we give an overview of what each section of the documentation
+covers.
+</p><p><a href="fcpp.body.html#fcpp.sectoverview" title="Overview Examples">the section called &#8220;Overview Examples&#8221;</a> provides an overview of most of the
+major features of the FC++ library via a number of small examples.
+</p><p>
+The next few sections describe functoids in detail:
+</p><div class="itemizedlist"><ul type="disc"><li><a href="fcpp.body.html#fcpp.sectdirect" title="Direct Functoids">the section called &#8220;Direct Functoids&#8221;</a> describes <span class="emphasis"><em>direct 
+functoids</em></span>.
+Direct functoids are the way we represent most functions in FC++.
+</li><li><a href="fcpp.body.html#fcpp.sectindirect" title="Indirect Functoids">the section called &#8220;Indirect Functoids&#8221;</a> describes
+<span class="emphasis"><em>indirect functoids</em></span>.
+Indirect functoids are data types which can be used to create function 
+variables which can be bound to different function values at run-time.
+</li><li><a href="fcpp.body.html#fcpp.sectfull" title="Full Functoids">the section called &#8220;Full Functoids&#8221;</a> describes
+<span class="emphasis"><em>full functoids</em></span>.  Full
+functoids are functoids which support all of the features of FC++, such
+as currying and infix syntax.
+</li></ul></div><p><a href="fcpp.body.html#fcpp.secteffects" title="Effects and thunks">the section called &#8220;Effects and thunks&#8221;</a> describes how to include side effects in
+functoids, typically by using global variables, pointers, or ``thunks''.
+</p><p><a href="fcpp.body.html#fcpp.sectlazy" title="Lists and lazy evaluation">the section called &#8220;Lists and lazy evaluation&#8221;</a> describes the FC++ ``lazy list'' data
+structure, as well as more general support FC++ has for lazy
+evaluation.
+</p><p><a href="fcpp.body.html#fcpp.sectlibrary" title="Library">the section called &#8220;Library&#8221;</a> gives a short description of all of the
+functoids and data types that are included in FC++ the library.
+</p><p><a href="fcpp.body.html#fcpp.sectrelation" title="Relationships with other libraries">the section called &#8220;Relationships with other libraries&#8221;</a> describes the relationships and interfaces
+between FC++ and other libraries (STL and Boost).
+</p><p><a href="fcpp.body.html#fcpp.sectlambda" title="Lambda">the section called &#8220;Lambda&#8221;</a> describes the FC++ lambda construct, for
+creating anonymous functions on-the-fly, as well as the rest of our
+lambda sublanguage.
+</p><p><a href="fcpp.body.html#fcpp.sectmonads" title="Monads">the section called &#8220;Monads&#8221;</a> introduces monads and describes
+FC++'s support for them.
+</p><p><a href="fcpp.body.html#fcpp.sectapplications" title="Applications">the section called &#8220;Applications&#8221;</a> provides larger example
+contexts which illustrate the utility of FC++.
+</p><p><a href="fcpp.body.html#fcpp.sectperformance" title="Performance">the section called &#8220;Performance&#8221;</a> describes some aspects of the
+run-time (and compile-time) performance of the library.
+</p><p><a href="fcpp.body.html#fcpp.sectlimitations" title="Limitations and future work">the section called &#8220;Limitations and future work&#8221;</a> describes limitations of the
+library, as well as directions for future extensions.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fcpp.sectoverview"></a>Overview Examples</h3></div></div><div></div></div><p>
+In this section, we provide an overview of many of the major features of
+the FC++ library, through a number of short, illustrative examples.
+</p><p>
+FC++ functoids can be simultaneously higher order (able to take
+functoids as arguments and return them as results) and polymorphic
+(template functions which work on a variety of data types).  For
+example, consider the library function <tt class="computeroutput">compose()</tt>, which takes
+two functoids and returns the composition:
+</p><pre class="programlisting">
+   // compose( f, g )(args)    means    f( g(args) )
+</pre><p>
+We could define a polymorphic functoid <tt class="computeroutput">add_self()</tt>, which adds an
+argument to itself:
+</p><pre class="programlisting">
+   // add_self( x )    means    x + x
+</pre><p>
+We could then compose <tt class="computeroutput">add_self</tt> with itself, and the result would
+still be a polymorphic functoid:
+</p><pre class="programlisting">
+   int x = 3;
+   std::string s = &quot;foo&quot;;
+   compose( add_self, add_self )( x )    // yields 12
+   compose( add_self, add_self )( s )    // yields &quot;foofoofoofoo&quot;
+</pre><p><a href="fcpp.body.html#fcpp.sectdirect" title="Direct Functoids">the section called &#8220;Direct Functoids&#8221;</a> describes the infrastructure of these
+``direct functoids'', which enables this feat to be implemented.
+</p><p>
+FC++ defines a lazy list data structure called <tt class="computeroutput">list</tt>.
+<tt class="computeroutput">list</tt>s are lazy in that they need not compute their
+elements until they are demanded.  For example, the functoid
+<tt class="computeroutput">enum_from()</tt> takes an integer and returns the infinite list
+of integers starting with that number:
+</p><pre class="programlisting">
+   list&lt;int&gt; li = enum_from( 1 );  // li is infinite list [1, 2, 3, ...]
+</pre><p>
+A number of functoids manipulate such lists; for instance
+<tt class="computeroutput">map()</tt> applies a functoid to each element of a list:
+</p><pre class="programlisting">
+   li = map( add_self, li );  // li is now infinite list [2, 4, 6, ...]
+</pre><p>
+The FC++ library defines a wealth of useful functoids and data types.  
+There are named functoids for most C++ operators, like
+</p><pre class="programlisting">
+   plus(3,4)       // 3+4      also minus, multiplies, etc.
+</pre><p>
+There are many functoids which work on <tt class="computeroutput">list</tt>s, including
+<tt class="computeroutput">map</tt>.  Most of the <tt class="computeroutput">list</tt> functions are
+identical those defined in Haskell[<span class="citation">prelude</span>].
+Additionally, a number of basic functions (like the identity function,
+<tt class="computeroutput">id</tt>), combinators (like <tt class="computeroutput">flip</tt>:
+<tt class="computeroutput">flip(f)(x,y)==f(y,x)</tt>), and data types (like
+<tt class="computeroutput">list</tt> and <tt class="computeroutput">maybe</tt>; <tt class="computeroutput">maybe</tt> will be
+discussed in <a href="fcpp.body.html#fcpp.sectmonads" title="Monads">the section called &#8220;Monads&#8221;</a>) are designed to mimic
+exactly their Haskell counterparts.  We also implement functoids for
+C++ constructs such as constructor calls and <tt class="computeroutput">new</tt> calls:
+</p><pre class="programlisting">
+   construct3&lt;T&gt;()(x,y,z)   // yields T(x,y,z)
+   new2&lt;T&gt;()(x,y)           // yields new T(x,y)
+</pre><p>
+and many more.
+</p><p>
+Functoids are curryable.  That is, we can call a functoid with some
+subset of its arguments, returning a new functoid which expects the rest
+of the arguments.  Currying of leading arguments can be done implicitly, 
+as in
+</p><pre class="programlisting">
+   minus(3)      // yields a new function &quot;f(x)=3-x&quot;
+</pre><p>
+Any argument can be curried explicitly using the placeholder 
+variable <tt class="computeroutput">_</tt> (defined by FC++):
+</p><pre class="programlisting">
+   minus(3,_)    // yields a new function &quot;f(x)=3-x&quot;
+   minus(_,3)    // yields a new function &quot;f(x)=x-3&quot;
+</pre><p>
+We can even curry all <span class="emphasis"><em>N</em></span> of a function's arguments
+with a call to <tt class="computeroutput">thunkN()</tt>, returning a
+<span class="emphasis"><em>thunk</em></span> (a zero-argument functoid):
+</p><pre class="programlisting">
+   thunk2( minus, 3, 2 )   // yields a new thunk &quot;f()=3-2&quot;
+</pre><p>
+FC++ functoids can be called using a special infix syntax (implemented
+by overloading <tt class="computeroutput">operator^</tt>):
+</p><pre class="programlisting">
+   x ^f^ y        // Same as f(x,y).  Example: 3 ^plus^ 2         
+</pre><p>
+This syntax was also inspired by Haskell; some function names (like
+<tt class="computeroutput">plus</tt>) are more readable as infix than as prefix.
+</p><p>
+FC++ defines <span class="emphasis"><em>indirect functoids</em></span>, which are
+function variables which can be bound to any function with the same
+(monomorphic) signature.  Indirect functoids are implemented via the
+<tt class="computeroutput">funN</tt> classes, which take <span class="emphasis"><em>N</em></span> template
+arguments describing the argument types, as well as a template argument
+describing the result type.  For example:
+</p><pre class="programlisting">
+   // Note: plus is polymorphic, the next line selects just &quot;int&quot; version
+   fun2&lt;int,int,int&gt; f = plus;  
+   f(3,2);          // yields 5
+   f = minus;
+   f(3,2);          // yields 1
+</pre><p>
+Indirect functoids are particularly useful in the implementation of
+callback libraries and some design patterns[<span class="citation">spe</span>].
+</p><p>
+The FC++ library defines a few effect combinators.  An effect
+combinator combines an effect (represented as a thunk) with another
+functoid.  Here are some example effect combinators:
+</p><pre class="programlisting">
+   // before(thunk,f)(args)  means  { thunk(); return f(args); }
+   // after(g,thunk)(args)   means  { R r = g(args); thunk(); return r; }
+</pre><p>
+An example: suppose you've defined a functoid <tt class="computeroutput">write_log()</tt> 
+which takes a string and writes it to a log file.  Then
+</p><pre class="programlisting">
+   before( thunk1( write_log, &quot;About to call foo()&quot; ), foo )
+</pre><p>
+results in a new functoid with the same behavior as <tt class="computeroutput">foo()</tt>,
+only it writes a message to the log file before calling
+<tt class="computeroutput">foo()</tt>.
+</p><p>
+FC++ interfaces with normal C++ code and the STL.  The
+<tt class="computeroutput">list</tt> class implements the iterator interface, so that
+lists can work with STL algorithms and other STL data structures can be
+converted into <tt class="computeroutput">list</tt>s.  The functoid
+<tt class="computeroutput">ptr_to_fun()</tt> transforms normal C++ function pointers into
+functoids, and turns method pointers into functions which take a
+pointer to the receiver object as an extra first object.  Here are some
+examples, which use currying to demonstrate that the result of
+<tt class="computeroutput">ptr_to_fun</tt> is a functoid:
+</p><pre class="programlisting">
+   ptr_to_fun( &amp;someFunc )(x)(y)         // someFunc(x,y)
+   ptr_to_fun( &amp;Foo::meth )(aFooPtr)(x)  // aFooPtr-&gt;meth(x)
+</pre><p>
+FC++ also has a <span class="emphasis"><em>lambda</em></span> sublanguage for defining
+anonymous functions on-the-fly, but we hold off describing this feature
+until <a href="fcpp.body.html#fcpp.sectlambda" title="Lambda">the section called &#8220;Lambda&#8221;</a>.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fcpp.sectdirect"></a>Direct Functoids</h3></div></div><div></div></div><div class="toc"><dl><dt><a href="fcpp.body.html#id247811">Issues with representing higher-order polymorphic
+functions</a></dt><dt><a href="fcpp.body.html#id243117">The past and the future</a></dt><dt><a href="fcpp.body.html#id243178">Defining a direct functoid</a></dt></dl></div><p>
+Direct functoids enable the creation of functions which are
+simultaneously higher-order and polymorphic.  Consider the
+<tt class="computeroutput">map()</tt> function described in the previous section:
+<tt class="computeroutput">map()</tt> takes two arguments&#8212;a function and a
+list&#8212;and applies the function to every element of the list.  In
+Haskell we would describe the type signature of map like this:
+</p><pre class="programlisting">
+   map :: [a] -&gt; (a -&gt; b) -&gt; [b]
+</pre><p>
+The letters <tt class="computeroutput">a</tt> and <tt class="computeroutput">b</tt> are placeholder type
+variables (like the <tt class="computeroutput">T</tt> in <tt class="computeroutput">template &lt;class
+T&gt;</tt>).  The signature says that <tt class="computeroutput">map()</tt> takes two
+arguments&#8212;a list of <tt class="computeroutput">a</tt> objects and a function from
+<tt class="computeroutput">a</tt> objects to <tt class="computeroutput">b</tt> objects&#8212;and returns a
+list of <tt class="computeroutput">b</tt> objects.  Thus <tt class="computeroutput">map()</tt> is an example
+of a higher-order (it takes a function as an argument) polymorphic (it
+can be instantiated for all types <tt class="computeroutput">a</tt> and <tt class="computeroutput">b</tt>)
+function.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id247811"></a>Issues with representing higher-order polymorphic
+functions</h4></div></div><div></div></div><p>
+Representing such a function in C++ is non-trivial.  Suppose we try to
+implement <tt class="computeroutput">map</tt> ourselves, and we call our version
+<tt class="computeroutput">mymap</tt>.  
+There are two key issues.  The first issue is this: if we represent 
+<tt class="computeroutput">mymap</tt> as a template function:
+</p><pre class="programlisting">
+   template &lt;class F, class T&gt;
+   ... mymap( F some_func, list&lt;T&gt; some_list ) { ... }
+</pre><p>
+then the symbol <tt class="computeroutput">mymap</tt> does not name a C++ object.  This means we
+cannot pass <tt class="computeroutput">mymap</tt> to another higher-order function:
+</p><pre class="programlisting">
+   some_other_func( mymap, ... );  // illegal if mymap is template function
+</pre><p>
+This problem is relatively straightforward to surmount using a function
+object:
+</p><pre class="programlisting">
+   struct mymap_type {
+      template &lt;class F, class T&gt;
+      ... operator()( F some_func, list&lt;T&gt; some_list ) const { ... }
+   } mymap;
+</pre><p>
+Now <tt class="computeroutput">mymap</tt> is an instance of <tt class="computeroutput">struct
+mymap_type</tt>, which has a template member
+<tt class="computeroutput">operator()</tt>.  As a result, we can call <tt class="computeroutput">mymap</tt>
+using the same syntax as before, but now the symbol <tt class="computeroutput">mymap</tt>
+does name a C++ object, and thus it can itself be passed as a
+parameter.
+</p><p>
+The second issue has to do with the return type.  What should the
+return type of <tt class="computeroutput">mymap</tt> be?  It should be a
+<tt class="computeroutput">list&lt;U&gt;</tt>, where <tt class="computeroutput">U</tt> is the result type of
+applying an <tt class="computeroutput">F</tt> function to a <tt class="computeroutput">T</tt> object.  Since
+the C++ language lacks a <tt class="computeroutput">typeof</tt> operator, we need to
+represent the return type information ourselves.  By convention, in
+FC++, we represent the return type of a function using a nested
+template member <tt class="computeroutput">struct</tt> named <tt class="computeroutput">sig</tt>:
+</p><pre class="programlisting">
+   struct mymap_type {
+      template &lt;class F, class L&gt;
+      struct sig {
+         typedef list&lt; typename F::template sig&lt;
+                           typename L::value_type &gt;::result_type &gt;
+            result_type;
+      };
+      ... 
+   } mymap;
+</pre><p>
+More generally, the expression
+</p><pre class="programlisting">
+   typename F::template sig&lt;X&gt;::result_type
+   // F::sig&lt;X&gt;::result_type   without the &quot;noise&quot; words
+</pre><p>
+represents the result type when a function of type <tt class="computeroutput">F</tt> is applied
+to an argument of type <tt class="computeroutput">X</tt>.
+</p><p>
+As a result, we could define <tt class="computeroutput">mymap</tt> as
+</p><pre class="programlisting">
+   struct mymap_type {
+      template &lt;class F, class L&gt;
+      struct sig {
+         typedef list&lt; typename F::template sig&lt;
+                           typename L::value_type &gt;::result_type &gt;
+            result_type;
+      };
+      template &lt;class F, class T&gt;
+      typename sig&lt; list&lt;T&gt; &gt;::result_type
+      operator()( F some_func, list&lt;T&gt; some_list ) const { ... }
+   } mymap;
+</pre><p>
+This is our first example of a <span class="emphasis"><em>functoid</em></span>.  A
+functoid is an instance of a struct which contains a (possibly
+templated) <tt class="computeroutput">operator()</tt> method, as well as a nested template
+member struct named <tt class="computeroutput">sig</tt> which works as a return-type
+computer.
+</p><p>
+Just as the STL provides helper classes (like
+<tt class="computeroutput">binary_function</tt>) for defining typedefs (like
+<tt class="computeroutput">first_argument_type</tt> and <tt class="computeroutput">result_type</tt>), we do
+the same in FC++.  The class <tt class="computeroutput">funtype&lt; A1, A2, ..., An, R
+&gt;</tt> defines typedefs for argument and result types.   (We shall
+see how this affects the definition of <tt class="computeroutput">mymap</tt> shortly.)
+FC++ functoids support functions of 0-3 arguments.
+</p><p>
+Also, to simplify naming return types, we have the <tt class="computeroutput">RT</tt> helper.
+Rather than say
+</p><pre class="programlisting">
+   typename F::template sig&lt;X,Y&gt;::result_type
+</pre><p>
+we just say
+</p><pre class="programlisting">
+   typename RT&lt;F,X,Y&gt;::result_type
+</pre><p>
+That is, <tt class="computeroutput">RT&lt;F,A1,...An&gt;</tt>
+computes the result type of a function of
+type <tt class="computeroutput">F</tt> being applied to arguments with type <tt class="computeroutput">Ai</tt>.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id243117"></a>The past and the future</h4></div></div><div></div></div><p>
+FC++ was the first C++ library to use this scheme for representing
+higher-order polymorphic functions.  Since then, a number of other
+libraries have arisen that all use variations of the same trick to
+enable return-type deduction.
+</p><p>
+A relatively new proposal standardizes the return-type deduction
+methods.  It uses conventions and syntax different from FC++.  FC++
+``full functoids'' (<a href="fcpp.body.html#fcpp.sectfull" title="Full Functoids">the section called &#8220;Full Functoids&#8221;</a>) ensure that functoids are
+forward-compatible with the new standard.   At the same time, the 
+<tt class="computeroutput">RT</tt> type computer makes FC++ code backward compatible with
+functoids using the extant <tt class="computeroutput">sig</tt> structures.  As a result, FC++
+interoperates with other libraries like <tt class="computeroutput">boost::bind</tt>.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id243178"></a>Defining a direct functoid</h4></div></div><div></div></div><p>
+Now, with all of the explanation out of the way, we can finally show
+the definition of the mymap functoid (<a href="fcpp.body.html#fcpp.figmymap" title="Figure 1. The mymap functoid">Figure 1</a>).  This is an example of a polymorphic direct
+functoid.  It has a <tt class="computeroutput">sig</tt> structure, which is a template
+over the parameter types which computes the result type, as well as a
+templated <tt class="computeroutput">operator()</tt> function, which uses the
+<tt class="computeroutput">sig</tt> to name its own result type.
+</p><div class="figure"><a name="fcpp.figmymap"></a><p class="title"><b>Figure 1. The <tt class="computeroutput">mymap</tt> functoid</b></p><pre class="programlisting">
+   struct mymap_type {
+      template &lt;class F, class L&gt; struct sig 
+      : public funtype&lt;F,L,
+         list&lt;typename RT&lt;F,typename L::value_type&gt;::result_type&gt; &gt; {};
+      template &lt;class F, class T&gt; 
+      typename sig&lt;F, list&lt;T&gt; &gt;::result_type 
+      operator()( const F&amp; f, const list&lt;T&gt;&amp; l ) const {
+         // code to actually implement mymap() function elided
+      }
+   } mymap;
+</pre></div><p>
+The definition of <tt class="computeroutput">mymap</tt> given here is what we call a
+<span class="emphasis"><em>basic</em></span> direct functoid.  In <a href="fcpp.body.html#fcpp.sectfull" title="Full Functoids">the section called &#8220;Full Functoids&#8221;</a>, we will show how to promote
+<tt class="computeroutput">mymap</tt> into a <span class="emphasis"><em>full</em></span> direct functoid,
+which adds useful capabilities.
+</p><p>
+Finally, it should be noted that <span class="emphasis"><em>monomorphic</em></span>
+direct functoids can be defined without explicitly coding a
+<tt class="computeroutput">sig</tt> structure, by inheriting from the
+<tt class="computeroutput">cfuntype</tt> template class.  For example, here is the
+definition of a function that increments an integer:
+</p><pre class="programlisting">
+   struct inc_type : public cfuntype&lt;int,int&gt; {
+      int operator()( int x ) const {
+         return x+1;
+      }
+   } inc;
+</pre><p>
+The <tt class="computeroutput">cfuntype</tt> class defines a monomorphic <tt class="computeroutput">sig</tt>
+structre which is inherited by the functoid directly.
+</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fcpp.sectindirect"></a>Indirect Functoids</h3></div></div><div></div></div><div class="toc"><dl><dt><a href="fcpp.body.html#id243412">Subtype-polymorphism</a></dt><dt><a href="fcpp.body.html#id243492">Relation to boost::function</a></dt></dl></div><p>
+Indirect functoids are ``function variables'' which can be dynamically
+bound to any function with the right monomorphic type signature.  Recall
+the example from an earlier section:
+</p><pre class="programlisting">
+   fun2&lt;int,int,int&gt; f = plus;  
+   f(3,2);          // yields 5
+   f = minus;
+   f(3,2);          // yields 1
+</pre><p>
+Here <tt class="computeroutput">f</tt> is an indirect functoid, which can be bound to
+different functions (<tt class="computeroutput">plus</tt> and <tt class="computeroutput">minus</tt>, in the
+example) during its lifetime.  Indirect functoids are declared as
+instances of the <tt class="computeroutput">funN</tt> classes, where
+<span class="emphasis"><em>N</em></span> is the arity of the function and the
+<span class="emphasis"><em>N+1</em></span> template arguments name the argument types and
+the return type.
+</p><p>
+Indirect functoids are necessarily monomorphic.  This restriction is
+rooted in the implementation: indirect functoids are implemented using
+dynamic dispatch (virtual function call), and in C++, a virtual method
+cannot also be a member template.  When an indirect functoid is
+initialized or assigned the value of a polymorphic direct functoid, the
+appropriate monomorphic function is selected.  For example:
+</p><pre class="programlisting">
+   std::string foo=&quot;foo&quot;, bar=&quot;bar&quot;;
+   fun2&lt;std::string,std::string,bool&gt; sl = less;
+   less(foo,bar);    // yields false
+   fun2&lt;int,int,bool&gt; il = less;
+   less(2,3);        // yields true
+</pre><p>
+Here we use the FC++ polymorphic functoid <tt class="computeroutput">less</tt> (which has the
+general signature <tt class="computeroutput">(T,T)-&gt;bool</tt>) to initialize two different
+indirect functoids.  Each indirect functoid selects the appropriate
+monomorphic instantiation of the polymorphic functoid it is initialized
+with.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id243412"></a>Subtype-polymorphism</h4></div></div><div></div></div><p>
+Indirect functoids exhibit subtype-polymorphism (the dynamic
+polymorphism OO programmers are familiar with).  This works in the
+expected way; indirect functoids are contravariant in their argument
+types and covariant in their return types.  An example makes this
+clear:  suppose there are two inheritance hierachies, one where
+<tt class="computeroutput">dog</tt> is derived from <tt class="computeroutput">animal</tt> and another where
+<tt class="computeroutput">car</tt> is derived from <tt class="computeroutput">vehicle</tt>.  Then we can say
+</p><pre class="programlisting">
+   fun1&lt;dog*,vehicle*&gt; f = ...; 
+   fun1&lt;animal*,car*&gt; g = f;    // ok
+   f = g;                       // illegal (type error)
+</pre><p><tt class="computeroutput">f</tt> is effectively a subtype of <tt class="computeroutput">g</tt>; wherever
+<tt class="computeroutput">g</tt> is used, <tt class="computeroutput">f</tt> can be supplied as a legal
+implementation, but not the other way around.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id243492"></a>Relation to <tt class="computeroutput">boost::function</tt></h4></div></div><div></div></div><p>
+Indirect functoids in FC++ are similar to <tt class="computeroutput">boost::function</tt>
+objects.  There are a few notable differences.  First, indirect
+functoids must always be initialized with a function value (there is no
+default constructor or the equivalent of a ``null'' function).  Second,
+indirect functoids have all the FC++ full functoids features (like
+built-in currying and infix syntax, described in the next section),
+whereas <tt class="computeroutput">boost::function</tt> objects do not.  On the other
+hand, indirect functoids always pass parameters by
+<tt class="computeroutput">const&amp;</tt>, whereas <tt class="computeroutput">boost::function</tt> objects
+can have parameters passed by plain reference, allowing for mutation of
+arguments to the function object.
+</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fcpp.sectfull"></a>Full Functoids</h3></div></div><div></div></div><div class="toc"><dl><dt><a href="fcpp.body.html#id243690">Currying</a></dt><dt><a href="fcpp.body.html#id243760">Infix Syntax</a></dt><dt><a href="fcpp.body.html#id243790">Lambda Awareness</a></dt><dt><a href="fcpp.body.html#id243843">Smartness</a></dt><dt><a href="fcpp.body.html#id243895">Return-type deduction</a></dt></dl></div><p>
+In FC++, we use the term <span class="emphasis"><em>full functoid</em></span> to describe
+functoids which are blessed with all of the special features of FC++.
+In this section we describe how to promote basic functoids (described
+at the end of <a href="fcpp.body.html#fcpp.sectdirect" title="Direct Functoids">the section called &#8220;Direct Functoids&#8221;</a>) into full functoids,
+and we enumerate the added capabilities that full functoids have.
+</p><p>
+Full functoids are implemented using the <tt class="computeroutput">fullN</tt> wrapper
+classes (as with the <tt class="computeroutput">funN</tt> classes, <span class="emphasis"><em>N</em></span>
+describes the arity of the function).  Recall in <a href="fcpp.body.html#fcpp.sectdirect" title="Direct Functoids">the section called &#8220;Direct Functoids&#8221;</a> we defined <tt class="computeroutput">mymap</tt> as a basic
+direct functoid like this:
+</p><pre class="programlisting">
+   struct mymap_type {
+      // a bunch of stuff
+   } mymap;
+</pre><p>
+Promoting <tt class="computeroutput">mymap</tt> into a full functoid is straightforward:
+</p><pre class="programlisting">
+   namespace impl {
+      struct xmymap_type {
+         // a bunch of stuff
+      };
+   }
+   typedef full2&lt;impl::xmymap_type&gt; mymap_type;
+   mymap_type mymap;
+</pre><p>
+That is, rather than have <tt class="computeroutput">mymap_type</tt> refer to the direct
+functoid <tt class="computeroutput">struct</tt> we have defined, instead we make it a
+<tt class="computeroutput">typedef</tt> for <tt class="computeroutput">full2</tt> instantiated with that
+type.  (In FC++, we conventionally use a namespace called
+<tt class="computeroutput">impl</tt> to store the actual definitions of basic direct
+functoids, and define the full functoids out in the main namespace.  We
+also mangle the original name (prefixing an ``x'') in order to ensure
+that the basic functoid type will not be accidentally found instead of
+the full functoid type when various C++ name-lookup rules kick
+in.<sup>[<a name="id243671" href="#ftn.id243671">3</a>]</sup>)  That's all there is to
+it.
+</p><p>
+Indirect functoids need no such promotion.  Since the indirect functoid
+types (the <tt class="computeroutput">funN</tt> classes) are defined by the library, they are
+already imbued with all of the full functoid features.  We describe
+these features next.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id243690"></a>Currying</h4></div></div><div></div></div><p>
+As described in <a href="fcpp.body.html#fcpp.sectoverview" title="Overview Examples">the section called &#8220;Overview Examples&#8221;</a>, all full functoids
+exhibit built-in currying.  For example, given a 3-argument full
+functoid ``<tt class="computeroutput">f</tt>'', we can call it with any subset of its
+arguments, either by using underscores as placeholders, or by leaving
+off trailing arguments.  Some examples:
+</p><pre class="programlisting">
+   f(x,y,z)          // normal call
+   f(x,_,z)          // yields a new unary functoid (expecting y)
+   f(_,y,_)          // yields a new binary functoid (expecting x,z)
+   f(x,y)            // yields a new unary functoid (expecting z)
+   f(x)              // yields a new binary functoid (expecting y,z)
+</pre><p>
+Additionally, all of the arguments can be curried, resulting in a
+``thunk'' (a nullary functoid), by calling <tt class="computeroutput">thunkN</tt>:
+</p><pre class="programlisting">
+   thunk3(f,x,y,z)   // yields a new nullary functoid
+</pre><p>
+Thunks will be described more in <a href="fcpp.body.html#fcpp.secteffects" title="Effects and thunks">the section called &#8220;Effects and thunks&#8221;</a>.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id243760"></a>Infix Syntax</h4></div></div><div></div></div><p>
+Binary and ternary full functoids can be called using a special infix
+syntax.  This is syntactic sugar, as some functions ``read'' better
+using infix notation:
+</p><pre class="programlisting">
+   plus(2,3)        // normal (prefix) function syntax
+   2 ^plus^ 3       // FC++ infix syntax
+</pre><p>
+For ternary functoids, note that infix syntax automatically invokes
+currying of the final argument:
+</p><pre class="programlisting">
+   f(x,y,z)         // normal (prefix) function syntax
+   f(x,y)           // as before: yields a new unary functoid (expecting z)
+   x ^f^ y          // FC++ infix syntax (new unary functoid expecting z)
+</pre><p>
+FC++ infix syntax was inspired by a similar construct in the Haskell
+programming language.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id243790"></a>Lambda Awareness</h4></div></div><div></div></div><p>
+Full functoids are lambda-aware.  This means that they can be called
+with square brackets <tt class="computeroutput">[]</tt> instead of round ones
+<tt class="computeroutput">()</tt> to create lambda expressions.  Lambda is discussed in
+<a href="fcpp.body.html#fcpp.sectlambda" title="Lambda">the section called &#8220;Lambda&#8221;</a>.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id243843"></a>Smartness</h4></div></div><div></div></div><p>
+Full functoids exhibit another feature which we have chosen to label
+``smartness''.  Full functoids know how many arguments they can accept;
+a traits class provides access to this information.  If <tt class="computeroutput">F</tt> is a
+full functoid type, then these values are available at compile-time:
+</p><pre class="programlisting">
+   FunctoidTraits&lt;F&gt;::template accepts&lt;N&gt;::args
+   // A bool which says whether F can accept N arguments
+   
+   FunctoidTraits&lt;F&gt;::max_args
+   // An int which says what the most arguments F can accept is
+</pre><p>
+and also this operation is available
+</p><pre class="programlisting">
+   FunctoidTraits&lt;F&gt;::template ensure_accepts&lt;N&gt;::args()
+   // A no-op call that compiles only if F can accept N args
+</pre><p>
+to ensure that compilation halts with an error if the specified function
+does not accept the expected number of arguments.
+</p><p>
+We use a traits class to provide literate error messages (along the
+lines of [<span class="citation">staticisa,siek</span>]) so that some common
+abuses (like passing an <tt class="computeroutput">F</tt> that is not a full functoid) are
+caught within the library and a helpful identifier is injected into the
+compiler error message.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id243895"></a>Return-type deduction</h4></div></div><div></div></div><p>
+C++ will eventually have a <tt class="computeroutput">typeof</tt> operator, but in the
+meantime, the standards committee has come up a stop-gap solution to
+return-type deduction [<span class="citation">returntype</span>].  The standard
+solution will be to use, e.g.,
+</p><pre class="programlisting">
+   result_of&lt;F(X,Y)&gt;::type
+</pre><p>
+to determine the result of an object of type <tt class="computeroutput">F</tt> being
+called with arguments of type <tt class="computeroutput">X</tt> and <tt class="computeroutput">Y</tt>.  The
+<tt class="computeroutput">result_of</tt> template knows how to work on function pointers,
+monomorphic function objects, and polymorphic function objects.
+</p><p>
+FC++ basic functoids use a different convention for defining
+return-type deduction within the FC++ framework (described in <a href="fcpp.body.html#fcpp.sectdirect" title="Direct Functoids">the section called &#8220;Direct Functoids&#8221;</a>).  However, full functoids implement the
+standard convention (using <tt class="computeroutput">result_of</tt>) as well.  As a
+result, FC++ full functoids interoperate with other template libraries
+that require return-type-deduction facilities.
+</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fcpp.secteffects"></a>Effects and thunks</h3></div></div><div></div></div><p>
+FC++ is designed to be a library for pure functional programming.
+Nevertheless, this is C++, and it is reasonable to want to use effects.
+In this section, we describe how functoids with effects can be created.
+</p><p>
+There are three main ways to have effects inside an FC++ functoid:
+</p><div class="itemizedlist"><ul type="disc"><li> use a global variable </li><li> use pointers </li><li> use a ``thunk'' </li></ul></div><p>
+We show examples of each in turn.  
+</p><p>
+First, a global variable:
+</p><pre class="programlisting">
+   struct some_functoid_type : public cfuntype&lt;int,int&gt; {
+      int operator()( int x ) const {
+         std::cout &lt;&lt; &quot;Hello from inside some_functoid&quot;;
+         return x;
+      }
+   } some_functoid;
+   ...  some_functoid(4) ...
+</pre><p>
+When the functoid is called, text appears on the standard output stream
+due to the effect on the global variable <tt class="computeroutput">std::cout</tt>.  
+</p><p>
+Second, using pointers:
+</p><pre class="programlisting">
+   struct incr_type : public cfuntype&lt;int*,int&gt; {
+      int operator()( int* p ) const {
+         return ++*p;
+      }
+   } incr;
+   ...
+   int x;
+   ... incr( &amp;x ) ...
+</pre><p>
+Here the functoid manipulates the value of variable <tt class="computeroutput">x</tt>
+through a pointer.
+</p><p>
+Finally, thunks:
+</p><pre class="programlisting">
+   // building off last example
+   fun0&lt;int&gt; f = thunk1( incr, &amp;x );   // thunk that returns a higher 
+   f(); f(); f();                  // integer each time it is invoked
+</pre><p>
+In pure functional programming, there is no reason to ever have a
+zero-argument function (it would effectively be the same as a constant
+value).  As a result, nullary functoids (thunks) always represent
+functoids which have some side-effect.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fcpp.sectlazy"></a>Lists and lazy evaluation</h3></div></div><div></div></div><div class="toc"><dl><dt><a href="fcpp.body.html#id244117">Interface to list</a></dt><dt><a href="fcpp.body.html#id244149">Writing lazy list functoids</a></dt><dt><a href="fcpp.body.html#id244246">Other details about lazy evaluation</a></dt></dl></div><p>
+In <a href="fcpp.body.html#fcpp.sectoverview" title="Overview Examples">the section called &#8220;Overview Examples&#8221;</a>, we showed examples of using
+FC++'s lazy list data structure:
+</p><pre class="programlisting">
+   list&lt;int&gt; li = enum_from( 1 ); // li is infinite list [1, 2, 3, ...]
+   li = map( add_self, li );      // li is infinite list [2, 4, 6, ...]
+</pre><p>
+In this section, we discuss the interface to the <tt class="computeroutput">list</tt>
+class, and show how to implement lazy list functions.  We also discuss
+the general topic of lazy evaluation.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id244117"></a>Interface to <tt class="computeroutput">list</tt></h4></div></div><div></div></div><p>
+The main interface to the <tt class="computeroutput">list</tt> class is provided by just a
+few functoids:
+</p><pre class="programlisting">
+   list&lt;int&gt; li;       // empty list (default constructor)
+   li = cons(2,li);    // cons adds an element to the front of a list
+   li = cons(1,li);    // li is now the list [1,2]
+   int x = head(li);   // x is 1, the front element
+   li = tail(li);      // li is the list [2] (tail==everything except the head)
+   bool b = null(li);  // b is false; null() tests for the empty list
+   li = cat(li,li);    // li is now [2,2]; cat() concatenates two lists
+   li = NIL;           // li is now empty; NIL is the empty list constant
+</pre><p>
+This is the typical interface offered for singly-linked lists common to
+many functional languages.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id244149"></a>Writing lazy list functoids</h4></div></div><div></div></div><p>
+In order to enable lazy evaluation, the <tt class="computeroutput">list</tt> class has a
+special constructor which takes a thunk which returns a list.  The
+second argument to <tt class="computeroutput">cons()</tt> or <tt class="computeroutput">cat()</tt> can also
+be a thunk-returning-a-list, rather than a list.  For example, after
+</p><pre class="programlisting">
+   list&lt;int&gt; l = thunk2(cons,2,NIL);
+   list&lt;int&gt; l = thunk2(cons,1,l);
+</pre><p><tt class="computeroutput">l</tt> is the list [1,2], except that none of the conses has
+been evaluated yet.  This is not particularly interesting in itself,
+but now we can see how to write functions like
+<tt class="computeroutput">enum_from()</tt>, which return infinite lists.
+</p><p>
+First, here is how we would write an eager (non-lazy) version of
+<tt class="computeroutput">enum_from()</tt>, which goes into an infinite recursion when
+called.  (For simplicity, we define it as a monomorphic functoid that
+works only on integers.)
+</p><pre class="programlisting">
+   struct my_enum_from_type : public cfuntype&lt;int,list&lt;int&gt; &gt; {
+      list&lt;int&gt; operator()( int x ) const {
+         return cons( x, my_enum_from_type()(x+1) );
+      }
+   } my_enum_from;
+</pre><p>
+Now, all we have to do to make this function lazy is to ``thunk'' the
+recursive call like so:
+</p><pre class="programlisting">
+   struct my_enum_from_type : public cfuntype&lt;int,list&lt;int&gt; &gt; {
+      list&lt;int&gt; operator()( int x ) const {
+         return cons( x, thunk1( my_enum_from_type(), x+1 ) );
+      }
+   } my_enum_from;
+</pre><p>
+This delays the recursive call so that it is stored in the ``tail''
+portion of the cons, where it won't be evaluated until demanded.
+Here is an example that demonstrates the function being used:   
+</p><pre class="programlisting">
+   list&lt;int&gt; l = my_enum_from(1);
+   for( int i=0; i&lt;10; ++i ) {
+      std::cout &lt;&lt; head(l) &lt;&lt; std::endl;
+      l = tail(l);
+   }
+</pre><p>
+This prints out the first 10 positive integers.  We could print out as
+many as we like, as the list <tt class="computeroutput">l</tt> is effectively infinite;
+none of the cons cells representing the list are created until they are
+demanded.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id244246"></a>Other details about lazy evaluation</h4></div></div><div></div></div><p>
+The discussion here provides a simple overview of lazy evaluation as
+implemented in the FC++ <tt class="computeroutput">list</tt> class.  We have elided a
+number of interesting details which can impact the performance of
+lists, most notably, the existence of the <tt class="computeroutput">odd_list</tt> class
+and the caching ability of lists.  To learn more about these details,
+the reader is referred to
+</p><div class="itemizedlist"><ul type="disc"><li> 
+Section 10 of [<span class="citation">jfp</span>], which describes caching in lists, as
+well as some other performance optimizations,
+</li><li> 
+Section 11 of [<span class="citation">jfp</span>], which describes
+<tt class="computeroutput">list</tt>s versus <tt class="computeroutput">odd_list</tt>s and the efficient list
+interface, and
+</li><li> 
+the FC++ web page [<span class="citation">fc++</span>], which has summary
+documentation on the topic.
+</li></ul></div><p>
+Lists provide perhaps the most common and convenient way to utilize
+lazy evaluation; representing a (possibly infinite) stream of data
+which is computed ``on demand'' is an oft-used pattern.  Nevertheless,
+any computation can be lazified.  The <tt class="computeroutput">by_need</tt> monad (see
+<a href="fcpp.body.html#fcpp.sectmonads" title="Monads">the section called &#8220;Monads&#8221;</a> for info about monads) illustrates a
+more general mechanism for lazifying any computation.
+</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fcpp.sectlibrary"></a>Library</h3></div></div><div></div></div><div class="toc"><dl><dt><a href="fcpp.body.html#id244350">Nuts and bolts</a></dt><dt><a href="fcpp.body.html#id323411">Constants</a></dt><dt><a href="fcpp.body.html#id323425">Data types</a></dt><dt><a href="fcpp.body.html#id323463">Basic list functions</a></dt><dt><a href="fcpp.body.html#id323493">Haskell standard prelude</a></dt><dt><a href="fcpp.body.html#id323520">Operators</a></dt><dt><a href="fcpp.body.html#id323547">Currying, thunks, and effect combinators</a></dt><dt><a href="fcpp.body.html#id323590">General combinators</a></dt><dt><a href="fcpp.body.html#id323612">Functoid promotion</a></dt><dt><a href="fcpp.body.html#id323632">Other</a></dt><dt><a href="fcpp.body.html#id323652">Note about lambda/monads</a></dt></dl></div><p>
+In this section, we briefly describe each of the components in the
+library's interface.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id244350"></a>Nuts and bolts</h4></div></div><div></div></div><p>
+To use the Boost FC++ library, just add the line
+</p><pre class="programlisting">
+   #include &quot;boost/fcpp/prelude.hpp&quot;
+</pre><p>
+to the top of your program.  This file includes all of the other header
+files.  All of the library interface is in <tt class="computeroutput">namespace
+boost::fcpp</tt>.
+</p><p>
+Note that, by default, the ``lambda'' and ``monad'' portions of the
+library are not enabled.  This is both because some compilers cannot 
+handle the crazy templates there, and also because they slow down
+compilation a little, even if they're not being used.  To enable these
+portions of the library, say
+</p><pre class="programlisting">
+   #define BOOST_FCPP_ENABLE_LAMBDA
+</pre><p>
+before <tt class="computeroutput">#include</tt>-ing the library.
+</p><p>
+The library comes with dozens of example client files (the
+<tt class="computeroutput">.cpp</tt> files in the FC++ directory).  When in doubt about
+how to use something, check the client examples, which exhibit coverage
+of most of the library's features.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id323411"></a>Constants</h4></div></div><div></div></div><p>
+FC++ defines the following constants:
+</p><pre class="programlisting">
+   _          // placeholder for currying
+   empty      // an empty struct (empty tuple)
+   NIL        // the empty list (zero of the list_m monad)
+   NOTHING    // an empty maybe (zero of the maybe_m monad)
+</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id323425"></a>Data types</h4></div></div><div></div></div><p>
+FC++ defines these data types:
+</p><pre class="programlisting">
+   // Useful data types
+   list             // for lazy lists
+   list_iterator   
+   maybe            // represents 1 or 0 elements of some type
+   odd_list         // (see section on lists for details)
+   
+   // Utility (see sections on &quot;direct functoids&quot; and &quot;full functoids&quot;)
+   RT               // Return type computer (e.g.  RT&lt;F,X,Y&gt;::result_type)
+   FunctoidTraits   // for seeing how many arguments a functoid accepts
+   cfuntype         // typedefs for monomorphic functoids
+   funtype          // typedefs for polymorphic functoids
+   
+   // Miscellaneous
+   fullN            // full functoid wrapper classes
+   funN             // indirect functoid classes
+   fcpp_exception   // used, e.g., when taking head() of an empty list
+</pre><p>
+Note also that every functoid has a corresponding data type.  For
+instance, the <tt class="computeroutput">map()</tt> functoid is an instance of type
+<tt class="computeroutput">map_type</tt>.  
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id323463"></a>Basic list functions</h4></div></div><div></div></div><p>
+Here are the basic functions that work on lists.
+</p><pre class="programlisting">
+   head           // first element
+   tail           // all but first element
+   cons           // add element
+   null           // test for empty
+   cat            // concatenate
+   ==             // compare for equality
+   &lt;              // lexicographical ordering
+</pre><p>
+as well as some other miscellaneous list functions:
+</p><pre class="programlisting">
+   list_with      // helper for creating small lists
+   force          // odd_list-ify       (see section on lists)
+   delay          // (even) list-ify    (see section on lists)
+   
+   list_until( pred, f, x )
+      // create a list of [x, f(x), f(f(x)), ...] until pred is true
+      // Example:   list_until( greater(_,20), plus(3), 1 )
+      // yields     [1,4,7,10,13,16,19]
+</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id323493"></a>Haskell standard prelude</h4></div></div><div></div></div><p>
+A great many FC++ functions are borrowed from Haskell.  See
+[<span class="citation">prelude</span>] for their definitions.
+</p><pre class="programlisting">
+   until
+   last
+   init
+   length    // Note: also used to force evaluation of an entire list
+   at
+   filter
+   concat
+   foldr
+   foldr1
+   foldl
+   foldl1
+   scanr
+   scanr1
+   scanl
+   scanl1
+   iterate
+   repeat
+   map
+   take
+   drop
+   take_while
+   drop_while
+   replicate
+   cycle
+   split_at
+   span
+   break
+   flip
+   reverse
+   all
+   any
+   elem
+   not_elem
+   sum
+   product
+   minimum
+   maximum
+   zip_with
+   zip
+   fst
+   snd
+   unzip
+   gcd
+   odd
+   even
+   enum_from
+   enum_from_to
+   just
+   // These approximate the corresponding Haskell functions
+   and
+   or
+   h_curry
+   h_uncurry
+</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id323520"></a>Operators</h4></div></div><div></div></div><p>
+The following named functoids mimic C++ operators:
+</p><pre class="programlisting">
+   // (T,T) -&gt; T
+   plus
+   minus
+   multiplies
+   divides
+   modulus
+   
+   // (T) -&gt; T
+   negate
+   
+   // (T,T) -&gt; bool
+   equal
+   not_equal
+   greater
+   less
+   greater_equal
+   less_equal
+   
+   // (T,T) -&gt; bool    (where T is convertible to bool)
+   logical_and
+   logical_or
+   logical_not
+   
+   dereference    // T -&gt; U   (where U has typeof(*T) )
+   address_of     // T -&gt; T*
+   delete_        // T* -&gt; void
+</pre><p>
+The following operators require extra explanation
+</p><pre class="programlisting">
+   out_stream
+   in_stream
+      // These are like operator&lt;&lt;() and operator&gt;&gt;(), but they take a
+      // pointer to a stream as the left-hand side.  Examples:
+      //    &amp;cout ^out_stream^ x
+      //    &amp;cin ^in_stream^ y
+      // The indirection is necessary to encapsulate the effects within
+      // the library (see section on effects).
+   
+   dynamic_cast_
+      // This is a family of functoids, templatized by the destination
+      // type.  Example use:
+      //    dynamic_cast_&lt;dog*&gt;()( an_animal_ptr )
+      // Note that the functoid
+      //    dynamic_cast_&lt;T&gt;()
+      // has type
+      //    dynamic_cast_x_type&lt;T&gt;::type
+   
+   constructN
+   newN
+      // These call constructors.  Like dynamic_cast_ above, they define
+      // a family of functoids.  Examples:
+      //    construct2&lt;std::pair&lt;int,char&gt; &gt;()( 3, 'c' )
+      //    new1&lt;int&gt;()( 3 )
+      // Note that, e.g.,
+      //    new3&lt;T&gt;()
+      // has type
+      //    new3_type&lt;T&gt;::type
+</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id323547"></a>Currying, thunks, and effect combinators</h4></div></div><div></div></div><pre class="programlisting">
+   const_   // Turns a value into a thunk
+      // Ex:   const_(3)  yields a new function &quot;f&quot;:  f()=3
+   
+   thunkN   // binds all N arguments of a function into a thunk
+      // Ex:   thunk2(plus,1,2) yields a new function: f()=1+2
+   
+   no_op    // do-nothing thunk
+   
+   before   // before(f,g)(args) = { f(); return g(args); }
+   after    // after(f,g)(args)  = { r = f(args); g(); return r; }
+   
+   emptify  // throws away a functions result, returning &quot;empty&quot; instead
+      // Example use:
+      //    length( map( emptify(effectFunctoid), someList ) )
+      // applies effectFunctoid to each element of someList, even if
+      // effectFunctoid returns void
+   
+   split_args  // split_args(f)(x,y,z)  means  f(x)(y)(z)
+      // This is rarely useful, but occasionally necessary
+</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id323590"></a>General combinators</h4></div></div><div></div></div><p>
+These are some generally applicable combinators.
+</p><pre class="programlisting">
+   compose     // compose(f,g)(args)  means  f( g(args) )
+   
+   of          // same as compose, but also works on function pointers
+               // Good for infix:   f ^of^ g
+   
+   thunk_func_to_func
+      // thunk_func_to_func(f)(args)  means  f()(args)
+      // f is a thunk that returns a functoid; this combinator hides
+      // the thunk.  This can be useful to break what would otherwise 
+      // be infinite recursion in &quot;letrec&quot; expressions.
+   
+   duplicate   // duplicate(f)(x)     means  f(x)(x)
+   
+   ignore      // ignore(f)(x)(args)  means  f(args)
+</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id323612"></a>Functoid promotion</h4></div></div><div></div></div><p>
+These functions promote non-functoids into functoids.
+</p><pre class="programlisting">
+   make_fullN   
+      // promotes an instance of a basic functoid into a full functoid
+   
+   //stl_to_fun1 FIX?
+   //stl_to_fun2 FIX?
+   
+   ptr_to_fun  // converts most anything into a functoid
+   
+   funify      // Converts function pointers into functoids, but is
+               // the identity function on functoids.  Use this when
+               // you're not sure exactly what &quot;f&quot; is, but you want it
+               // to be a functoid.
+</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id323632"></a>Other</h4></div></div><div></div></div><p>
+There are a few other miscellaneous functoids:
+</p><pre class="programlisting">
+   make_pair      // creates a std::pair
+   min            // lesser of two args
+   max            // greater of two args
+   inc            // returns ++x
+   dec            // returns --x
+   id             // identity function
+   
+   make_manip     // makeManip(aStream)(aManip) returns the manipulator 
+                  // for that stream.  Necessary because names like
+                  // &quot;std::endl&quot; are not C++ objects.  Ugh.
+</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id323652"></a>Note about lambda/monads</h4></div></div><div></div></div><p>
+We do not describe the interface to the FC++'s lambda and monad
+constructs here.  See <a href="fcpp.body.html#fcpp.sectlambda" title="Lambda">the section called &#8220;Lambda&#8221;</a> and <a href="fcpp.body.html#fcpp.sectmonads" title="Monads">the section called &#8220;Monads&#8221;</a> for that info.
+</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fcpp.sectrelation"></a>Relationships with other libraries</h3></div></div><div></div></div><div class="toc"><dl><dt><a href="fcpp.body.html#id323699">Interfaces to STL</a></dt><dt><a href="fcpp.body.html#id323846">Relation to Boost</a></dt></dl></div><p>
+In this section we briefly describe the relationship between FC++ and
+other C++ libraries.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id323699"></a>Interfaces to STL</h4></div></div><div></div></div><p>
+The main interface to the STL is via iterators in the <tt class="computeroutput">list</tt>
+class.  FC++ <tt class="computeroutput">list</tt>s, like STL containers, have a
+constructor which takes two iterators deliniating a range, so that the
+contents of an STL container can be (lazily) copied into a
+<tt class="computeroutput">list</tt>.  For example:
+</p><pre class="programlisting">
+   std::vector&lt;int&gt; v = ...;
+   fcpp::list&lt;int&gt; l( v.begin(), v.end() );
+   // l is not yet evaulated; still holds iterators into v
+   fcpp::length( l );  // force evaluation of entire list
+   // now l has a true copy of the elements in v
+</pre><p>
+Additionally, <tt class="computeroutput">list</tt>s themselves have forward iterators:   
+</p><pre class="programlisting">
+   for( fcpp::list&lt;int&gt;::iterator i = l.begin(); i != l.end(); ++i )
+      cout &lt;&lt; *i;      // print each element of list
+</pre><p>
+The functions in the FC++ library that work on <tt class="computeroutput">fcpp::list</tt>s
+do not work on other STL containers, as those containers do not support
+lazy evaluation.
+</p><p>
+Monomorphic FC++ (unary or binary) functoids are STL ``adaptables''.
+The <tt class="computeroutput">fcpp::ptr_to_fun()</tt> functoid promotes any function-like
+entity, including STL function objects, into FC++ full functoids.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id323846"></a>Relation to Boost</h4></div></div><div></div></div><div class="toc"><dl><dt><a href="fcpp.body.html#id323853">Boost bind and lambda</a></dt><dt><a href="fcpp.body.html#id323916">Boost function</a></dt><dt><a href="fcpp.body.html#id323971">Other Boost libraries</a></dt></dl></div><p>
+FC++ is related to a number of Boost libraries.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h5 class="title"><a name="id323853"></a>Boost <tt class="computeroutput">bind</tt> and <tt class="computeroutput">lambda</tt></h5></div></div><div></div></div><p>
+FC++'s lambda (see <a href="fcpp.body.html#fcpp.sectlambda" title="Lambda">the section called &#8220;Lambda&#8221;</a>) and currying
+(<a href="fcpp.body.html#fcpp.sectfull" title="Full Functoids">the section called &#8220;Full Functoids&#8221;</a>) capabilities do approximately the
+same thing that <tt class="computeroutput">boost::lambda</tt> and <tt class="computeroutput">boost::bind</tt>
+do.  These libraries were developed with different design rationales;
+for a description of the comparison, see [<span class="citation">dpcool</span>].
+</p><p>
+Since FC++ supports the <tt class="computeroutput">result_of</tt> method for
+return-type-deduction (see <a href="fcpp.body.html#fcpp.sectfull" title="Full Functoids">the section called &#8220;Full Functoids&#8221;</a>), FC++
+interoperates with <tt class="computeroutput">boost::lambda</tt> and
+<tt class="computeroutput">boost::bind</tt>.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h5 class="title"><a name="id323916"></a>Boost <tt class="computeroutput">function</tt></h5></div></div><div></div></div><p>
+FC++ indirect functoids (<a href="fcpp.body.html#fcpp.sectindirect" title="Indirect Functoids">the section called &#8220;Indirect Functoids&#8221;</a>) are
+similar to <tt class="computeroutput">boost::function</tt> objects.  Indirect functoids
+have all of FC++'s full functoids capabilities (like currying and infix
+syntax; see <a href="fcpp.body.html#fcpp.sectfull" title="Full Functoids">the section called &#8220;Full Functoids&#8221;</a>) built in.  Indirect
+functoids can only pass parameters by value (actually,
+<tt class="computeroutput">const&amp;</tt>), though (as FC++ is a library for pure
+functional programming).
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h5 class="title"><a name="id323971"></a>Other Boost libraries</h5></div></div><div></div></div>
+
+FC++ uses a number of other boost libraries in its implementation:
+<div class="itemizedlist"><ul type="disc"><li><tt class="computeroutput">boost::intrusive_ptr</tt> in indirect functoids and
+   <tt class="computeroutput">list</tt>s, for automatic memory management
+</li><li><tt class="computeroutput">boost::is_base_and_derived</tt> and
+ <tt class="computeroutput">boost::is_convertible</tt> in a number of places
+</li><li><tt class="computeroutput">boost::addressof</tt> to implement the <tt class="computeroutput">address_of(</tt>)
+   functoid
+</li><li><tt class="computeroutput">boost::type_with_alignment</tt> and
+   <tt class="computeroutput">boost::alignment_of</tt> in the implementation of 
+   the <tt class="computeroutput">list</tt> and <tt class="computeroutput">by_need</tt> datatypes
+</li><li><tt class="computeroutput">boost::noncopyable</tt> in a number of places
+</li></ul></div></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fcpp.sectlambda"></a>Lambda</h3></div></div><div></div></div><div class="toc"><dl><dt><a href="fcpp.body.html#id324084">Lambda in FC++</a></dt><dt><a href="fcpp.body.html#id324341">Naming the C++ types of lambda expressions</a></dt><dt><a href="fcpp.body.html#id324468">FC++ lambda versus boost::lambda</a></dt></dl></div><p>
+In this section, we describe the interface to FC++'s lambda
+sublanguage.  Those readers interested in the motivation and design
+rationale for FC++ lambda should read [<span class="citation">dpcool</span>],
+which discusses those issues in detail.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id324084"></a>Lambda in FC++</h4></div></div><div></div></div><p>
+We now describe what it looks like to do lambda in FC++.
+<a href="fcpp.body.html#fcpp.figlambda" title="Figure 2. Lambda in FC++">Figure 2</a> shows some examples of lambda.
+</p><div class="figure"><a name="fcpp.figlambda"></a><p class="title"><b>Figure 2. Lambda in FC++</b></p><pre class="programlisting">
+   // declaring lambda variables
+   lambda_var&lt;1&gt; X;
+   lambda_var&lt;2&gt; Y;
+   lambda_var&lt;3&gt; F;
+      
+   // basic examples
+   lambda(X,Y)[ minus[Y,X] ]       // flip(minus)
+   lambda(X)[ minus[X,3] ]         // minus(_,3)
+      
+   // infix syntax
+   lambda(X,Y)[ negate[ 3 %multiplies% X ] %plus% Y ]
+      
+   // let
+   lambda(X)[ let[ Y == X %plus% 3,
+                   F == minus[2] 
+              ].in[ F[Y] ] ]
+      
+   // if-then-else
+   lambda(X)[ if0[ X %less% 10, X, 10 ] ]   // also if1, if2
+      
+   // letrec
+   lambda(X)[ letrec[ F == lambda(Y)[ if1[ Y %equal% 0,
+                                           1,
+                                           Y %multiplies% F[Y%minus%1] ]
+              ].in[ F[X] ] ]    // factorial
+</pre></div><p>
+There are a few points which deserve further attention.
+</p><p>
+Inside lambda, one uses square brackets instead of round ones for
+postfix functional call.  (This works thanks to the lambda-awareness of
+full functoids, mentioned in <a href="fcpp.body.html#fcpp.sectfull" title="Full Functoids">the section called &#8220;Full Functoids&#8221;</a>.)
+Similarly, the percent sign is used instead of the carat for infix
+function call.  Since <tt class="computeroutput">operator[]</tt> takes only one argument
+in C++, we overload the comma operator to simulate multiple arguments.
+Occassionally this can cause an early evaluation problem, as seen in
+the code here:
+</p><pre class="programlisting">
+   // assume f takes 3 integer arguments
+   lambda(X)[ f[1,2,X] ]    // oops! comma expression &quot;1,2,X&quot; means &quot;2,X&quot;
+   lambda(X)[ f[1][2][X] ]  // ok; use currying to avoid the issue
+</pre><p>
+Unfortunately, C++ sees the expression ``<tt class="computeroutput">1,2</tt>'' and evaluates it
+eagerly as a comma expression on integers.<sup>[<a name="id324160" href="#ftn.id324160">4</a>]</sup> Fortunately, there is a simple solution: since all
+full functoids are curryable, we can use currying to avoid comma.  The
+issues with comma suggest another problem, though: how do we call a
+zero-argument function inside lambda?  We found no pretty solution, and
+ended up inventing this syntax:
+</p><pre class="programlisting">
+   // assume g takes no arguments and returns an int
+   // lambda(X)[ X %plus% g[] ]   // illegal: g[] doesn't parse
+   lambda(X)[ X %plus% g[_*_] ]   // _*_ means &quot;no argument here&quot;
+</pre><p>
+It's better to have an ugly solution than none at all.
+</p><p>
+The if-then-else construct deserves discussion, as we provide three
+versions: <tt class="computeroutput">if0</tt>, <tt class="computeroutput">if1</tt>, and <tt class="computeroutput">if2</tt>.
+<tt class="computeroutput">if0</tt> is the typical version, and can be used in most
+instances.  It checks to make sure that its second and third arguments
+(the ``then'' branch and the ``else'' branch) will have the same type
+when evaluated (and issues a helpful custom error message if they
+won't).  The other two ifs are used for difficult type-inferencing
+issues that come from <tt class="computeroutput">letrec</tt>.  In the factorial example at
+the end of <a href="fcpp.body.html#fcpp.figlambda" title="Figure 2. Lambda in FC++">Figure 2</a>, for example, the ``else''
+branch is too difficult for FC++ to predict the type of, owing to the
+recursive call to <tt class="computeroutput">F</tt>.  This results in <tt class="computeroutput">if0</tt>
+generating an error.  Thus we have <tt class="computeroutput">if1</tt> and
+<tt class="computeroutput">if2</tt> to deal with situations like these:  <tt class="computeroutput">if1</tt>
+works like <tt class="computeroutput">if0</tt>, but just assumes the expression's type
+will be the same as the type of the ``then'' part, whereas
+<tt class="computeroutput">if2</tt> assumes the type is that of the ``else'' part.  In the
+factorial example, <tt class="computeroutput">if1</tt> is used, and thus the ``then''
+branch (the <tt class="computeroutput">int</tt> value <tt class="computeroutput">1</tt>) is used to predict
+that the type of the whole <tt class="computeroutput">if1</tt> expression will be
+<tt class="computeroutput">int</tt>.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id324341"></a>Naming the C++ types of lambda expressions</h4></div></div><div></div></div><p>
+Expression templates often yield objects with complex type names, and
+FC++ lambdas are no different.  For example, the C++ type of
+</p><pre class="programlisting">
+   // assume:  LambdaVar&lt;1&gt; X;  LambdaVar&lt;2&gt; Y;
+   lambda(X,Y)[ (3 %multiplies% X) %plus% Y ]
+</pre><p>
+is
+</p><pre class="programlisting">
+   fcpp::Full2&lt;fcpp::fcpp_lambda::Lambda2&lt;fcpp::fcpp_lambda::exp::
+   Call&lt;fcpp::fcpp_lambda::exp::Call&lt;fcpp::fcpp_lambda::exp::Value&lt;
+   fcpp::Full2&lt;fcpp::impl::XPlus&gt; &gt;,fcpp::fcpp_lambda::exp::CONS&lt;
+   fcpp::fcpp_lambda::exp::Call&lt;fcpp::fcpp_lambda::exp::Call&lt;fcpp::
+   fcpp_lambda::exp::Value&lt;fcpp::Full2&lt;fcpp::impl::XMultiplies&gt; &gt;,
+   fcpp::fcpp_lambda::exp::CONS&lt;fcpp::fcpp_lambda::exp::Value&lt;int&gt;,
+   fcpp::fcpp_lambda::exp::NIL&gt; &gt;,fcpp::fcpp_lambda::exp::CONS&lt;fcpp
+   ::fcpp_lambda::exp::LambdaVar&lt;1&gt;,fcpp::fcpp_lambda::exp::NIL&gt; &gt;,
+   fcpp::fcpp_lambda::exp::NIL&gt; &gt;,fcpp::fcpp_lambda::exp::CONS&lt;fcpp
+   ::fcpp_lambda::exp::LambdaVar&lt;2&gt;,fcpp::fcpp_lambda::exp::NIL&gt; &gt;,1,2&gt; &gt;
+</pre><p>
+In the vast majority of cases, the user never needs to name the type of
+a lambda, since usually the lambda is just being passed off to another
+template function.  Occasionally, however, you want to store a lambda
+in a temporary variable or return it from a function, and in these cases,
+you'll need to name its type.  For those cases, we have designed the
+<tt class="computeroutput">LE</tt> type computer, which provides a way to name the type of a
+lambda expression.  In the example above, the type of
+</p><pre class="programlisting">
+   lambda(X,Y)[ (3 %multiplies% X) %plus% Y ]
+   // desugared: lambda(X,Y)[ plus[ multiplies[3,X], Y ] ]
+</pre><p>
+is
+</p><pre class="programlisting">
+   LE&lt; LAM&lt; LV&lt;1&gt;, LV&lt;2&gt;,   CALL&lt;plus_type,
+      CALL&lt;multiplies_type,int,LV&lt;1&gt; &gt;, LV&lt;2&gt; &gt; &gt; &gt;::type 
+</pre><p>
+The general idea is that
+</p><pre class="programlisting">
+   LE&lt; Translated_LambdaExp &gt;::type
+</pre><p>
+names the type of <tt class="computeroutput">LambdaExp</tt>.  Each of our primitive constructs in
+lambda has a corresponding translated version understood by
+<tt class="computeroutput">LE</tt>:
+</p><pre class="programlisting">
+   CALL            [] (function call)
+   LV              lambda_var
+   IF0,IF1,IF2     if0[],if1[],if2[]
+   LAM             lambda()[]
+   LET             let[].in[]
+   LETREC          letrec[].in[]
+   BIND            lambda_var == value
+</pre><p>
+With <tt class="computeroutput">LE</tt>, the task of naming the type of a lambda
+expression is still onerous, but <tt class="computeroutput">LE</tt> at least makes it
+possible.  Without the <tt class="computeroutput">LE</tt> type computer, the type of
+lambda expressions could only be named by examining the library
+implementation, which may change from version to version.
+<tt class="computeroutput">LE</tt> guarantees a consistent interface for naming the types
+of lambda expressions.
+</p><p>
+Finally, it should be noted that if the lambda only needs to be used
+monomorphically, it is far simpler (though potentially less efficient) 
+to just use an indirect functoid:
+</p><pre class="programlisting">
+   // Can name the monomorphic &quot;(int,int)-&gt;int&quot; functoid type easily:
+   Fun2&lt;int,int,int&gt; f = lambda(X,Y)[ (3 %multiplies% X) %plus% Y ];
+</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id324468"></a>FC++ lambda versus <tt class="computeroutput">boost::lambda</tt></h4></div></div><div></div></div><p>
+Whereas FC++'s lambda and <tt class="computeroutput">boost::lambda</tt> superficially
+appear to do the same thing, they are actually quite different.  FC++'s
+lambda uses explicit lambda syntax to create a minimal sublanguage with
+language constructs found in pure functional languages (e.g.
+<tt class="computeroutput">letrec</tt>).  On the other hand, <tt class="computeroutput">boost::lambda</tt>
+supplies almost the entire C++ language in its lambda, overloading
+every possible operator in lambda expressions, which can be created
+implicitly just by using a placeholder variable (like <tt class="computeroutput">_1</tt>)
+in the midst of an expression.  For more discussion about the
+differences, see [<span class="citation">dpcool</span>].
+</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fcpp.sectmonads"></a>Monads</h3></div></div><div></div></div><p>
+Monads provide a useful way to structure programs in a pure
+functional language.  The FC++ library now implements a few monads, and
+provides syntax support for ``do-notation'' and ``comprehensions'' in
+arbitrary monads.
+</p><p>
+Monads are a particularly abstract and difficult topic to explain.
+Rather than try to explain monads here (and double the size of this
+document), we refer the reader to the discussion of monads in
+[<span class="citation">dpcool</span>], as well as the documentation about lambda
+and monads on the FC++ web site [<span class="citation">fc++</span>].
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fcpp.sectapplications"></a>Applications</h3></div></div><div></div></div><p>
+FC++ has a number of application areas, which we describe here briefly.
+</p><div class="itemizedlist"><ul type="disc"><li><span class="emphasis"><em>General:</em></span> 
+FC++ is useful for its handling of function objects in a general
+setting.  The FC++ way of saying things is often more succinct than
+<tt class="computeroutput">boost::bind</tt> or the standard library:
+<pre class="programlisting">
+   FC++                   STL/boost::bind
+   ====                   ===============
+   fcpp::plus             std::plus&lt;int&gt;()
+   minus(_,3)             std::bind2nd( std::plus&lt;int&gt;(), 3 )
+   minus(_,3)             boost::bind( std::plus&lt;int&gt;(), _1, 3 )
+</pre>
+though for a number of small cases, <tt class="computeroutput">boost::lambda</tt> provides the
+tiniest code:
+<pre class="programlisting">
+   FC++                   boost::lambda
+   ====                   =============
+   minus(_,3)             _1 - 3
+</pre>
+FC++'s lambda syntax is explicit, which sometimes makes it easier to
+create complicated functions on the fly.  Here is a somewhat contrived 
+example (loosely based on a thread on the Boost mailing list)
+<pre class="programlisting">
+   void g( std::string s, int x );
+   void h( fcpp::fun0&lt;void&gt; f );
+   ...
+   fcpp::fun1&lt;int,void&gt; f = 
+      lambda(X)[ ptr_to_fun(h)[
+         lambda()[ ptr_to_fun(g)[ std::string(&quot;hi&quot;), X ]
+            ] ] ];
+</pre>
+which is relatively straightforward to express using FC++, but difficult
+to express using <tt class="computeroutput">boost::{lambda,function,bind}</tt>.
+</li><li><span class="emphasis"><em>Design patterns:</em></span> 
+FC++ is useful in the implementation of a number of OO design patterns.
+See [<span class="citation">spe</span>] for details.
+</li><li><span class="emphasis"><em>Lazy evaluation</em></span>:
+FC++ is useful for functional programmers because it provides an
+alternative, commonly available platform for implementing familiar
+designs. An example of this approach is the XR (<span class="emphasis"><em>Exact
+Real</em></span>) library [<span class="citation">XR</span>]. XR uses the FC++
+infrastructure to provide exact (or <span class="emphasis"><em>constructive</em></span>)
+real-number arithmetic, using lazy evaluation.
+</li><li><span class="emphasis"><em>Parsing</em></span>:
+In Haskell, ``monadic parser combinators'' are all the rage.  FC++'s
+support for monads makes it possible to implement these libraries in
+C++.  See [<span class="citation">dpcool</span>] for more discussion, and the
+<tt class="computeroutput">parser.cc</tt> client file for an example.
+</li><li><span class="emphasis"><em>Other applications</em></span>:
+FC++ has been used as a basis on which to build other libraries as well.
+See the ``customers'' section of the FC++ web page
+[<span class="citation">fc++</span>] for details.
+</li></ul></div><p>
+Prior to ``Boost FC++'', the main ``audience'' for FC++ was the
+functional programming research community.  We hope that inclusion in
+Boost will help find more matches between the general C++ community's
+needs and the features provided by FC++.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fcpp.sectperformance"></a>Performance</h3></div></div><div></div></div><p>
+FC++ uses a number of optimizations to improve the performance of its
+more ``dynamic'' features, like indirect functoids and lists.  Sections
+9 and 10 of [<span class="citation">jfp</span>] quantify the library's performance
+and discuss a number of the optimizations we have implemented.
+</p><p>
+For the most part, using FC++ means using direct functoids, which are
+templates which get instantiated (and possibily inlined) at
+compile-time; this use of FC++ implies no extra overhead.
+</p><p>
+FC++ is a large library, and <tt class="computeroutput">#include</tt>-ing it is bound to
+slow down your compile-time a little.  The lambda and monad facilities
+utilize expression templates, and expressions templates tend to slow
+down compile-times a lot.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fcpp.sectlimitations"></a>Limitations and future work</h3></div></div><div></div></div><div class="toc"><dl><dt><a href="fcpp.body.html#id324774">Limitations</a></dt><dt><a href="fcpp.body.html#id324862">Future work</a></dt></dl></div><p>
+In this section, we discuss the limitations of the library (and address
+some common questions people ask about the library), and also talk
+about future directions.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id324774"></a>Limitations</h4></div></div><div></div></div><p>
+The most obvious limitations have already been mentioned: functoids in
+FC++ are only supported for up to three arguments, and functoid
+parameters always have value semantics.  In practice so far, the
+three-argument limit has not been an issue.  There are no technical
+reasons that the framework cannot be extended to accomodate additional
+arguments if this is deemed valuable.
+</p><p>
+The choice of ``value semantics'' arguably requires some
+justification.  Most functional languages are ``by value'', and indeed
+in many functional languages, most (if not all) objects are immutable,
+which makes reference semantics unnecessary.  While reference
+parameters for functoids could be supported by FC++, these would
+complicate the implementation and provide no extra utility within FC++
+(due to the absence of lvalues).  Unfortunately, the choice of ``value
+semantics'' sometimes makes it hard to interface FC++ to extant C++
+code that utilizes references.  Simply put, FC++ was not designed with
+cases like these in mind, and (like all tools) FC++ is not the best tool
+for every job.
+</p><p>
+Functional programmers who desire a more technical discussion of the
+limitations of FC++ compared to functional programming languages and
+type systems should read Section 8 of [<span class="citation">jfp</span>].  It
+should also be noted that FC++ provides no support for the creation of
+algebraic datatypes or for pattern matching.
+</p><p>
+FC++ also does not provide any kind of ``tuple'' datatype.  The
+commonest case, 2-tuples, are adequately met by
+<tt class="computeroutput">std::pair</tt>.  Users wanting a more general tupling mechanism
+should use <tt class="computeroutput">boost::tuple</tt>s.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id324862"></a>Future work</h4></div></div><div></div></div>
+
+FIX
+
+</div></div><div class="bibliography"><div class="titlepage"><div><div><h2 class="title"><a name="id324867"></a>Bibliography</h2></div></div><div></div></div><div class="biblioentry"><p>[<span class="abbrev">XR</span>] <span class="author"><span class="firstname">K.</span> <span class="surname">Briggs</span>. </span><span class="title"><i><a href="http://www.btexact.com/people/briggsk2/XR.html" target="_top">
+The XR Exact Real Home Page</a></i>. </span></p></div><div class="biblioentry"><p>[<span class="abbrev">fc++</span>] <span class="title"><i><a href="http://www.cs.umass.edu/~yannis/fc++/" target="_top">
+The FC++ web page</a></i>. </span></p></div><div class="biblioentry"><p>[<span class="abbrev">prelude</span>] <span class="title"><i><a href="http://www.haskell.org/onlinereport/" target="_top"><span class="emphasis"><em>Haskell 98 Language Report</em></span></a></i>. </span></p></div><div class="biblioentry"><p>[<span class="abbrev">jfp</span>] <span class="authorgroup"><span class="firstname">Brian</span> <span class="surname">McNamara</span> and <span class="firstname">Yannis</span> <span class="surname">Smaragdakis</span>. </span><span class="title"><i>Functional Programming with the  FC++ library</i>. </span><span class="publisher"><span class="publishername">Journal of Functional
+Programming. </span></span><span class="pubdate">to appear. </span></p></div><div class="biblioentry"><p>[<span class="abbrev">staticisa</span>] <span class="authorgroup"><span class="firstname">Brian</span> <span class="surname">McNamara</span> and <span class="firstname">Yannis</span> <span class="surname">Smaragdakis</span>. </span><span class="title"><i>Static Interfaces in C++</i>. </span><span class="confgroup"><span class="confdates">October, 2000. </span><span class="conftitle"><a href="http://www.oonumerics.org/tmpw00/" target="_top">
+Workshop on C++ Template Programming</a>. </span><span class="confnum">2. </span><span class="address">Erfurt, Germany. </span>. </span></p></div><div class="biblioentry"><p>[<span class="abbrev">dpcool</span>] <span class="authorgroup"><span class="firstname">Brian</span> <span class="surname">McNamara</span> and <span class="firstname">Yannis</span> <span class="surname">Smaragdakis</span>. </span><span class="confgroup"><span class="confdates">August, 2003. </span><span class="conftitle"><a href="http://www.multiparadigm.org/dpcool03/" target="_top">
+DPCOOL</a>. </span><span class="confnum">1. </span><span class="address">Uppsala, Sweden. </span>. </span><span class="title"><i>Syntax sugar for FC++: lambda, infix, monads, and more</i>. </span><span class="bibliomisc">Available at
+<a href="" target="_top">http://www.cs.umass.edu/~yannis/fc++/</a>. </span></p></div><div class="biblioentry"><p>[<span class="abbrev">siek</span>] <span class="authorgroup"><span class="firstname">Jeremy</span> <span class="surname">Siek</span> and <span class="firstname">Andrew</span> <span class="surname">Lumsdaine</span>. </span><span class="title"><i>Concept Checking: Binding Parametric Polymorphism in C++</i>. </span><span class="confgroup"><span class="confdates">October, 2000. </span><span class="conftitle"><a href="http://www.oonumerics.org/tmpw00/" target="_top">
+Workshop on C++ Template Programming</a>. </span><span class="confnum">2. </span><span class="address">Erfurt, Germany. </span>. </span></p></div><div class="biblioentry"><p>[<span class="abbrev">spe</span>] <span class="authorgroup"><span class="firstname">Yannis</span> <span class="surname">Smaragdakis</span> and <span class="firstname">Brian</span> <span class="surname">McNamara</span>. </span><span class="title"><i>FC++: Functional Tools for Object-Oriented Tasks</i>. </span><span class="publisher"><span class="publishername">
+Software: Practice and Experience
+. </span></span><span class="pubdate">August, 2002. </span></p></div><div class="biblioentry"><p>[<span class="abbrev">returntype</span>] <span class="title"><i>A uniform method for computing function object return
+types</i>. </span><span class="bibliomisc">Available at
+<a href="" target="_top">http://anubis.dkuug.dk/jtc1/sc22/wg21/docs/papers/2003/n1454.html</a>. </span></p></div></div><div class="footnotes"><br><hr width="100" align="left"><div class="footnote"></div><div class="footnote"></div><div class="footnote"></div><div class="footnote"></div></div></div><table width="100%"><tr><td align="left"><small>Last revised: March 12, 2003 at 23:27:22 GMT</small></td><td align="right"><small>Copyright © 2000-2003 Brian McNamara</small></td></tr></table><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="index.html"><img src="images/prev.png" alt="Prev"></a> </td><td width="20%" align="center"><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a></td><td width="40%" align="right"> <a accesskey="n" href="fcpp.body.html#id324867"><img src="images/next.png" alt="Next"></a></td></tr><tr><td width="40%" align="left" valign="top">Boost.FC++ </td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a></td><td width="40%" align="right" valign="top"> Bibliography</td></tr></table></div></body></html>

@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>jOrchestra</title>
+  </head>
+
+  <body>
+    <h1>Clock Example<br>
+    Tutorial Part I.</h1>
+    <p>1) Download the <a href="resources/clock_example.jar">clock_example.jar</a>
+    archive file.<br>
+    2) Unjar the downloaded archive file: <i>jar xvf clock_example.jar</i>.
+    <br>This example a slightly modified version of the <a href="http://java.sun.com/products/plugin/1.3.1_01a/demos/applets/Clock/example1.html">Clock
+    applet</a> demo distributed<br>
+    as part of Sun's JDK. The modifications included changing the demo from an<br>
+    applet to an application and placing the source code into a package. Make
+    sure<br>
+    that you can run the original centralized version of the example:<br>
+    3) <i>java clock.Clock2<br>
+    </i>This analog clock application continuously gets current time from the
+    system and displays<br>
+    it on a graphical screen. We would like to partition this application in
+    such a way so<br>
+    that it would display the time info from a remote site. In other words, we would like
+    to get the time info on the server site and display it on the client.<br>
+    4) Start J-Orchestra: <i>java -jar jorchestra.jar</i><br>
+    5) J-Orchestra allows saving a completed partitioning configuration to a
+    disk file. There are two such<br>
+    configuration files included with this example.<br>
+    Choose File/Load menu option:<br>
+    <img border="0" src="exampl1.jpg" width="1280" height="1024"></p>
+    <p>Choose Clock1.xml file. If J-Orchestra prompts you for &quot;the source
+    classes' location&quot;, enter the directory where you saved the example's
+    archive.<br>
+    <img border="0" src="exampl2.jpg" width="1028" height="515"><br>
+    </p>
+    <p>6) Choose Action/Distribute menu option and select the output directory
+    for the partitioning.<br>
+    7) Wait until the J-Orchestra partitioning process runs to completion.<br>
+    <img border="0" src="exampl3.jpg" width="406" height="324"><br>
+    8) Start the command line interpreter and go to the output directory. Go to <i>step4</i>
+    directory.<br>
+    &nbsp;&nbsp;&nbsp; This is the last step of the distribution process.<br>
+    &nbsp;&nbsp;&nbsp; What you see should look something similar to:<br>
+    <img border="0" src="exampl4.jpg" width="1032" height="376"><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<br>
+    Application.jar contains the distributed files that have to be distributed
+    to all the sites of the distribution (client and server in this case).<br>
+    &quot;client&quot; and &quot;server&quot; directories contain various
+    configuration files specific to each distribution site.<br>
+    9) Now you are ready to run the distributed partitioned application.&nbsp;<br>
+    <b>Make sure you have either jorchestra.jar or jorch_runtime.jar in your
+    CLASSPATH.<br>
+    </b>In this configuration, we are going to run the distributed application
+    on the same machine but in two different<br>
+    processes.<br>
+    10) Change the directory to &quot;client&quot;.<br>
+    Unjar the application.jar archive: <i>jar xvf ..\application.jar</i><br>
+    11) Start another command line window. Change the directory to
+    &quot;server&quot;.<br>
+    Unjar the application.jar archive: <i>jar xvf ..\application.jar</i><br>
+    12) In the server window start J-Orchestra Object Factory Server by running
+    the generated script: <i>startServer.sh</i> or <i>startServer.bat, </i>depending
+    on the operating system.<i><br>
+    </i>13) In the client window run the client: <i>java
+    remotecapable.clock.Clock2<br>
+    </i>Good luck!<br>
+    </p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p><img src="images/music_line2.gif" width="700" height="18"><br><br>
+    <i>Last Modified:</i>  
+    <!--webbot bot="TimeStamp" S-Type="EDITED"
+    S-Format="%B %d, %Y" startspan -->June 16, 2003<!--webbot bot="TimeStamp" endspan i-checksum="14248" --></p>
+  </body>
+</html>

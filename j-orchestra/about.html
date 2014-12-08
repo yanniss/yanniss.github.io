@@ -1,0 +1,65 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+   <title>jOrchestra</title>
+</head>
+<body>
+<h2>What is J-Orchestra?</h2>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; J-Orchestra is a system for automatically partitioning and distributing 
+existing Java programs. Given a Java program in bytecode format and a desired 
+distribution plan, J-Orchestra will automatically rewrite the program to execute 
+on a distributed environment, just as if it were executing on a single machine. 
+To do this, the J-Orchestra compiler has to do some complex bytecode rewriting: 
+it needs to change all accesses to objects to be through indirect pointers (that 
+hide the location of the object); it needs to take care of accessing system 
+classes remotely; it needs to ensure that objects get &quot;unwrapped&quot; when passed to 
+system classes (system classes know nothing about the distribution) and wrapped 
+back up when they are passed to user classes. An important feature of 
+J-Orchestra is that it does not modify the Java VM or any system libraries: you 
+can run the J-Orchestra-partitioned program in any standard Java environment.
+<br>
+&nbsp;
+<h2>Why use J-Orchestra?</h2>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; J-Orchestra lets you run an application in a distributed environment. 
+There are tons of reasons why you may want to do that: perhaps your processing 
+server is not where your input or output is (i.e., J-Orchestra is used as an 
+alternative to X-Windows or to &quot;telnet&quot;); perhaps you want to execute a remote 
+program as efficiently as possible (i.e., J-Orchestra is used as an alternative 
+to Java applets or servlets); perhaps your application is inherently 
+distributed--your database runs on one machine, your input (keyboards, sensors, 
+microphones) is on another, and your processing power is on a third; perhaps 
+your application is multi-threaded and you want to make it execute truly in 
+parallel on different processing hosts. <br>
+&nbsp;
+<h2>Where does the name &quot;J-Orchestra&quot; come from?</h2>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; What J-Orchestra does is similar to the &quot;orchestration&quot; process for 
+musical pieces. Orchestral pieces are rarely composed as a complete orchestral 
+score (i.e., a score specifying precisely what notes each individual instrument 
+of the orchestra plays). More commonly the composer begins with a piano score. 
+Then &quot;orchestration&quot; takes place to produce the complete orchestral piece. 
+Orchestration determines what instrument should play each of the notes in the 
+completed piano score.
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The processes of composition and orchestration are entirely separate. 
+There are many examples of orchestrating piano music that was never intended for 
+orchestral performance by the composer who wrote it. A number of piano pieces 
+have several brilliant but totally different orchestrations. </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The J-Orchestra system does the same thing to centralized Java programs 
+as orchestration to completed piano scores. We start from a completed, 
+centralized Java program and then partition it into several distributed segments. 
+Our orchestration process is semi-automatic. First we ask the user how many 
+instruments (network nodes) we have. Each network node can have some unique 
+capabilities very much like a musical instrument. That might be the reason why 
+certain pieces of code must be placed on a particular node. After that, we use 
+profiling, static analysis, and byte code engineering to produce the optimum 
+partitioning (orchestration) of the original program. In order to coordinate the 
+execution of the resulting distributed program, we have a run-time system. Its 
+role is very similar to the one of the conductor.</p>
+
+<p><img SRC="images/music_line2.gif" width="700" height="18" >
+<p><i>Last Modified:</i>   
+<!--webbot bot="TimeStamp" S-Type="EDITED"
+S-Format="%B %d, %Y" startspan -->June 06, 2003<!--webbot bot="TimeStamp" i-checksum="14216" endspan -->
+</body>
+</html>

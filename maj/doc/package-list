@@ -1,0 +1,5 @@
+maj
+maj.error
+maj.semant
+org.aspectj.compiler.base.ast
+org.aspectj.compiler.crosscuts.ast

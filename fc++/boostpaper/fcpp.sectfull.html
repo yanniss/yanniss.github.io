@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>7. Full Functoids</title><link rel="stylesheet" href="reference.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.48"><link rel="home" href="fcpp.html" title="Boost.FC++"><link rel="up" href="fcpp.html" title="Boost.FC++"><link rel="previous" href="fcpp.sectindirect.html" title="6. Indirect Functoids"><link rel="next" href="fcpp.secteffects.html" title="8. Effects and thunks"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table border="1" cellpadding="2" bgcolor="#007F7F"><tr><td bgcolor="#FFFFFF"><img src="../../c++boost.gif" alt="c++boost.gif (8819 bytes)" width="277" height="86"></td><td><a href="../../index.htm"><font color="#FFFFFF" size="4" face="Arial">Home</font></a></td><td><a href="libraries.html"><font color="#FFFFFF" size="4" face="Arial">Libraries</font></a></td><td><a href="../../people/people.htm"><font color="#FFFFFF" size="4" face="Arial">People</font></a></td><td><a href="../../more/faq.htm"><font color="#FFFFFF" size="4" face="Arial">FAQ</font></a></td><td><a href="../../more/index.htm"><font color="#FFFFFF" size="4" face="Arial">More</font></a></td></tr></table><div class="section"><div class="titlepage"><div><h2 class="title" style="clear: both"><a name="fcpp.sectfull"></a>7. Full Functoids</h2></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt>7.1. <a href="fcpp.sectfull.html#id189667">Currying</a></dt><dt>7.2. <a href="fcpp.sectfull.html#id189722">Infix Syntax</a></dt><dt>7.3. <a href="fcpp.sectfull.html#id268840">Lambda Awareness</a></dt><dt>7.4. <a href="fcpp.sectfull.html#id268868">Smartness</a></dt><dt>7.5. <a href="fcpp.sectfull.html#id268983">Return-type deduction</a></dt></dl></div><p>
+In FC++, we use the term <span class="emphasis"><i>full functoid</i></span> to describe
+functoids which are blessed with all of the special features of FC++.
+In this section we describe how to promote basic functoids (described
+at the end of <a href="fcpp.sectdirect.html#fcpp.sectdirect" title="5. Direct Functoids">Section 5</a>) into full functoids,
+and we enumerate the added capabilities that full functoids have.
+</p><p>
+Full functoids are implemented using the <tt>fullN</tt> wrapper
+classes (as with the <tt>funN</tt> indirect functoid classes,
+<span class="emphasis"><i>N</i></span> describes the arity of the function).  Recall in
+<a href="fcpp.sectdirect.html#fcpp.sectdirect" title="5. Direct Functoids">Section 5</a> we defined <tt>mymap</tt> as a
+basic direct functoid like this:
+<pre class="programlisting">
+   struct mymap_type {
+      // a bunch of stuff
+   } mymap;
+</pre>
+Promoting <tt>mymap</tt> into a full functoid is straightforward:
+<pre class="programlisting">
+   namespace impl {
+      struct xmymap_type {
+         // a bunch of stuff
+      };
+   }
+   typedef full2&lt;impl::xmymap_type&gt; mymap_type;
+   mymap_type mymap;
+</pre>
+That is, rather than have <tt>mymap_type</tt> refer to the direct
+functoid <tt>struct</tt> we have defined, instead we make it a
+<tt>typedef</tt> for <tt>full2</tt> instantiated with that
+type.  (In FC++, we conventionally use a namespace called
+<tt>impl</tt> to store the actual definitions of basic direct
+functoids, and define the full functoids out in the main namespace.  We
+also mangle the original name (prefixing an &quot;x&quot;) in order to ensure
+that the basic functoid type will not be accidentally found instead of
+the full functoid type when various C++ name-lookup rules kick
+in.<sup>[<a name="id189615" href="#ftn.id189615">3</a>]</sup>)  That's all there is to
+it.
+</p><p>
+Indirect functoids need no such promotion.  Since the indirect functoid
+types (the <tt>funN</tt> classes) are defined by the library, they are
+already imbued with all of the full functoid features.  We describe
+these features next.
+</p><p>
+(Now is a good time to mention that FC++ supports functoids of 0-3
+parameters.  The <tt>fullN</tt>, <tt>funN</tt>, and
+<tt>c_fun_type</tt> classes have only been defined for functions of
+up to three arguments.)
+</p><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id189667"></a>7.1. Currying</h3></div></div><p>
+As described in <a href="fcpp.sectoverview.html#fcpp.sectoverview" title="4. Overview Examples">Section 4</a>, all full functoids
+exhibit built-in currying.  For example, given a 3-argument full
+functoid &quot;<tt>f</tt>&quot;, we can call it with any subset of its
+arguments, either by using underscores as placeholders, or by leaving
+off trailing arguments.  Some examples:
+<pre class="programlisting">
+   f(x,y,z)          // normal call
+   f(x,_,z)          // yields a new unary functoid (expecting y)
+   f(_,y,_)          // yields a new binary functoid (expecting x,z)
+   f(x,y)            // yields a new unary functoid (expecting z)
+   f(x)              // yields a new binary functoid (expecting y,z)
+</pre>
+Additionally, all of the arguments can be curried, resulting in a
+&quot;thunk&quot; (a nullary functoid), by calling <tt>thunkN</tt>:
+<pre class="programlisting">
+   thunk3(f,x,y,z)   // yields a new nullary functoid
+</pre>
+Thunks will be described more in <a href="fcpp.secteffects.html#fcpp.secteffects" title="8. Effects and thunks">Section 8</a>.
+</p></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id189722"></a>7.2. Infix Syntax</h3></div></div><p>
+Binary and ternary full functoids can be called using a special infix
+syntax.  This is syntactic sugar, as some functions &quot;read&quot; better
+using infix notation:
+<pre class="programlisting">
+   plus(2,3)        // normal (prefix) function syntax
+   2 ^plus^ 3       // FC++ infix syntax
+</pre>
+For ternary functoids, note that infix syntax automatically invokes
+currying of the final argument:
+<pre class="programlisting">
+   f(x,y,z)         // normal (prefix) function syntax
+   f(x,y)           // as before: yields a new unary functoid (expecting z)
+   x ^f^ y          // FC++ infix syntax (new unary functoid expecting z)
+</pre>
+FC++ infix syntax was inspired by a similar construct in the Haskell
+programming language.
+</p></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id268840"></a>7.3. Lambda Awareness</h3></div></div><p>
+Full functoids are lambda-aware.  This means that they can be called
+with square brackets <tt>[]</tt> instead of round ones
+<tt>()</tt> to create lambda expressions.  Lambda is discussed in
+<a href="fcpp.sectlambda.html#fcpp.sectlambda" title="12. Lambda">Section 12</a>.
+</p></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id268868"></a>7.4. Smartness</h3></div></div><p>
+Full functoids exhibit another feature which we have chosen to label
+&quot;smartness&quot;.  Full functoids know how many arguments they can accept;
+a traits class provides access to this information.  If <tt>F</tt> is a
+full functoid type, then these values are available at compile-time:
+<pre class="programlisting">
+   functoid_traits&lt;F&gt;::template accepts&lt;N&gt;::args
+   // A bool which says whether F can accept N arguments
+   
+   functoid_traits&lt;F&gt;::max_args
+   // An int which says what the most arguments F can accept is
+</pre>
+and also this operation is available
+<pre class="programlisting">
+   functoid_traits&lt;F&gt;::template ensure_accepts&lt;N&gt;::args()
+   // A no-op call that compiles only if F can accept N args
+</pre>
+to ensure that compilation halts with an error if the specified function
+does not accept the expected number of arguments.
+</p><p>
+We use a traits class to provide literate error messages (along the
+lines of [<a href="fcpp.html#fcpp.citstaticisa" title="[McN&amp;Sma00]">McN&amp;Sma00</a>][<a href="fcpp.html#fcpp.citsiek" title="[Sie&amp;Lum00]">Sie&amp;Lum00</a>]) so that some common
+abuses (like passing an <tt>F</tt> that is not a full functoid to
+<tt>functoid_traits</tt>) are
+caught within the library and a helpful identifier is injected into the
+compiler error message.
+</p></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id268983"></a>7.5. Return-type deduction</h3></div></div><p>
+C++ will eventually have a <tt>typeof</tt> operator, but in the
+meantime, the standards committee has come up a stop-gap solution to
+return-type deduction [<a href="fcpp.html#fcpp.citreturntype" title="[ReturnType]">ReturnType</a>].  The standard
+solution will be to use, e.g.,
+<pre class="programlisting">
+   result_of&lt;F(X,Y)&gt;::type
+</pre>
+to determine the result of an object of type <tt>F</tt> being
+called with arguments of type <tt>X</tt> and <tt>Y</tt>.  The
+<tt>result_of</tt> template knows how to work on function pointers,
+monomorphic function objects, and polymorphic function objects.
+</p><p>
+FC++ basic functoids use a different convention for defining
+return-type deduction within the FC++ framework (described in <a href="fcpp.sectdirect.html#fcpp.sectdirect" title="5. Direct Functoids">Section 5</a>).  However, full functoids implement the
+standard convention (using <tt>result_of</tt>) as well.  As a
+result, FC++ full functoids interoperate with other template libraries
+that require return-type-deduction facilities.
+</p></div><div class="footnotes"><br><hr width="100" align="left"><div class="footnote"><p><sup>[<a name="ftn.id189615" href="#id189615">3</a>] </sup>This seems ugly, but Brian can't find a better way to
+effectively hide the names of basic functoids.  He invites email
+advice/discussion on the topic.</p></div></div></div><table width="100%"><tr><td align="left"><small>Last revised: October 03, 2003 at 23:27:22 GMT</small></td><td align="right"><small>Copyright © 2000-2003 Brian McNamara and Yannis Smaragdakis</small></td></tr></table><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="fcpp.sectindirect.html"><img src="images/prev.png" alt="Prev"></a> </td><td width="20%" align="center"><a accesskey="u" href="fcpp.html"><img src="images/up.png" alt="Up"></a></td><td width="40%" align="right"> <a accesskey="n" href="fcpp.secteffects.html"><img src="images/next.png" alt="Next"></a></td></tr><tr><td width="40%" align="left" valign="top">6. Indirect Functoids </td><td width="20%" align="center"><a accesskey="h" href="fcpp.html"><img src="images/home.png" alt="Home"></a></td><td width="40%" align="right" valign="top"> 8. Effects and thunks</td></tr></table></div></body></html>

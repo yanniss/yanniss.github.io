@@ -1,0 +1,145 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.61 [en] (X11; U; SunOS 5.7 sun4u) [Netscape]">
+   <title>FC++ FAQ</title>
+<!-- <body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
+-->
+</head>
+<body>
+
+<h2>
+Frequently Asked Questions</h2>
+
+<h3>
+about the FC++ library</h3>
+
+<hr><!-- Begin faqmaker output -->
+<ul>
+<li>
+<a href="#faq0">[0] Why is FC++ necessary when we have function pointers?</a></li>
+
+<li>
+<a href="#faq1">[1] How does FC++ compare to the "functional" part of the
+C++ Standard Library?</a></li>
+
+<li>
+<a href="#faq2">[2] What compiler can I use for FC++?</a></li>
+
+<li>
+<a href="#faq3">[3] Will FC++ make my programs slower?</a></li>
+
+<li>
+<a href="#faq4">[4] What would functional programming in C++ be good for?</a></li>
+
+<li>
+<a href="#faq5">[5] What does <tt>take (5, map (odd, enumFrom(1)))</tt>
+mean?</a></li>
+
+<li>
+<a href="#faq6">[6] Haven't other people done functional programming in
+C++ before? How is FC++ different?</a></li>
+</ul>
+
+<hr><a NAME="faq0"></a>[0] Why is FC++ necessary when we have function
+pointers?
+<p>There are two key reasons and one minor reason why FC++ is better than
+using function pointers for implementing higher-order functions in C++.
+First, function pointers are monomorphic--you cannot create a pointer to
+a polymorphic (template) function. (You can create a pointer to one of
+its monomorphic instances, but you lose the polymorphic power in doing
+so.) FC++ can pass polymorphic functions as parameters. Second, function
+pointers can only point to functions that explicitly appear in the code.
+For instance, one cannot create a function pointer to a function created
+by specializing another function. Finally, function pointers add a layer
+of run-time indirection that can slow down your program by hindering optimizations
+like inlining. FC++ uses member function templates so even higher-order
+instantiations can be inlined.&nbsp;
+<hr><a NAME="faq1"></a>[1] How does FC++ compare to the "functional" part
+of the C++ Standard Library?
+<p>"Functoids" in FC++ are similar to "Adaptable N-ary Functions" in the
+STL, in that they use nested typedefs to encode argument and result types
+to enable composition of higher-order functions. The key difference is
+that the STL's "Adaptables" are all monomorphic. For instance, you can
+pass <tt>plus&lt;int>()</tt> as an argument to many STL functions, but
+you must fix the argument type (<tt>int</tt> in this example). With FC++,
+you can just pass
+<tt>Plus()</tt> to a polymorphic higher-order function,
+and have the argument types be deduced later/elsewhere.&nbsp;
+<hr><a NAME="faq2"></a>[2] What compiler can I use for FC++?
+<p>We have currently only tested the FC++ library using <a href="http://gcc.gnu.org/gcc-2.95/gcc-2.95.2.html">g++2.95.2</a>
+on Solaris. However, we intend for our code to be entirely standard C++,
+and any recent compiler with good template support should work. If you
+have problems (or successes!) compiling FC++ using other compilers, please
+let us know.&nbsp;
+<hr><a NAME="faq3"></a>[3] Will FC++ make my programs slower?
+<p>It depends. FC++ is fairly efficient but it does have some run-time
+overheads when functions are passed around as arguments. In principle,
+if you need to use a functional idiom in your program, FC++ is one of the
+most efficient ways to do it.&nbsp;
+<hr><a NAME="faq4"></a>[4] What would functional programming in C++ be
+good for?
+<p>A lot of programming patterns could be written more concisely with FC++.
+An example would be <i>lazy</i> data structures (where the members of the
+structure are not evaluated until needed). Another example would be type-safe
+<i>callbacks</i>:
+the Observer design pattern essentially implements callbacks in an object-oriented
+way, but with functional idioms the same can be done more cleanly. Finally,
+function specialization is very straightforward so new functions can be
+created from fixing some arguments of old ones.
+<p>
+<hr><a NAME="faq5"></a>[5] What does <tt>take (5, map (odd, enumFrom(1)))</tt>
+mean?
+<p>The functions named above are all part of Haskell's standard library
+(called the Standard Prelude). <a href="http://haskell.org/">Haskell</a>
+is a modern pure functional programming language, and much of the functionality
+of FC++ mimics Haskell exactly. This is meant to make FC++ more accessible
+to the "functional programming crowd" who may be less familiar with C++.
+<p>In this example, <tt>enumFrom(1)</tt> creates an infinite list of integers
+(1, 2, 3, ...), <tt>odd</tt> is a function which returns true if its argument
+is odd, <tt>map</tt> works like
+<tt>MAPCAR</tt> in LISP by applying its
+argument to each element of a list, and <tt>take</tt> selects the first
+N elements of a list. As a result, the expression above resolves to the
+list (true, false, true, false, true).
+<p>For documentation of the meaning of the FC++ functoids defined in
+<tt>prelude.h</tt>,
+you should check out the <a href="http://haskell.org/onlinereport/standard-prelude.html">documentation
+of the corresponding Haskell functions</a> (see section "A.1" that starts
+about half way down the page).
+<br>
+<hr><a NAME="faq6"></a>[6] Haven't other people done functional programming
+in C++ before? How is FC++ different?
+<p>FC++ is the first library to enable polymorphic higher-order functions
+that have polymorphic arguments. In the past, if one wanted to express
+polymorphic functions in C++, these couldn't be used as arguments to other
+functions. This may seem like a detail, but it is particularly useful in
+C++ because of the limited type inference capabilities of the language.
+For instance, consider the standard FC++ example:
+<br><tt>&nbsp; take(5, map(odd, enumFrom(1)))</tt> .
+<br>Without the ability to have polymorphic functions that take other polymorphic
+functions as arguments, <tt>odd</tt> would have to be monomorphic (i.e.,
+it would lose in generality). With FC++ we have a fully general definition
+of <tt>odd</tt>, pass it to <tt>map</tt> and let map determine its required
+type later. An even better example is:
+<br><tt>&nbsp; compose(tail, tail).</tt>
+<br>The above composition is a polymorphic function (assuming that <tt>tail</tt>
+is also polymorphic). No C++ library before FC++ supported something similar.
+<p>FC++ also offers several expressiveness and performance enhancements
+over older libraries for functional programming in C++. It defines a subtyping
+policy for functions (so you can substitute a more general function where
+a specific one is expected), it offers efficient memory management, it
+defines a wealth of operators commonly found in functional languages, it
+comes with an implementation of a lazy list data structure, and it provides
+interface functions from STL function objects, C++ function pointers, etc
+to FC++ functoids.
+<br>
+<hr><!-- End faqmaker output -->
+<hr>
+<h6>
+Last updated on July 16 2000 by <a href="mailto:yannis@cc.gatech.edu">Yannis
+Smaragdakis</a></h6>
+
+</body>
+</html>

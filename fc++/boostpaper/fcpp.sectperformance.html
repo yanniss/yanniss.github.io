@@ -1,0 +1,16 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>15. Performance</title><link rel="stylesheet" href="reference.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.48"><link rel="home" href="fcpp.html" title="Boost.FC++"><link rel="up" href="fcpp.html" title="Boost.FC++"><link rel="previous" href="fcpp.sectapplications.html" title="14. Applications"><link rel="next" href="fcpp.sectlimitations.html" title="16. Limitations and future work"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table border="1" cellpadding="2" bgcolor="#007F7F"><tr><td bgcolor="#FFFFFF"><img src="../../c++boost.gif" alt="c++boost.gif (8819 bytes)" width="277" height="86"></td><td><a href="../../index.htm"><font color="#FFFFFF" size="4" face="Arial">Home</font></a></td><td><a href="libraries.html"><font color="#FFFFFF" size="4" face="Arial">Libraries</font></a></td><td><a href="../../people/people.htm"><font color="#FFFFFF" size="4" face="Arial">People</font></a></td><td><a href="../../more/faq.htm"><font color="#FFFFFF" size="4" face="Arial">FAQ</font></a></td><td><a href="../../more/index.htm"><font color="#FFFFFF" size="4" face="Arial">More</font></a></td></tr></table><div class="section"><div class="titlepage"><div><h2 class="title" style="clear: both"><a name="fcpp.sectperformance"></a>15. Performance</h2></div></div><p>
+FC++ uses a number of optimizations to improve the performance of its
+more &quot;dynamic&quot; features, like indirect functoids and lists.  Sections
+9 and 10 of [<a href="fcpp.html#fcpp.citjfp" title="[McN&amp;Sma to appear]">McN&amp;Sma to appear</a>] quantify the library's performance
+and discuss a number of the optimizations we have implemented.
+</p><p>
+For the most part, using FC++ means using direct functoids, which are
+templates which get instantiated (and possibily inlined) at
+compile-time; this use of FC++ implies no extra overhead.
+</p><p>
+FC++ is a large library, and <tt>#include</tt>-ing it is bound to
+slow down your compile-time a little.  The lambda and monad facilities
+utilize expression templates, and expressions templates tend to slow
+down compile-times a lot.
+</p></div><table width="100%"><tr><td align="left"><small>Last revised: October 03, 2003 at 23:27:22 GMT</small></td><td align="right"><small>Copyright © 2000-2003 Brian McNamara and Yannis Smaragdakis</small></td></tr></table><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="fcpp.sectapplications.html"><img src="images/prev.png" alt="Prev"></a> </td><td width="20%" align="center"><a accesskey="u" href="fcpp.html"><img src="images/up.png" alt="Up"></a></td><td width="40%" align="right"> <a accesskey="n" href="fcpp.sectlimitations.html"><img src="images/next.png" alt="Next"></a></td></tr><tr><td width="40%" align="left" valign="top">14. Applications </td><td width="20%" align="center"><a accesskey="h" href="fcpp.html"><img src="images/home.png" alt="Home"></a></td><td width="40%" align="right" valign="top"> 16. Limitations and future work</td></tr></table></div></body></html>

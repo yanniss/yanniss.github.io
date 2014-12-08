@@ -1,0 +1,39 @@
+package maj.ajTest;
+
+
+import java.io.*;
+import org.aspectj.compiler.base.*;
+import org.aspectj.compiler.base.ast.*;
+import org.aspectj.compiler.base.cst.*;
+import org.aspectj.compiler.crosscuts.ast.*;
+
+public class advicetest {
+	public static void main(String[] myargs)  {
+		AdviceDec adv1 = new BeforeAdviceDec(null, new Formals(new FormalDec[] {}), null, new FieldGetPcd(new FieldPattern(null, new SimpleTypeName(new ResolvedTypeD(new MajUncheckedType(new Identifier("int")))), null, new SimpleName(new Identifier(new Identifier("Foo"), new Identifier("y"))))), new CodeBody(new Stmts(new Stmt[] {})));
+		AdviceDec adv2 = new BeforeAdviceDec(null, new Formals(new FormalDec[] {new FormalDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))), "i")}), null, new FieldGetPcd(new FieldPattern(null, new SimpleTypeName(new ResolvedTypeD(new MajUncheckedType(new Identifier("int")))), null, new SimpleName(new Identifier(new Identifier("Foo"), new Identifier("y"))))), new CodeBody(new Stmts(new Stmt[] {})));
+		AdviceDec adv3 = new BeforeAdviceDec(null, new Formals(new FormalDec[] {new FormalDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("Object"))), "o")}), null, new FieldGetPcd(new FieldPattern(null, new SimpleTypeName(new ResolvedTypeD(new MajUncheckedType(new Identifier("int")))), null, new SimpleName(new Identifier(new Identifier("Foo"), new Identifier("y"))))), new CodeBody(new Stmts(new Stmt[] {})));
+		AdviceDec adv4 = new AfterAdviceDec(null, new Formals(new FormalDec[] {}), null, new FieldGetPcd(new FieldPattern(null, new SimpleTypeName(new ResolvedTypeD(new MajUncheckedType(new Identifier("int")))), null, new SimpleName(new Identifier(new Identifier("Foo"), new Identifier("y"))))), new CodeBody(new Stmts(new Stmt[] {})));
+		AdviceDec adv5 = new AfterAdviceDec(null, new Formals(new FormalDec[] {new FormalDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))), "i")}), null, new FieldGetPcd(new FieldPattern(null, new SimpleTypeName(new ResolvedTypeD(new MajUncheckedType(new Identifier("int")))), null, new SimpleName(new Identifier(new Identifier("Foo"), new Identifier("y"))))), new CodeBody(new Stmts(new Stmt[] {})));
+		AdviceDec adv6 = new AfterAdviceDec(null, new Formals(new FormalDec[] {new FormalDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("Object"))), "o")}), null, new FieldGetPcd(new FieldPattern(null, new SimpleTypeName(new ResolvedTypeD(new MajUncheckedType(new Identifier("int")))), null, new SimpleName(new Identifier(new Identifier("Foo"), new Identifier("y"))))), new CodeBody(new Stmts(new Stmt[] {})));
+		AdviceDec adv7 = new AfterThrowingAdviceDec(null, new Formals(new FormalDec[] {}), null, null, new FieldGetPcd(new FieldPattern(null, new SimpleTypeName(new ResolvedTypeD(new MajUncheckedType(new Identifier("int")))), null, new SimpleName(new Identifier(new Identifier("Foo"), new Identifier("y"))))), new CodeBody(new Stmts(new Stmt[] {})));
+		AdviceDec adv8 = new AfterThrowingAdviceDec(null, new Formals(new FormalDec[] {}), new FormalDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("NotFoundException"))), "e"), null, new FieldGetPcd(new FieldPattern(null, new SimpleTypeName(new ResolvedTypeD(new MajUncheckedType(new Identifier("int")))), null, new SimpleName(new Identifier(new Identifier("Foo"), new Identifier("y"))))), new CodeBody(new Stmts(new Stmt[] {})));
+		AdviceDec adv9 = new AroundAdviceDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("Object"))), new Formals(new FormalDec[] {}), null, new CallPcd(new MethodPattern(null, null, new SimpleTypeName(new ResolvedTypeD(new MajUncheckedType(new Identifier("int")))), new SimpleName(new Identifier(new Identifier("Foo"), new Identifier("m"))), new FormalsPattern(new GenTypeNames(new GenTypeName[] {new SimpleTypeName(new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))))})), null)), new CodeBody(new Stmts(new Stmt[] {})));
+		PointcutDec pdec1 = new PointcutDec(new Modifiers(2), "pc", null, new Formals(new FormalDec[] {}), null);
+		//		PointcutDec pdec2 = new PointcutDec(null, "pc", null, new Formals(new FormalDec[] {new FormalDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("int"))), "i")}), new AndPcd(new AndPcd(new FieldSetPcd(new FieldPattern(null, new SimpleTypeName(new ResolvedTypeD(new MajUncheckedType(new Identifier("int")))), null, new SimpleName(new Identifier(new Identifier("Foo"), new Identifier("x")))))), new ArgsPcd(new FormalsPattern(new GenTypeNames(new GenTypeName[] {new SimpleTypeName(new ResolvedTypeD(new MajUncheckedType(new Identifier("i"))))})))));
+		PointcutDec pdec4 = new PointcutDec(new Modifiers(1024), "pc", null, new Formals(new FormalDec[] {new FormalDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("Object"))), "o")}), null);
+		PointcutDec pdec3 = new PointcutDec(new Modifiers(1024), "pc", null, new Formals(new FormalDec[] {}), null);
+		System.out.println(adv1.unparse());
+		System.out.println(adv2.unparse());
+		System.out.println(adv3.unparse());
+		System.out.println(adv4.unparse());
+		System.out.println(adv5.unparse());
+		System.out.println(adv6.unparse());
+		System.out.println(adv7.unparse());
+		System.out.println(adv8.unparse());
+		System.out.println(adv9.unparse());
+		System.out.println(pdec1.unparse());
+		//		System.out.println(pdec2.unparse());
+		System.out.println(pdec4.unparse());
+		System.out.println(pdec3.unparse());
+	}
+}

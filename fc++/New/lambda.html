@@ -1,0 +1,230 @@
+<html>
+<head>
+<title>FC++ lambda</title>
+</head>
+
+<body>
+
+Note to self: update site-map and maybe main page?
+
+<hr>
+
+<h1>FC++ lambda</h1>
+
+New with v1.4 of the FC++ library is an experimental feature: lambda.  
+To enable this feature, you need to use the compile-time option
+<code>FCPP_ENABLE_LAMBDA</code>.  The motivation for lambda should be
+obvious to any functional programmer.  Here are a few short examples
+to introduce the syntax:
+
+<pre>
+   // a new functoid 'f' where f() = 3
+   lambda()[ 3 ]     
+   // a new functoid 'f' where f(x) = 3*x+1
+   lambda(X)[ plus[multiplies[3,X],1] ]     
+   // a new functoid 'f' where f(x) = x! (factorial x)
+   lambda(X)[ l_if[equal[X,0],1,multiplies[X,SELF[minus[X,1]]]] ]
+   // a new functoid 'f' where f(g,x) = g(x,x)
+   lambda(G,X)[ G[X,X] ]     
+</pre>
+
+More generally, the approximate syntax for creating an FC++ lambda is
+
+<pre>
+   lambda( &lt;lambda_vars&gt; )[ &lt;lambda_expr&gt; ]
+where
+   lambda_var is an instance of fcpp_lambda::LambdaVar (see below)
+and
+   lambda_expr is one of
+      normal FC++ value
+      &lt;lambda_var&gt;
+      &lt;lambda_expr&gt;[ &lt;lambda_exprs&gt; ]
+      l_if[ &lt;lambda_expr&gt;, &lt;lambda_expr&gt;, &lt;lambda_expr&gt; ] 
+      // the last one is "lambda if": l_if[ expr, true_result, false_result ]
+</pre>
+
+The result is a new functoid with the desired behavior.
+
+<h2>Important Details and Limitations</h2>
+
+<p>
+Every attempt at creating a true lambda within standard C++ is doomed to 
+failure--the language simply doesn't have the tools to add such an
+extension.  Nevertheless, a number of libraries (like the Boost Lambda
+Library) "approximate" lambda in one way or another, and FC++ has
+finally joined their ranks.  We have taken a unique approach to lambda
+which we think fits well with the rest of FC++.  But it is
+important for users to understand the limitations of our lambda, as well
+as a few important details about how it works.  The goal of this section
+is to emphasize the weaknesses of lambda--not to turn you off to the
+feature, but to warn you so you will not fall into any of its pitfalls.
+</p>
+
+<p>
+First off, notice that we use square brackets (rather than parentheses)
+as the 'function call operator' within our lambda expressions.  Indeed,
+we have essentially designed a tiny "functional application language"
+for <code>lambda_expr</code>s which only comprises values,
+applications, and <code>l_if</code>s.  The goal was a language which
+appears <i>familiar</i> enough to be obvious to code with, but also
+<i>different</i> enough from normal C++ code that users will be unlikely
+to accidentally mix the two up.  The key danger is that, unlike a true 
+lambda in a true functional programming language, our lambda cannot
+"delay evaluation" of whatever is inside it.  The
+facade of lambda cannot prevent the C++ compiler from doing its normal
+job evaluating expressions.  If you say something like
+<pre>
+   lambda()[ f(++i) ]       // don't do this!
+</pre>
+you will <i>not</i> get a new zero-argument functoid that, when called,
+will increment <code>i</code> and call <code>f</code>.  Rather, C++
+will increment <code>i</code> and call <code>f</code> (possibly with
+effects) <i>right now</i>; the result of the entire expression will be
+a functoid which takes no arguments and returns a <i>constant</i>
+(whatever value <code>f</code> returned).  The moral is to stay away
+from C++ expressions inside a lambda; probably the only characters that
+should appear inside a lambda are identifier characters, square
+brackets, and commas.
+</p>
+
+<p>
+Which brings us to the next important detail.  We've obviously
+overloaded the <code>operator[]</code> of functoids and
+<code>LambdaVar</code>s to work some lambda-magic.  But as C++
+programmers may know, <code>operator[]</code> must take exactly one
+argument.  Then how is it that examples like
+<pre>
+   lambda(X)[ plus[multiplies[3,X],1] ]     
+</pre>
+work, where the <code>operator[]</code> of <code>plus</code> and
+<code>multiplies</code> appear to be taking two arguments?  We have
+cheated by overloading <code>operator,</code>--yes, the comma operator.
+For the most part this works just fine and gives the illusion that you
+can put multiple arguments in square brackets.  But the illusion fails
+in two cases.  First, you would probably expect that
+<pre>
+   lambda(F,X)[ F[2,3,X] ](foo,4)
+</pre>
+would end up calling
+<pre>
+   foo(2,3,4)
+</pre>
+but you'd be wrong.  The comma operator cannot be overloaded for
+builtin types, and as a result, the subexpression "<code>2,3</code>"
+inside the "call" to <code>F</code> evaluates to just <code>3</code>
+(discarding the value <code>2</code>), and so, in fact,
+<pre>
+   foo(3,4)
+</pre>
+is the result.  Yuck.  Fortunately, compilers are likely to tell you
+when you make such an error: for example, g++ is kind enough to say
+something like
+<pre>
+   lam.cc: In function `int main()':
+   lam.cc:25: warning: left-hand operand of comma expression has no effect
+</pre>
+when commas are accidentally abused.  Second, the natural syntax for
+calling a zero-argument functoid inside a lambda cannot be used:
+<pre>
+   lambda(F,G)[ F[ G[] ] ]      // illegal
+</pre>
+as "<code>G[]</code>" simply does not parse in C++.  As a result, we've
+introduced our own syntax kludge to call a functoid with no arguments:
+<pre>
+   lambda(F,G)[ F[ G[_*_] ] ]   // ok; h(f,g) = f(g())
+   // "_*_" means no arguments
+</pre>
+Ugly.  If you have an idea for something else to represent the "nothing"
+argument (which still looks abnormal enough that it won't be confused
+with a real argument), please let us know. 
+</p>
+
+<p>
+Finally, you are probably wondering about those lambda variables like
+<code>F</code> and <code>X</code>.  They are just instances of
+<code>LambdaVar&lt;i&gt;</code>, defined as
+<pre>
+   LambdaVar<0> SELF;
+   LambdaVar<1> F;
+   LambdaVar<2> G;
+   LambdaVar<3> H;
+   LambdaVar<4> X;
+   LambdaVar<5> Y;
+   LambdaVar<6> Z;
+</pre>
+Each one has a unique type.  You can define your own if you want to
+choose your own names:
+<pre>
+   LambdaVar<101> FOO;
+   ... lambda(FOO)[ plus[3,FOO] ] ...
+</pre>
+but be sure to use unique integers as the argument to
+<code>LambdaVar</code>.  FC++'s lambda ignores everything but the type
+of <code>LambdaVar</code>s, so if two different lambda variables have 
+the same type, unexpected things may happen.
+</p>
+
+<h2>What it's good for</h2>
+
+<p>
+Ok, enough bad-mouthing.  Lambda is useful, provided you avoid its
+traps.  In some cases, you can live without lambda rather easily; for
+example, a number of examples from the top of this page
+<pre>
+   lambda()[ 3 ]     
+   lambda(X)[ plus[multiplies[3,X],1] ]     
+</pre>
+can be concocted rather easily in FC++ without lambda:
+<pre>
+   const_(3)
+   compose( plus(1), multiplies(3) )
+</pre>
+However some functions are not so easy to compose on-the-fly.  Suppose
+you want want this function:
+<pre>
+   lambda(X,Y)[ f[g[X],h[Y]] ]
+</pre>
+The library functoid <code>compose2</code> almost does the job, but not
+quite.  Without lambda, you'd be forced to either 
+<ul>
+<li>write a dozen lines of code to define your own
+special-purpose functoid called <code>f_gx_hy</code> or something, or</li>
+<li>be clever enough to to discover that
+<pre>
+   uncurry(compose(compose(_,h),compose(f,g)))
+</pre>
+does the job.  Not so obvious what <i>that</i> code is doing, is it?  
+The corresponding lambda is much easier to read. 
+</li>
+</ul>
+</p>
+
+<p>
+Indeed, that's exactly what lambda is good for.  When you need a
+one-time, special purpose function, and you can't easily compose it out
+of existing functoids and combinators, use lambda.  That's what it's
+there for. 
+</p>
+
+<h2>Examples</h2>
+
+To see some real examples of lambda, see FIX THIS clients.
+
+<h2>Feedback</h2>
+
+Lambda is an "experimental feature", and we welcome feedback about it.
+In the future, we plan to publish a document explaining our design
+ratonale for the feature as it stands, but in the meantime, we are open
+to comments on how it might be improved.
+
+<hr>
+
+<H6>
+Last updated on
+Wed Jun 26 22:21:19 EDT 2002
+by <A HREF="http://www.prism.gatech.edu/~gt5163b/">Brian McNamara</A>
+</H6>
+
+</body>
+</html>
+

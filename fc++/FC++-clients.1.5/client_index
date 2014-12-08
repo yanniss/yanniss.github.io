@@ -1,0 +1,121 @@
+This is an index of the example files.  There are now so many of them
+that it helps to have an idea of what each one is about (especially
+given the often-poor filenames).  Many of the examples don't do anything
+too interesting/useful, in which case their description has been elided.
+
+Client (.cc) file   Description
+------------------- --------------------------------------------------------
+apply               ...
+
+atree               ...
+
+by_need_monad       Examples using ByNeed monad, which enables lazy
+                       evaluation of arbitrary computations
+
+callback2           | These programs show examples of using FC++ to
+callback3           | create "callbacks", which are useful for event-
+callback            | driven OO designs
+
+compose2            Some currying tests
+
+compose_ex          ...
+
+conv_fun            Converts direct->indirect and shows subtype polymorphism
+
+crry2               Currying examples (also Haskell-y hCurry/hUncurry)
+
+cute_compose_syntax Example using "^of^" like Haskell's "." (compose)
+
+ecoop1a             | 
+ecoop1b             |
+ecoop2a             |
+ecoop2b             |
+ecoop3a             | Examples from our paper published in
+ecoop3b             | Software: Practice and Experience
+ecoop3c             |
+ecoop4a             |
+ecoop4b             |
+ecoop4c             |
+
+even_odd            Tests with "even" v "odd" lists
+
+example             Example using FC++ functoids with STL algorithms
+
+foox                ...
+
+fooy                ...
+
+isort               ...
+
+iter2               Converts STL container to FC++ List
+
+iter                Uses STL algorithms on FC++ Lists
+
+lam2                Main "lambda" test file
+
+lazy_example        Example of lazy list (the final example really should 
+                       use the ByNeed monad)
+
+mem_fun             ...
+
+monad0              | An early implementation of monads.
+monad2              | These were done prior to "lambda"; now we have
+monad3              | much better ways to do monads (below).
+
+monad_0             | 
+monad_2             | The newer implementation of the above.
+monad_3             | 
+
+monad               Lots of monad examples
+
+mono                ...
+
+new_features        Tests for many of the features new to FC++ v1.4
+
+no_def_cons         ...
+
+notices1            |
+notices2            |
+notices3            | Examples from our SIGPLAN Notices paper
+notices4            |
+notices5            |
+notices6            |
+
+operator            Examples of functoid versions of C++ operators
+
+ord_test            Tests list (in)equality operators
+
+parser              Monadic parser combinators.  A bit of a mess, but
+                       they work.  This program inspired Brian to implement
+                       monads/lambda, but he never went back to clean up
+                       the program much after lambda/monads were implemented.
+
+poly2               Subtype polymorphism
+
+polytest            ...
+
+primes2             ...
+
+ptr_to_fun          Tests for ptr_to_fun
+
+rctest              Tests reference counting
+
+rep_min             Solution to the "rep min" problem, a classic FP example
+
+root                Semi-interesting square-root computer
+
+sctest              Tests many prelude functoids
+
+short_example       ...
+
+stl                 ...
+
+test_debug          Tests FCPP_DEBUG stuff
+
+test_ptr_mem_fun    ...
+
+tw_hamming          |
+tw_primes           | Examples from our C++ Template Workshop paper
+tw_tree             |
+
+Y                   Example of Y combinator

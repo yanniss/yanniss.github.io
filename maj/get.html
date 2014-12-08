@@ -1,0 +1,125 @@
+<html>
+<head>
+<title>Meta-AspectJ Download</title>
+<LINK REL=stylesheet HREF="main.css" TYPE="text/css">
+</head>
+<body>
+<div class="header">
+<center>
+<h1>Meta-AspectJ</h1>
+<small>
+<a href="http://www.cc.gatech.edu/~dzook" class="hlink">David Zook</a>,
+<a href="http://www.cc.gatech.edu/~ssh" class="hlink">Shan Shan Huang</a>,
+<a href="http://www.cs.uoregon.edu/~yannis" class="hlink">Yannis Smaragdakis</a>
+</small>
+</center>
+</div>
+<div class="menu">
+<a href="index.html" class="hlink">Home</a>
+<br>
+&nbsp;&nbsp;<a href="index.html#ov" class="hlink">Overview</a>
+<br>
+&nbsp;&nbsp;<a href="index.html#why" class="hlink"><nobr>Why MAJ?</nobr></a>
+<br>
+&nbsp;&nbsp;<a href="index.html#app" class="hlink">Applications</a>
+<p>
+Using MAJ
+<br>
+&nbsp;&nbsp;Download/Install
+<br>
+&nbsp;&nbsp;<a href="tutorial.html" class="hlink">MAJ Tutorial</a>
+<br>
+&nbsp;&nbsp;<a href="examples.html" class="hlink">Examples</a>
+<br>
+&nbsp;&nbsp;<a href="doc/" class="hlink">API</a>
+<p>
+</div>
+<div class="body">
+<a name="basics"/><h2>Download/Installation Instructions</h2>
+
+MAJ source code and binaries have been moved to <a href="http://code.google.com/p/meta-aspectj/">Google Code</a> for hosting.  
+
+<h3>Binary Installation Instruction</h3>
+Download from <a href="http://code.google.com/p/meta-aspectj/downloads/list?updated=maj-0_9.jar&ts=1172535551">maj-XXX.jar</a> from Google Code. The tarball should include two jar files. Put both in your class path.  
+<p>
+To invoke the MAJ parser, type:
+<pre>% java maj.Main &lt;your-maj-file&gt;.maj;</pre>
+A file named &lt;your-maj-file&gt;.java will be created, with code generated
+to represent the quoted code fragments.  To print out the quoted code, use
+<font class="code">unparse()</font>
+<p>
+<h3>Source Code</h3>
+<b>Step 1.</b>
+Check out MAJ source code anonymously from Google Code by following the instructions on <a href="http://code.google.com/p/meta-aspectj/source">this</a> page.
+<p>
+<b>Step 2.</b> 
+In addition, you will need the following third party software:
+<p>
+<table width="100%" border="0" bgcolor="#77869b">
+<tr>
+<td width="100%">
+&nbsp;&nbsp;<font color="white"><b class="block">Third Party Software</b></font
+</td>
+</tr>
+<tr>
+<td>
+<table width="100%" bgcolor="white">
+<tr>
+<td width="70%">Java J2SE 1.4.2 or higher</td> 
+<td><a href="http://java.sun.com/j2se/1.4.2/download.html">Download</a></td>
+</tr>
+<tr>
+<td width="70%">ANTLR 2.7.2</td> 
+<td><a href="http://www.antlr.org/download.html">Download</a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+<h3>Source Compilation Instructions</h3>
+<b>1.</b> Install Java J2SE, ANT, and Antlr according to the instructions on 
+their respective websites.  Make sure that their libraries are in your CLASSPATH.
+<br>
+<b>2.</b> The source code you check out from svn should have the following structure:
+<pre>
+    maj/           
+        AspectJ.g   (AspectJ grammar)
+        Meta.g      (Super grammar with common components 
+	             between AspectJ.g and MetaAspectJ.g)
+        MetaAspectJ.g (Java grammar + handling for meta characters)
+	MAJ2Java.g  (AST walker that transforms quoted code 
+                     into constructors for AST clasess)
+
+
+        semant/     (Directory for MAJ type checking code)
+        error/      (Directory for MAJ error handling code)
+
+	Main.java   (java file used to invoke MAJ parser)
+        JavaEmitter.java (java file used for pretty printing)
+        IndentingPrintStream.java (utility file used for pretty printing)
+	
+	MajAST.java (AST class, extending ANTLR's AST class)
+        MajASTFactory.java (AST factory class)
+
+	( ANTLR generated files from grammar files in g/ directory)
+	*Lexer.java
+	*Recognizer.java
+	*TokenTypes.java
+	MAJ2JavaTranslator.java  
+ 
+   org/	(Directory for aspectJ AST classes)
+</pre>
+
+<b>3.</b> Import the source code into your IDE of choice and build.
+
+<b>4.</b> If you want to play around with the grammar file, and regenerate the
+parsers, you will need to type:
+<pre>
+% java antlr.Tool Meta.g
+% java antlr.Tool -glib Meta.g MetaAspectJ.g
+% java antlr.Tool -glib Meta.g AspectJ.g
+</pre>
+</div>
+</body>
+</html>

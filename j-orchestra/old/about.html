@@ -1,0 +1,115 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.61 [en] (X11; U; SunOS 5.7 sun4u) [Netscape]">
+   <title>jOrchestra</title>
+</head>
+<body background="music_background.gif">
+<img SRC="title_image2.png" >
+<br><img SRC="title_line2.gif" >
+<table>
+<tr>
+<td VALIGN=TOP WIDTH="200"><b><a href="http://www.cs.umass.edu/~yannis/j-orchestra/index.html">Front
+page</a></b>
+<p><b><a href="http://www.cs.umass.edu/~yannis/j-orchestra/about.html">About
+jOrchestra...</a></b>
+<p><b>People:</b>
+<ul>
+<li>
+<a href="http://www.cs.umass.edu/~yannis/j-orchestra/yannis.html">Yannis
+Smaragdakis</a>&nbsp;</li>
+
+<li>
+<a href="http://www.cs.umass.edu/~yannis/j-orchestra/eli.html">Eli Tilevich</a>&nbsp;</li>
+
+<li>
+<a href="http://www.cs.umass.edu/~yannis/j-orchestra/austin.html">Austin
+Chau</a>&nbsp;</li>
+
+<li>
+<a href="http://www.cs.umass.edu/~yannis/j-orchestra/kane.html">Kane See</a>&nbsp;</li>
+
+<li>
+<a href="http://www.cs.umass.edu/~yannis/j-orchestra/dean.html">Dean Mao</a>&nbsp;</li>
+
+<li>
+<a href="http://www.cs.umass.edu/~yannis/j-orchestra/haile.html">Hailemelekot
+Seifu</a>&nbsp;</li>
+</ul>
+<b>Pictures:</b>
+<ul>
+<li>
+<a href="http://www.cs.umass.edu/~yannis/j-orchestra/festival.html">Renaissance
+Festival</a>&nbsp;</li>
+</ul>
+<b><a href="http://www.cs.umass.edu/~yannis/j-orchestra/downloads.html">Downloads</a></b>
+<p><b><a href="http://www.cs.umass.edu/~yannis/j-orchestra/papers.html">Paper
+Trail</a></b></td>
+
+<td WIDTH="1" BGCOLOR="#000000"></td>
+
+<td VALIGN=TOP WIDTH="500">
+<h2>
+What is J-Orchestra?</h2>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; J-Orchestra is a system for automatically
+partitioning and distributing existing Java programs. Given a Java program
+in bytecode format and a desired distribution plan, J-Orchestra will automatically
+rewrite the program to execute on a distributed environment, just as if
+it were executing on a single machine. To do this, the J-Orchestra compiler
+has to do some complex bytecode rewriting: it needs to change all accesses
+to objects to be through indirect pointers (that hide the location of the
+object); it needs to take care of accessing system classes remotely; it
+needs to ensure that objects get "unwrapped" when passed to system classes
+(system classes know nothing about the distribution) and wrapped back up
+when they are passed to user classes. An important feature of J-Orchestra
+is that it does not modify the Java VM or any system libraries: you can
+run the J-Orchestra-partitioned program in any standard Java environment.
+<br>&nbsp;
+<h2>
+Why use J-Orchestra?</h2>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; J-Orchestra lets you run an application
+in a distributed environment. There are tons of reasons why you may want
+to do that: perhaps your processing server is not where your input or output
+is (i.e., J-Orchestra is used as an alternative to X-Windows or to "telnet");
+perhaps you want to execute a remote program as efficiently as possible
+(i.e., J-Orchestra is used as an alternative to Java applets or servlets);
+perhaps your application is inherently distributed--your DataBase runs
+on one machine, your input (keyboards, sensors, microphones) is on another,
+and your processing power is on a third; perhaps your application is multi-threaded
+and you want to make it execute truly in parallel on different processing
+hosts.
+<br>&nbsp;
+<h2>
+Where does the name "J-Orchestra" come from?</h2>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; What J-Orchestra does is similar to the
+"orchestration" process for musical pieces. Orchestral pieces are rarely
+composed as a complete orchestral score (i.e., a score specifying precisely
+what notes each individual instrument of the orchestra plays). More commonly
+the composer begins with a piano score. Then "orchestration" takes place
+to produce the complete orchestral piece. Orchestration determines what
+instrument should play each of the notes in the completed piano score.
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The processes of composition and orchestration
+are entirely separate. There are many examples of orchestrating piano music
+that was never intended for orchestral performance by the composer who
+wrote it. A number of piano pieces have several brilliant but totally different
+orchestrations.
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The J-Orchestra system does the same
+thing to centralized Java programs as orchestration to completed piano
+scores. We start from a completed, centralized Java program and then partition
+it into several distributed segments. Our orchestration process is semi-automatic.
+First we ask the user how many instruments (network nodes) we have. Each
+network node can have some unique capabilities very much like a musical
+instrument. That might be the reason why certain pieces of code must be
+placed on a particular node. After that, we use profiling, static analysis,
+and byte code engineering to produce the optimum partitioning (orchestration)
+of the original program. In order to coordinate the execution of the resulting
+distributed program, we have a run-time system. Its role is very similar
+to the one of the conductor.</td>
+</tr>
+</table>
+
+<p><img SRC="music_line2.gif" >
+<p><i>Last Modified:</i> Mon Jun 4 05:17:25 EDT 2001
+</body>
+</html>

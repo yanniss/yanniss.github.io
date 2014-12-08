@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>9. Lists and lazy evaluation</title><link rel="stylesheet" href="reference.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.48"><link rel="home" href="fcpp.html" title="Boost.FC++"><link rel="up" href="fcpp.html" title="Boost.FC++"><link rel="previous" href="fcpp.secteffects.html" title="8. Effects and thunks"><link rel="next" href="fcpp.sectlibrary.html" title="10. Library"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table border="1" cellpadding="2" bgcolor="#007F7F"><tr><td bgcolor="#FFFFFF"><img src="../../c++boost.gif" alt="c++boost.gif (8819 bytes)" width="277" height="86"></td><td><a href="../../index.htm"><font color="#FFFFFF" size="4" face="Arial">Home</font></a></td><td><a href="libraries.html"><font color="#FFFFFF" size="4" face="Arial">Libraries</font></a></td><td><a href="../../people/people.htm"><font color="#FFFFFF" size="4" face="Arial">People</font></a></td><td><a href="../../more/faq.htm"><font color="#FFFFFF" size="4" face="Arial">FAQ</font></a></td><td><a href="../../more/index.htm"><font color="#FFFFFF" size="4" face="Arial">More</font></a></td></tr></table><div class="section"><div class="titlepage"><div><h2 class="title" style="clear: both"><a name="fcpp.sectlazy"></a>9. Lists and lazy evaluation</h2></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt>9.1. <a href="fcpp.sectlazy.html#id269233">Interface to list</a></dt><dt>9.2. <a href="fcpp.sectlazy.html#id269270">Writing lazy list functoids</a></dt><dt>9.3. <a href="fcpp.sectlazy.html#id269375">Other details about lazy evaluation</a></dt></dl></div><p>
+In <a href="fcpp.sectoverview.html#fcpp.sectoverview" title="4. Overview Examples">Section 4</a>, we showed examples of using
+FC++'s lazy list data structure:
+<pre class="programlisting">
+   list&lt;int&gt; li = enum_from( 1 ); // li is infinite list [1, 2, 3, ...]
+   li = map( add_self, li );      // li is infinite list [2, 4, 6, ...]
+</pre>
+In this section, we discuss the interface to the <tt>list</tt>
+class, and show how to implement lazy list functions.  We also discuss
+the general topic of lazy evaluation.
+</p><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id269233"></a>9.1. Interface to <tt>list</tt></h3></div></div><p>
+The main interface to the <tt>list</tt> class is provided by just a
+few functoids:
+<pre class="programlisting">
+   list&lt;int&gt; li;       // empty list (default constructor)
+   li = cons(2,li);    // cons adds an element to the front of a list
+   li = cons(1,li);    // li is now the list [1,2]
+   int x = head(li);   // x is 1, the front element
+   li = tail(li);      // li is the list [2] (tail==everything except the head)
+   bool b = null(li);  // b is false; null() tests for the empty list
+   li = cat(li,li);    // li is now [2,2]; cat() concatenates two lists
+   li = NIL;           // li is now empty; NIL is the empty list constant
+</pre>
+This is the typical interface offered for singly-linked lists common to
+many functional languages.
+</p></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id269270"></a>9.2. Writing lazy list functoids</h3></div></div><p>
+In order to enable lazy evaluation, the <tt>list</tt> class has a
+special constructor which takes a thunk which returns a list.  The
+second argument to <tt>cons()</tt> or <tt>cat()</tt> can also
+be a thunk-returning-a-list, rather than a list.  For example, after
+<pre class="programlisting">
+   list&lt;int&gt; li = thunk2(cons,2,NIL);
+   list&lt;int&gt; li = thunk2(cons,1,li);
+</pre>
+<tt>li</tt> is the list [1,2], except that none of the conses has
+been evaluated yet.  This is not particularly interesting in itself,
+but now we can see how to write functions like
+<tt>enum_from()</tt>, which return infinite lists.
+</p><p>
+First, here is how we would write an eager (non-lazy) version of
+<tt>enum_from()</tt>, which goes into an infinite recursion when
+called.  (For simplicity, we define it as a monomorphic functoid that
+works only on integers.)
+<pre class="programlisting">
+   struct my_enum_from_type : public c_fun_type&lt;int,list&lt;int&gt; &gt; {
+      list&lt;int&gt; operator()( int x ) const {
+         return cons( x, my_enum_from_type()(x+1) );
+      }
+   } my_enum_from;
+</pre>
+Now, all we have to do to make this function lazy is to &quot;thunk&quot; the
+recursive call like so:
+<pre class="programlisting">
+   struct my_enum_from_type : public c_fun_type&lt;int,list&lt;int&gt; &gt; {
+      list&lt;int&gt; operator()( int x ) const {
+         return cons( x, thunk1( my_enum_from_type(), x+1 ) );
+      }
+   } my_enum_from;
+</pre>
+This delays the recursive call so that it is stored in the &quot;tail&quot;
+portion of the cons, where it won't be evaluated until demanded.
+Here is an example that demonstrates the function being used:   
+<pre class="programlisting">
+   list&lt;int&gt; li = my_enum_from(1);
+   for( int i=0; i&lt;10; ++i ) {
+      std::cout &lt;&lt; head(li) &lt;&lt; std::endl;
+      li = tail(li);
+   }
+</pre>
+This prints out the first 10 positive integers.  We could print out as
+many as we like, as the list <tt>li</tt> is effectively infinite;
+none of the cons cells representing the list are created until they are
+demanded.
+</p></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id269375"></a>9.3. Other details about lazy evaluation</h3></div></div><p>
+The discussion here provides a simple overview of lazy evaluation as
+implemented in the FC++ <tt>list</tt> class.  We have elided a
+number of interesting details which can impact the performance of
+lists, most notably, the existence of the <tt>odd_list</tt> class
+and the caching ability of lists.  To learn more about these details,
+the reader is referred to
+<div class="itemizedlist"><ul type="disc"><li> 
+Section 10 of [<a href="fcpp.html#fcpp.citjfp" title="[McN&amp;Sma to appear]">McN&amp;Sma to appear</a>], which describes caching in lists, as
+well as some other performance optimizations,
+</li><li> 
+Section 11 of [<a href="fcpp.html#fcpp.citjfp" title="[McN&amp;Sma to appear]">McN&amp;Sma to appear</a>], which describes
+<tt>list</tt>s versus <tt>odd_list</tt>s and the efficient list
+interface, and
+</li><li> 
+the FC++ web page [<a href="fcpp.html#fcpp.citfcpp" title="[FC++]">FC++</a>], which has summary
+documentation on the topic.
+</li></ul></div>
+</p><p>
+Lists provide perhaps the most common and convenient way to utilize
+lazy evaluation; representing a (possibly infinite) stream of data
+which is computed &quot;on demand&quot; is an oft-used pattern.  Nevertheless,
+any computation can be lazified.  The <tt>by_need</tt> monad (see
+<a href="fcpp.sectmonads.html#fcpp.sectmonads" title="13. Monads">Section 13</a> for info about monads) illustrates a
+more general mechanism for lazifying any computation.
+</p></div></div><table width="100%"><tr><td align="left"><small>Last revised: October 03, 2003 at 23:27:22 GMT</small></td><td align="right"><small>Copyright © 2000-2003 Brian McNamara and Yannis Smaragdakis</small></td></tr></table><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="fcpp.secteffects.html"><img src="images/prev.png" alt="Prev"></a> </td><td width="20%" align="center"><a accesskey="u" href="fcpp.html"><img src="images/up.png" alt="Up"></a></td><td width="40%" align="right"> <a accesskey="n" href="fcpp.sectlibrary.html"><img src="images/next.png" alt="Next"></a></td></tr><tr><td width="40%" align="left" valign="top">8. Effects and thunks </td><td width="20%" align="center"><a accesskey="h" href="fcpp.html"><img src="images/home.png" alt="Home"></a></td><td width="40%" align="right" valign="top"> 10. Library</td></tr></table></div></body></html>

@@ -1,0 +1,30 @@
+gnuplot> f1(x) = a1 * ( b1 ** x)
+gnuplot> a1 = 1; b1 = 1;
+gnuplot> fit f1(x) 'maj.dat' using 1:2 via a1, b1
+ 
+ 
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+ 
+a1              = 1.58647          +/- 0.027        (1.702%)
+b1              = 11.9897          +/- 0.05101      (0.4255%)
+
+gnuplot> f2(x) = a2 * (x ** 3)
+gnuplot> a2 = 1
+gnuplot> fit f2(x) 'maj.dat' using 1:3 via a2
+ 
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+ 
+a2              = 6.73763          +/- 0.3905       (5.796%)
+
+gnuplot> set terminal png
+gnuplot> set output "maj.png"
+gnuplot> set logscale 
+
+gnuplot> plot 'maj.dat' using 1:2 title 'no predicate' with points 3, \
+> 'maj.dat' using 1:3 title 'with predicate' with points 4, \
+> a1 * (b1 ** x ) title '1.59*(11.99^x)', \
+> a2 * (x ** 3) title '6.74*(x^3)'
+

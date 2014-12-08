@@ -1,0 +1,20 @@
+import java.io.*;
+import java.lang.reflect.*;
+import org.aspectj.compiler.base.ast.*;
+import org.aspectj.compiler.crosscuts.ast.*;
+
+public class MAJGenerate1 {
+	public static void generateSerializableAspect(Class inClass, PrintStream out)  {
+		CompilationUnit serializedAspect = new MajCompilationUnit(new MajPackageExpr(new Identifier(new Identifier("gotech"), new Identifier("extensions"))), new Imports(new Import[] {new Import(new Identifier(new Identifier(new Identifier("java"), new Identifier("io")), new Identifier("*")))}), new Decs(new Dec[] {new AspectDec(null, "SerializableAspect", null, null, null, null, new Decs(new Dec[] {null}))}));
+		int i = 0;
+		for (int meth = 0; meth < inClass.getMethods().length; meth++) {
+			Class[] methSignature = inClass.getMethods()[meth].getParameterTypes();
+			for (int parm = 0; parameter < methSignature.length; parm++) {
+				if (!parmType.primitive() && !methSignature[parm].toSource().equals("java.io.Serializable")) {
+					serializedAspect.addMember(new ParentsDec(new SimpleTypeName(new ResolvedTypeD(new MajUncheckedType(new Identifier(methSignature[parm].getName())))), new TypeDs(new ResolvedTypeD[] {new ResolvedTypeD(new MajUncheckedType(new Identifier(new Identifier(new Identifier("java"), new Identifier("io")), new Identifier("Serializable"))))})));
+				}
+			}
+		}
+		out.print(newAspect.toSource());
+	}
+}

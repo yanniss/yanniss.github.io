@@ -1,0 +1,299 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="de">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>GOTech - General Object To EJB Conversion Helper</title>
+</head>
+
+<body>
+
+<p><a name="top"></a><img border="0" src="../images/coc.gif" width="308" height="94"></p>
+<h1>GOTECH - General Object To EJB Conversion Helper</h1>
+<hr>
+<p>Table of contents:</p>
+<ol>
+  <li><a href="#intro">Introduction</a></li>
+  <li><a href="#arch">Architecture</a></li>
+  <li><a href="#req">Requirements and Configuration</a></li>
+  <li><a href="#ex">Example</a></li>
+  <li><a href="#tut">Tutorial</a></li>
+  <li><a href="#dep">Dependency Tool</a></li>
+  <li><a href="#link">Links/Download</a></li>
+  <li><a href="#cont">Contact information</a></li>
+</ol>
+<hr>
+<h2><a name="intro"></a>1. Introduction</h2>
+<p>GOTECH is a framework that can be used with a large class of unaware 
+applications to turn their objects into distributed objects with minimal 
+programming effort. A poster giving an overview of GOTECH can be found
+<a href="GotechPoster.htm">here</a>. Our framework is developed on top of three main components:</p>
+<ul>
+  <li><a href="http://www.aspectj.org">AspectJ</a> (a high-level aspect 
+  language)</li>
+  <li><a href="http://www.xdoclet.org">XDoclet</a> (a low-level aspect language)</li>
+  <li>NRMI (a middleware 
+  facility that makes remote calls behave more like local calls)</li>
+</ul>
+<p>Converting an existing Java class to conform to the EJB protocol requires 
+several changes and extensions. An EJB consists of the following parts: </p>
+<ul>
+  <li>the actual bean class implementing the functionality</li>
+  <li>a home interface to access life cycle methods (creation, termination, 
+  state transitions, persistent storing, etc.)</li>
+  <li>a remote interface for the clients to access the bean</li>
+  <li>a deployment descriptor (XML-formatted meta-data for application 
+  deployment) </li>
+</ul>
+<p><font size="1"><a href="#top">top</a></font></p>
+<hr>
+<h2><a name="arch"></a>2. Architecture</h2>
+<p>In our approach this means deriving an EJB from the original class, 
+generating the necessary interfaces and the deployment descriptor and finally 
+redirecting all the calls to the original class from anywhere in the client to 
+the newly created remote interface. The process of adding distribution consists 
+of the following steps: </p>
+<ul>
+  <li>The programmer introduces annotations in the source</li>
+  <li>XDoclet processes the annotations and generates the aspect code for 
+  AspectJ</li>
+  <li>XDoclet does the EJB generation</li>
+  <li>XDoclet generates the EJB interface and deployment descriptor</li>
+  <li>AspectJ compiler compiles all generated code (including regular EJB code 
+  and AspectJ aspect code from step 1 to introduce distribution to the client by 
+  redirecting all client calls to the EJB instead of the original object.</li>
+</ul>
+<p>(The XDoclet templates used in step 4 are among the pre-defined XDoclet 
+templates and not part of the GOTECH framework.)</p>
+<p><img border="0" src="../images/flussdiagramm.jpg" width="678" height="907"></p>
+<p><font size="1"><a href="#top">top</a></font></p><hr>
+<h2><a name="req"></a>3. Requirements and Configuration</h2>
+<p>GOTECH was tested with the following Versions of the required tools:</p>
+<ul>
+  <li>Java Runtime Environment 1.4.2, Windows plattform</li>
+  <li>ANT Version 1.5.3</li>
+  <li>XDoclet 1.2B3</li>
+  <li>AspectJ 1.1.0</li>
+  <li>JBoss 4.0.0 DR2</li>
+</ul>
+<p>Using the GOTECH framework requires to configure it for the intended 
+application. The settings for ant are stored in the GOTECH.properties file and 
+will be explained below. All configuration settings must have valid values in 
+order for GOTECH to work correctly.</p>
+<table border="1" width="100%" id="table1">
+  <tr>
+    <td>Parameter</td>
+    <td>Description</td>
+  </tr>
+  <tr>
+    <td>aspectj.home</td>
+    <td>path to the AspectJ home directory</td>
+  </tr>
+  <tr>
+    <td>jboss.home</td>
+    <td>path to the jboss home directory</td>
+  </tr>
+  <tr>
+    <td>jboss.configuration</td>
+    <td>name of the jboss configuration to be used for deploying the application</td>
+  </tr>
+  <tr>
+    <td>xdoclet.home</td>
+    <td>path to the xdoclet home directory</td>
+  </tr>
+</table>
+<p>The following directories are used and created during the transformation 
+process.</p>
+<table border="1" width="100%" id="table2">
+  <tr>
+    <td>Directory </td>
+    <td>Description</td>
+  </tr>
+  <tr>
+    <td>src </td>
+    <td>contains the source of the original application</td>
+  </tr>
+  <tr>
+    <td>src.share</td>
+    <td>contains the sources that are shared between client and server (note 
+    that the original non-EJB object is a shared source)</td>
+  </tr>
+  <tr>
+    <td>src.client</td>
+    <td>contains the sources that are only used by the client (for example the 
+    client main class)</td>
+  </tr>
+  <tr>
+    <td>src.server</td>
+    <td>contains the sources that are only used by the server</td>
+  </tr>
+  <tr>
+    <td>build</td>
+    <td>contains the generated application and generated sources</td>
+  </tr>
+  <tr>
+    <td>build.bin</td>
+    <td>contains batch files for setting the correct class path and for setting 
+    jndi properties</td>
+  </tr>
+  <tr>
+    <td>build.cclasses</td>
+    <td>contains compiled classfiles for the client</td>
+  </tr>
+  <tr>
+    <td>build.client</td>
+    <td>contains the jar’ed client files</td>
+  </tr>
+  <tr>
+    <td>build.deploy</td>
+    <td>contains the jar’ed deployment files</td>
+  </tr>
+  <tr>
+    <td>build.META-INF</td>
+    <td>contains the deployment descriptors</td>
+  </tr>
+  <tr>
+    <td>build.sclasses</td>
+    <td>contains compiled classfiles for the server</td>
+  </tr>
+  <tr>
+    <td>build.generate</td>
+    <td>contains the generated source files</td>
+  </tr>
+  <tr>
+    <td>buildfile</td>
+    <td>contains the ant build file and the configuration file</td>
+  </tr>
+  <tr>
+    <td>xdoclet</td>
+    <td>contains the XDoclet-templates and extensions</td>
+  </tr>
+</table>
+<p><font size="1"><a href="#top">top</a></font></p>
+<hr>
+<h2><a name="ex"></a>4. Example</h2>
+<p>In this section we present an example of applying the GOTECH framework to 
+convert a scientific application into a distributed application interacting with 
+an application server. The original application is a thermal plate simulator. 
+Its back-end engine performs the CPU-intensive computations and its front-end 
+GUI visualizes the results. The distribution scenario we want to accomplish is 
+to separate the back-end simulation functionality from the rest of the 
+application. and to place it on a powerful remote server machine. There are 
+several benefits gained by this distribution scheme. First, it takes advantage 
+of the superior computing power of a remote server machine. Second, multiple 
+clients can share the same simulation server. Finally, if real heat sensors are 
+used, the user does not have to be in the same physical location with the 
+sensors to run the experiment.</p>
+<p>The distribution scenario for the thermal plate simulator is one where the 
+GUI is running remotely from the core application and used a facade class to 
+communicate with it. A simplified UML diagram for the original version of the 
+thermal plate simulator is shown below. We have laid out the class diagram so 
+that the front-end and back-end are clearly visible. The hierarchy under 
+interface Plate contains the types of the objects that form the connecting link 
+between the application’s front-end and back-end. The graphical front-end 
+creates a Plate object and several visual component objects reference it and 
+query it to obtain the necessary data when performing their drawing operations. 
+The Plate object gets modified by being sent as a parameter to the diffuse 
+method in the Simulation class. Once the diffuse method returns having modified 
+its Plate parameter, the front-end is signaled to repaint itself. The visual 
+components can access the updated data of the Plate object and redraw.</p>
+<p><img border="0" src="../images/uml.jpg" width="1083" height="457"></p>
+<p>Notice that making simulation classes remote while preserving the original 
+execution semantics requires special handling for remote method parameters. The 
+Plate object that participates in a complicated aliasing (i.e. multiple 
+referencing) scenario now becomes a parameter of a remote call to an EJB. If a 
+copy-restore mechanism is not provided by the application server, then the 
+process of bridging the differences between local (by-reference) and remote (by-copy) 
+parameter passing semantics becomes a tedious and complicated task. The use of 
+NRMI (copy-restore semantics) completely eliminates the need for special purpose 
+code to reproduce the back-end changes to the Plate object inside the front-end.</p>
+<p>Distributing the application using GOTECH is done in six steps.</p>
+<p>First step: Generating the bean<br>
+The enterprise java bean is generated by using a generic xdoclet task and the 
+bean_generator.j template provided by the GOTECH framework. The following 
+assumptions are made and limitations apply:</p>
+<p>• the transformation is restricted to classes, interfaces currently cannot be 
+converted into EJBs<br>
+• the necessary annotations have to be made (“@ejb:bean ….” and &quot;@jboss:method-attributes 
+....&quot; if copy-restore is needed)<br>
+• only non-private methods can be included in the remote interface<br>
+• all remote methods are made public during the transformation process </p>
+<p>Second step: Making method parameters implement serializable<br>
+The EJB-standard requires all method parameters of EJBs to implement the 
+serializable interface. The approach of GOTECH is quite naïve as to determine 
+whether a class or interface is suitable for serialization or not has to be 
+determined by the programmer. Also, using AspectJ for making classes 
+serializable, the source code has to be available. The Aspect is created by a 
+generic xdoclet task with a template file called serializable_generator.j, 
+requiring no special extensions. The following assumptions are made and 
+limitations apply:</p>
+<p>• The classes affected by the xdoclet task are the same as in the first step.<br>
+• The generated aspect simply tries to make all parameter types implement 
+Serializable, whether source is available or not.<br>
+• The AspectJ-compiler will issue warnings if the declare parent statement 
+cannot be applied due to missing sources in the compilation step</p>
+<p>Third step: Creating wrapper aspect<br>
+For catching and redirecting all calls to the original class, an aspect is used. 
+The current aspect can deal with stateless and stateful session beans creating 
+one connection for each instantiation of the wrapped object in the stateful case 
+and one connection during initialization in the stateless case. The following 
+assumptions are made and limitations apply:</p>
+<p>• All calls made within the sources in the share and client directory get 
+redirected<br>
+• Exceptions caused by the added remoteness cause just a stacktrace output 
+leaving the system in an undefined state</p>
+<p>Fourth step: Creating EJB interfaces<br>
+This step relies entirely on the functionality provided by XDoclet. It has its 
+own section in the build file. For documentation please refer to www.xdoclet.org. 
+In this step, the remote and home interfaces of the previously generated bean 
+class are created as well as the necessary deployment descriptors for JBoss.</p>
+<p>Fifth step: Compiling<br>
+In this step, the AspectJ-compiler is called to compile all sources. Two 
+compiler runs are necessary, one for the client classes and one for the server 
+classes. The classes are created in the specified output directories and the 
+aspects created in the previous steps get interwoven into the original code.</p>
+<p>Sixth step: Packaging and Deploying<br>
+In the packaging step, jar-files are generated for the client and the server. 
+The server-jar is then deployed at the application server. The functionality 
+provided by ant is sufficient for copying and jarring the files.</p>
+<p><font size="1"><a href="#top">top</a></font></p><hr>
+<h2><a name="tut"></a>5. Tutorial</h2>
+<p>Click <a href="tutorial.htm">here</a> to see the GOTECH tutorial.</p>
+<p><font size="1"><a href="#top">top</a></font></p><hr>
+<h2><a name="dep"></a>6. Dependency Tool</h2>
+<p>The Dependency Tool analyzes a set of compiled class-files and determines 
+which classes (respectively their source files) can be put in the client 
+directory and which classes have to go to the shared directory. The tool 
+requires the BCel libraries. A link is provided below. The usage is as follows:</p>
+<p>java GOTECHDependencies &lt;sourceDirectory&gt; &lt;Bean Candidate classname&gt; [&lt;Bean 
+Candidate classname&gt;]</p>
+<p><font size="1"><a href="#top">top</a></font></p><hr>
+<h2><a name="link"></a>7. Links/Downloads</h2>
+<ul>
+  <li>The GOTECH Framework [<a href="../resources/gotech.zip">ZIP</a>]</li>
+  <li>Dependency Tool [<a href="../resources/depend.jar">JAR</a>]</li>
+  <li>Eli Tilevich, Stephan Urbanski, Yannis Smaragdakis, Marc Fleury, &quot;Aspectizing Server Side Distribution&quot;, 2003 [<a href="../resources/aspect-formatted.pdf">PDF</a>] 
+  to appear at <a href="http://www.ase-conference.org/">ASE 
+  2003</a></li>
+  <li>Eli Tilevich and Yannis Smaragdakis, “NRMI: Natural and Efficient 
+  Middleware”, Int. Conf. on Distributed Computer Systems (ICDCS), 
+  2003 [<a href="http://www.cc.gatech.edu/~yannis/nrmi03.pdf">PDF</a>]</li>
+  <li><a href="http://ant.apache.org">Ant</a></li>
+  <li><a href="http://www.aspectj.org">AspectJ</a></li>
+  <li><a href="http://www.xdoclet.org">XDoclet</a></li>
+  <li><a href="http://www.jboss.org">JBoss</a></li>
+  <li><a href="http://jakarta.apache.org/bcel/index.html">BCel library</a></li>
+</ul>
+
+<p><font size="1"><a href="#top">top</a></font></p>
+
+<hr>
+<h2><a name="cont"></a>8. Contact information</h2>
+<p>For questions, comments, and bug reports please contact
+<a href="mailto:urbs@gmx.net?subject=GoTech:">Stephan Urbanski</a> or
+<a href="mailto:tilevich@cc.gatech.edu?subject=GoTech:">Eli Tilevich</a>.</p>
+<p><font size="1"><a href="#top">top</a></font></p>
+
+</body>
+
+</html>

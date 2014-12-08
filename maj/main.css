@@ -1,0 +1,75 @@
+/*
+A:link {color: #e5e5f9; }
+A:active {color: red;}
+A:hover {color: white;}
+A:visited {color: #aaaabf; }
+*/
+
+BODY { font-family: helvetica;
+/*	background-color: #374966;
+	color: white */
+     } 
+
+h1,h2,h3,h4,h5 { font-family: helvetica,sans-serif; }
+
+.hlink { color: #e5e5f9; }
+
+div.header {
+	background: #374966;
+	border: none;
+	color: white;
+	font-family: helvetica,sans-serif;
+	padding-top: 2px;
+	padding-bottom: 20px;
+}
+
+div.container {
+	overflow: auto;
+}
+
+div.menu {
+	position: relative;
+	background: #374966;
+	border: none;
+	color: white;
+	font-family: helvetica,sans-serif;
+	float: left;
+	padding: 1em;
+	height:110em;
+	width: 9em;
+	overflow: auto;
+}
+
+div.body {
+<!--	position: absolute;
+	margin-left:10em;
+	border:none;
+	padding-left:1em;
+	padding-right:1em; -->
+	position: relative;
+	margin-left: 11em;
+}
+
+div.next {
+	float: right;
+	padding-right:1em;
+	font-family: sans-serif;
+}
+
+div.footer {
+	font-family: sans-serif;
+	clear:both;
+	float: bottom;
+}
+
+.code {
+	font-family: courier;
+}
+
+.block {
+	font-family: sans-serif; 
+}
+
+pre {
+	font-family: courier;
+}

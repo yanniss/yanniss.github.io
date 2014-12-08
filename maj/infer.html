@@ -1,0 +1,75 @@
+<html>
+<head>
+<title>Meta-AspectJ Tutorial</title>
+<LINK REL=stylesheet HREF="main.css" TYPE="text/css">
+</head>
+<body>
+<div class="header">
+<center>
+<h1>Meta-AspectJ</h1>
+<small>
+<a href="http://www.cc.gatech.edu/~dzook" class="hlink">David Zook</a>,
+<a href="http://www.cc.gatech.edu/~ssh" class="hlink">Shan Shan Huang</a>,
+<a href="http://www.cs.uoregon.edu/~yannis" class="hlink">Yannis Smaragdakis</a>
+</small>
+</center>
+</div>
+<div class="menu">
+<a href="index.html" class="hlink">Home</a>
+<br>
+&nbsp;&nbsp;<a href="index.html#ov" class="hlink">Overview</a>
+<br>
+&nbsp;&nbsp;<a href="index.html#why" class="hlink"><nobr>Why MAJ?</nobr></a>
+<br>
+&nbsp;&nbsp;<a href="index.html#app" class="hlink">Applications</a>
+<p>
+Using MAJ
+<br>
+&nbsp;&nbsp;<a href="get.html" class="hlink">Download/Install</a>
+<br>
+&nbsp;&nbsp;<a href="tutorial.html" class="hlink">MAJ Tutorial</a
+<br>
+&nbsp;&nbsp;<a href="examples.html" class="hlink">Examples</a>
+<br>
+&nbsp;&nbsp;<a href="doc/" class="hlink">API</a>
+<p>
+</div>
+<div class="body">
+<a name="infer"><h3>Using <font face="courier">infer</font></h3>
+If all the AST classes used to represent entry points overwhelms you, here's
+some good news -- you don't have to remember these cumbersome classes at all!
+<font class="code">infer</font> is your friend!  You can use 
+<font class="code">infer</font> in place of a type name in declaring variables.
+The variable's type will then be inferred by MAJ during parsing.  For example:
+<pre>
+    infer myVarDec = `[ int x = 0; ];
+    infer myStmt = `[ { #myVarDec 
+                        x++; } ]; 
+</pre>
+In the example above, <font class="code">myVarDec</font> has the inferred
+type of <font class="code">VarDec</font>, while 
+<font class="code">myStmt</font> has the inferred type of 
+<font class="code">Stmt</font>.  You can use them as such in the code that
+follows their declarations.
+<p>
+The one caveat of using <font class="code">infer</font> is that you must
+initialize the variables right away.  You can not declare a variable having
+type <font class="code">infer</font> and initalize it later as in this
+example:
+<pre>
+    infer myVarDec; // ILLEGAL!
+    ...
+    myVarDec = `[ int x = 0; ];
+</pre>
+This is a limitation in the current version of MAJ. We should be able to amend
+it in future versions and still keep the type-safety MAJ provides.
+<p>
+<div class="next">
+<a href="quote.html"><< Prev: Using <font class="code">`</font> and 
+<font class="code">#</font></a>
+&nbsp;|&nbsp;
+<a href="splice.html">Next >>: Unquote Splice</a>
+</div>
+</div>
+</body>
+</html>

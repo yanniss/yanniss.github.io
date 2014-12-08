@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>jOrchestra</title>
+  </head>
+
+  <body>
+        
+    <h1>Speech API Demo Example</h1>
+        
+    <p><b>Note</b>: It is highly recommended to have completed <a href="example_clock1.html">Tutorial
+    Part I</a> before trying this example.
+        
+    <br><br>In this example, a Swing application showcases the Java Speech API
+    and&nbsp;<br>
+    works as follows: the user chooses predefined phrases from a dropdown&nbsp;<br>
+    box and the speech synthesizer pronounces them. As a motivation for&nbsp;<br>
+    partitioning, imagine a scenario when this application needs to be run<br>
+    on a machine, e.g. a PDA, that either has no speakers (hardware resource)<br>
+    or does not have the Speech API installed (software resource). The idea<br>
+    is to partition the original application in a client-server mode so that the<br>
+    graphical partition (i.e. the GUI) would run on a PDA and it will control<br>
+    the speech partition which would run on a desktop machine. We choose<br>
+    this example because it fits well into the realm of applications amenable<br>
+    for automatic application partitioning. The locality patterns here are very<br>
+    clear and defined by the specific hardware resources (graphical screen<br>
+    and speech synthesizer) and their corresponding classes (Swing and Speech
+    API).<br>
+    <br>
+    In-order to run this example, you have to download <a href="http://www.cloudgarden.com/JSAPI/dnld_options.html">Cloudgarden's
+    Java Speech API.<br>
+    </a>1) Once the Speech API package is successfully installed, download and
+    unjar <a href="resources/Speech.jar">Speech.jar</a><br>
+    that contains all the file of the example.<br>
+    2) Load Speech.xml configuration and perform the distribution.<br>
+    (See <a href="example_clock1.html">Tutorial I</a> for detailed
+    instructions).</p>
+        
+    <p>Now you ready to run the partitioned version of the application:<br>
+    3) Run the server at ./step4/desktop: <i>startServer.bat </i>or <i>startServer.sh</i><br>
+    4) Run the client part at ./step4/pda: <i>java
+    remotecapable.speech.SpeechWindow</i></p>
+        
+    <p>&nbsp;</p>
+        
+    <p>&nbsp;</p>
+        
+    <p>&nbsp;</p>
+        
+    <p><img src="images/music_line2.gif" width="700" height="18"><br><br>
+    <i>Last Modified:</i>  
+    <!--webbot bot="TimeStamp" S-Type="EDITED"
+    S-Format="%B %d, %Y" startspan -->June 12, 2003<!--webbot bot="TimeStamp" endspan i-checksum="13992" --></p>
+  </body>
+</html>

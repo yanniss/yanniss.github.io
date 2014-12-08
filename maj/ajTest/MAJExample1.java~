@@ -1,0 +1,14 @@
+package maj.ajTest;
+
+import java.io.*;
+import org.aspectj.compiler.base.*;
+import org.aspectj.compiler.base.ast.*;
+import org.aspectj.compiler.base.cst.*;
+import org.aspectj.compiler.crosscuts.ast.*;
+
+public class MAJExample1Test {
+
+    public static void main(String myargs[]) {
+
+    }
+}

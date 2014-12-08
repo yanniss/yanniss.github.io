@@ -1,0 +1,280 @@
+<html>
+<head>
+<title>Meta-AspectJ Tutorial</title>
+<LINK REL=stylesheet HREF="main.css" TYPE="text/css">
+</head>
+<body>
+<div class="header">
+<center>
+<h1>Meta-AspectJ</h1>
+<small>
+<a href="http://www.cc.gatech.edu/~dzook" class="hlink">David Zook</a>,
+<a href="http://www.cc.gatech.edu/~ssh" class="hlink">Shan Shan Huang</a>,
+<a href="http://www.cs.uoregon.edu/~yannis" class="hlink">Yannis Smaragdakis</a>
+</small>
+</center>
+</div>
+<div class="container">
+<div class="menu">
+<a href="index.html" class="hlink">Home</a>
+<br>
+&nbsp;&nbsp;<a href="index.html#ov" class="hlink">Overview</a>
+<br>
+&nbsp;&nbsp;<a href="index.html#why" class="hlink"><nobr>Why MAJ?</nobr></a>
+<br>
+&nbsp;&nbsp;<a href="index.html#app" class="hlink">Applications</a>
+<p>
+Using MAJ
+<br>
+&nbsp;&nbsp;<a href="get.html" class="hlink">Download/Install</a>
+<br>
+&nbsp;&nbsp;MAJ Tutorial
+<br>
+&nbsp;&nbsp;<a href="examples.html" class="hlink">Examples</a>
+<br>
+&nbsp;&nbsp;<a href="doc/" class="hlink">API</a>
+<p>
+</div>
+
+<div class="body">
+<a name="basics"/><h2>Meta-AspectJ Tutorial</h2>
+<ul><li><a href="#entry">Entry Points</a>
+  <li><a href="quote.html">Using <font face="courier">`</font> and 
+  <font face="courier">#</font></a>
+  <li><a href="infer.html">Using <font face="courier">infer</font></a>
+  <li><a href="splice.html">Unquote Splice</a>
+  <li><a href="convmeth.html">Convenience Methods</a>
+</ul>
+<a name="entry"><h3>Entry Points</h3></a>
+The first thing to know about MAJ is that there is a fixed set of entry points
+-- non-terminals in the AspectJ grammar -- that may be quoted and unquoted.  
+Each of these entry points has a corresponding java class that represents its
+abstract syntax tree (AST).  The table below lists the entry points, their
+corresponding AST classes, and sample usage:
+<p>
+<table border="1" cellpadding="2" cellspacing="2">
+<tr>
+ <th align="center">Entry Point</th>
+ <td align="center"><b>AST Class</b><br>
+(all paths prefixed by <font face="courier">org.aspectj.compiler</font>)</td>
+ <th align="center">Example</th>
+</tr>
+<tr>
+ <td><nobr>Single Identifier</nobr></td>
+ <td class="code">base.ast.IDENT</td>
+ <td><pre>IDENT foo = `[ MyClass ];</pre></td>
+</tr>
+<tr>
+ <td>Identifier</td>
+ <td class="code">base.ast.Identifier</td>
+ <td class="code"><pre>Identifer foo = `[ java.util.Vector ];</pre></td>
+</tr>
+<tr>
+ <td>Identifier Pattern</td>
+ <td class="code">crosscuts.ast.NamePattern</td>
+ <td class="code">
+<pre>
+NamePattern foo = `[ * ];
+NamePattern bar = `[ java.lang.* ];
+</pre>
+ </td>
+</tr>
+<tr>
+ <td>Modifiers</td>
+ <td class="code">base.ast.Modifiers</td>
+ <td class="code"><pre>Modifiers foo = `[ public static ];</pre></td>
+</tr>
+<tr>
+ <td>Import</td>
+ <td class="code">base.ast.Import</td>
+ <td class="code"><pre>Import foo = `[ import java.lang.*; ];</pre></td>
+</tr>
+<tr>
+ <td>Type Spec.</td>
+ <td class="code">base.ast.TypeD</td>
+ <td class="code">
+<pre>
+TypeD foo = `[ MyClass ];
+TypeD builtIn = `[ int ];
+</pre>
+ </td>
+</tr>
+<tr>
+ <td><nobr>Formal Declaration</nobr></td>
+ <td class="code">base.ast.FormalDec</td>
+ <td class="code"><pre>FormalDec foo = `[ int x ];</pre></td>
+</tr>
+<tr>
+ <td>Variable Declaration</td>
+ <td class="code">base.ast.VarDec</td>
+ <td class="code">
+<pre>
+VarDec foo = `[ int x = 0; ];
+VarDec bar = `[ Object x, y; ];
+</pre>
+ </td>
+</tr>
+<tr>
+ <td>Expression</td>
+ <td class="code">base.ast.JavaExpr</td>
+ <td class="code">
+<pre>
+JavaExpr myInt = `[ 32 ];
+JavaExpr myBool = `[ true && myInt == 32 ];
+JavaExpr myMethCall = `[ a.foo(3, 5) ];
+</pre>
+ </td>
+</tr>
+<tr>
+ <td>Statement</td>
+ <td class="code">base.ast.Stmt</td>
+ <td class="code">
+<pre>
+Stmt myIncr = `[ x++; ];
+Stmt myFor = `[ for ( int x=0; x++; x<5 ) {
+                    foo(x);
+                } ];
+Stmt myEmpty = `[ {} ];
+</pre>
+ </td>
+</tr>
+<tr>
+ <td>Method Declaration</td>
+ <td class="code">base.ast.MethodDec</td>
+ <td class="code">
+<pre>
+MethodDec meth1 = `[ public void getY() { 
+                         return y; 
+                     } ];
+</pre>
+ </td>
+</tr>
+<tr>
+ <td>Constructor Declaration</td>
+ <td class="code">base.ast.ConstructorDec</td>
+ <td class="code">
+<pre>
+ConstructorDec myCons = `[ public Foo() {} ];
+</pre>
+ </td>
+</tr>
+<tr>
+ <td>Class Declaration</td>
+ <td class="code">base.ast.ClassDec</td>
+ <td class="code">
+<pre>
+ClassDec classFoo = 
+    `[ public class Foo {
+           public static final int x = 0;
+       } ];
+</pre>
+ </td>
+</tr>
+<tr>
+ <td>Interface Declaration</td>
+ <td class="code">base.ast.InterfaceDec</td>
+ <td class="code">
+<pre>
+public interface myInterface {
+    public void foo();
+}
+</pre>
+ </td>
+</tr>
+<tr>
+ <td>Compilation Unit Member (Java)</td>
+ <td class="code">base.ast.ClassMember</td>
+ <td>
+ This could be a Class Declaration or Interface Declaration
+ </td>
+</tr>
+<tr>
+ <td>Compilation Unit Member (AspectJ)</td>
+ <td class="code">base.ast.AspectMember</td>
+ <td>This could be Class Declaration, Interface Declaration, or Aspect Declaration</td>
+</tr>
+<tr>
+ <td>Compilation Unit</td>
+ <td class="code">base.ast.CompUnit</td>
+ <td class="code">
+<pre>
+import java.lang.*;
+import java.util.*;
+
+public class Foo {
+  private int m_iX = 0;
+
+  public Foo() {   
+  }
+}
+</pre>
+ </td>
+</tr>
+<tr>
+ <td>Intertype Declare</td>
+ <td class="code">crosscuts.ast.DeclareDec</td>
+ <td class="code">
+<pre>
+DeclareDec d1 = 
+    `[ declare parents : 
+           myClass 
+           implements java.io.Serializable ];
+</pre>
+ </td>
+</tr>
+<tr>
+ <td>Advice Declaration</td>
+ <td class="code">crosscuts.ast.AdviceDec</td>
+ <td class="code">
+<pre>
+AdviceDec myAdv = 
+    `[ before():get(int Foo.y) {}];
+</pre>
+ </td>
+</tr>
+<tr>
+ <td>Pointcut</td>
+ <td class="code">crosscuts.ast.Pcd</td>
+ <td class="code">
+<pre>
+Pcd pcd1 = 
+    `[ call (void Foo.m(int,int,...)) ];
+Pcd pcd2 = 
+    `[ execution (Foo.new(int)) ];
+</pre>
+ </td>
+</tr>
+<tr>
+ <td>Pointcut Declaration</td>
+ <td class="code">crosscuts.ast.PointcutDec</td>
+ <td class="code">
+<pre>
+PointcutDec pdec = 
+    `[ private pointcut foo(Object o); ];
+</pre>
+ </td>
+</tr>
+<tr>
+ <td>Aspect Declaration</td>
+ <td class="code">crosscuts.ast.AspectDec</td>
+ <td class="code">
+<pre>
+AspectDec myAspect =
+    `[ public aspect Foo {
+           declare precedence: 
+	       Security, Logging;
+
+           before();get(int Foo.y) {}
+       } ];
+</pre>
+ </td>
+</tr>
+</table>
+<div class="next">
+<a href="quote.html">Next >> Using ` and #</a>
+</div>
+</div>
+
+</div>
+</body>
+</html>

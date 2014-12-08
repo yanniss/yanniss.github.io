@@ -1,0 +1,45 @@
+<xml xmlns:v="urn:schemas-microsoft-com:vml"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:p="urn:schemas-microsoft-com:office:powerpoint"
+ xmlns:oa="urn:schemas-microsoft-com:office:activation">
+ <p:presentation sizeof="custom" slidesizex="23040" slidesizey="17280"
+  notessizex="16176" notessizey="21520" gridspacingx="46448"
+  gridspacingy="46448" savewithfonts="t">
+  <p:master id="3" slidesn="0,0" type="main" href="master03.htm"
+   xmlhref="master03.xml" template="Default Design" layout="title_body"
+   slots="title,body,dateTime,footer,slideNumber">
+   <p:schemes>
+    <p:colorscheme
+     colors="#0000ff,#ffffff,#000000,#ffff00,#ff9900,#00ffff,#ff0000,#969696"/>
+    <p:colorscheme
+     colors="#ffffff,#000000,#808080,#000000,#00cc99,#3333cc,#ccccff,#b2b2b2"/>
+    <p:colorscheme
+     colors="#ffffff,#000000,#333333,#000000,#dddddd,#808080,#4d4d4d,#eaeaea"/>
+    <p:colorscheme
+     colors="#ffffcc,#000000,#666633,#808000,#339933,#800000,#0033cc,#ffcc66"/>
+    <p:colorscheme
+     colors="#ffffff,#000000,#808080,#000000,#ffcc66,#0000ff,#cc00cc,#c0c0c0"/>
+    <p:colorscheme
+     colors="#ffffff,#000000,#808080,#000000,#c0c0c0,#0066ff,#ff0000,#009900"/>
+    <p:colorscheme
+     colors="#ffffff,#000000,#808080,#000000,#3399ff,#99ffcc,#cc00cc,#b2b2b2"/>
+   </p:schemes>
+  </p:master>
+  <p:master id="2" slidesn="1C32957,3411C820" type="handout" href="master02.htm"
+   layout="handout" slots="header,dateTime,footer,slideNumber"/>
+  <p:slide id="2" slidesn="0,0" href="slide0002.htm"/>
+  <p:viewstate type="slideView" scale="25" restoredleft="156" restoredtop="946"
+   horizbarstate="2" manualadjusttop="t" hideoutlineicons="t"/>
+  <p:font name="Times New Roman" charset="0" type="4" family="18"/>
+  <p:font name="Comic Sans MS" charset="0" type="4" family="66"/>
+  <p:font name="Arial" charset="0" type="4" family="34"/>
+  <p:headersfooters formatid="0" noheader="t"/>
+  <p:pptdocumentsettings framecolors="WhiteTextOnBlack" hideslideanimation="t"
+   browsersupport="v4"/>
+  <p:htmlpublishsettings browsersupport="dual"
+   href="C:\Dokumente und Einstellungen\Stephan\Desktop\Special Problem\GotechPoster.htm"
+   hidespeakernote="t" noloadinbrowser="t"/>
+ </p:presentation>
+ <o:shapedefaults v:ext="edit" spidmax="8194">
+  <o:colormru v:ext="edit" colors="#39f,#ff6,yellow,#360,#a50021,#663,#330,#393"/>
+ </o:shapedefaults></xml>

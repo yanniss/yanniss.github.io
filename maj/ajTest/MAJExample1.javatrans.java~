@@ -1,0 +1,27 @@
+package maj.ajTest;
+
+
+import java.io.*;
+import org.aspectj.compiler.base.*;
+import org.aspectj.compiler.base.ast.*;
+import org.aspectj.compiler.base.cst.*;
+import org.aspectj.compiler.crosscuts.ast.*;
+
+public class MAJExample1Test {
+	public static void main(String[] myargs)  {
+		AspectDec aspect1 = new AspectDec(null, "foo", null, null, null, null, new Decs(new Dec[] {null}));
+		ResolvedTypeD interface1 = new ResolvedTypeD(new MajUncheckedType(new Identifier("InterfaceOne")));
+		Identifier interId = new Identifier("InterfaceTwo");
+		ResolvedTypeD interface2 = new ResolvedTypeD(interId);
+		aspect1.addInterface(interface1);
+		aspect1.addInterface(interface2);
+		Identifier aspectName = new Identifier("homeclass_aspect");
+		CallPcd pct1 = new CallPcd(new MethodPattern(null, null, new AnyTypeName(), new SimpleName(new Identifier("*")), new FormalsPattern(new GenTypeNames(new GenTypeName[] {new EllipsesFakeTypeName()})), null));
+		NotPcd pct2 = new NotPcd(new WithinPcd(new SimpleTypeName(new MajUncheckedType("homeclass_aspect"))));
+		NotPcd pct3 = new NotPcd(new CFlowPcd(new WithinPcd(new SimpleTypeName(new MajUncheckedType("homeclass")))));
+		TargetPcd pct4 = new TargetPcd(new Identifier("homeclass"));
+		AroundAdviceDec adv1 = new AroundAdviceDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("Object"))), new Formals(new FormalDec[] {}), null, new AndPcd(new AndPcd(new AndPcd(pct1, pct2), pct3), pct4), new CodeBody(new Stmts(new Stmt[] {new CodeBody, new Stmts(new Stmt[] {new ExprStmt(new PostfixExpr(new VarExpr(new Identifier("i")), "++"))}), new CatchClauses(new CatchClause[] {new CatchClause(new FormalDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("Exception"))), "e"), new CodeBody(new Stmts(new Stmt[] {}))), new CatchClause(new FormalDec(null, new ResolvedTypeD(new MajUncheckedType(new Identifier("Exception"))), "e2"), new CodeBody(new Stmts(new Stmt[] {})))})(TryCatchStmt)})));
+		aspect1.addMember(adv1);
+		System.out.println(aspect1.unparse());
+	}
+}

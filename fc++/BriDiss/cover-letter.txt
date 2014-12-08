@@ -1,0 +1,160 @@
+(Note that you can retrieve this message as well as the latest draft of
+ my dissertation at
+    http://www.cc.gatech.edu/~yannis/fc++/BriDiss/
+ From now until I am all done, you can visit that URL for the latest.)
+
+Attached is a draft of my dissertation.  In this message I provide you
+with an overview of the dissertation structure, and point out what parts
+are new and what parts come from existing papers.  
+
+Note that the current dissertation outline structure differs a bit from
+the outline I sent you-all back in February.  For the most part,
+however, the only changes are re-ordering and re-naming the section
+heads--this was done to give the text a more natural flow (with fewer
+forward references).  A couple of new subsections were added, too.
+
+The chapters in my dissertation are
+   I    Introduction
+   II   FC++
+   III  LC++
+   IV   Generalizing from C++ (Reusable lessons)
+   V    Related Work
+   VI   Conclusions
+
+Chapters 1-4 are mostly complete.  (A more detailed breakdown is given
+shortly.)  Chapter 5 is not yet written, though it can be largely
+culled from existing documents.  Chapter 6 is not yet written.
+
+There are about 60 "sections" in Chapters 1-4.  About 10 of those are
+still unwritten, and 3 are written but need a bit of rewriting.  In
+order to give a clearer picture of what is "new material" and what is
+text that has merely been adapted from existing documents, I give a
+detailed description below.  The high-level view is
+
+   Chapter                Approx length  Sources (see key below)
+   -------                -------------  -----------------------
+   1 Introduction          (~5 pages)    Proposal, a little new text
+   2 FC++                  (~100 pages)  JFP, SPE, DPCOOL, scattered new text
+   3 LC++                  (~20 pages)   LP, a little new text
+   4 Generalizing from C++ (~15 pages)   All new text
+
+In the detailed outline below, I use "keys" in the left margin to show
+the sources of the text for the various sections.  Here is the meaning
+of the keys:
+
+   Key   Source
+   ---   ------
+    J   JFP paper        http://www.cc.gatech.edu/~yannis/fc++/fcpp-jfp.pdf
+    S   SPE paper        http://www.cc.gatech.edu/~yannis/fc++/funoo.pdf
+    D   DPCOOL paper     http://www.cc.gatech.edu/~yannis/fc++/fcpp-lambda.pdf
+    L   LC++ (LP) paper  http://www.cc.gatech.edu/~yannis/lc++/paper.pdf
+    P   Proposal
+    N   new material
+    *   section needs substantial rewriting
+    x   section not yet written
+
+I hope that the outline below will be a useful tool for you-all to get a
+high-level view of the document so that you can focus on your areas of
+interest.
+
+(Note that in the actual text of the dissertation draft, many section
+heads are followed by a line that reads, for example, "JFP 8".  This
+indicates that the material in that section was adapted from the named
+source -- e.g. "JFP 8" means section 8 of the JFP paper.)
+
+============================
+Brian's dissertation outline
+============================
+
+      I. Introduction: 
+      ----------------
+P     Motivation
+P     Thesis
+P     Contributions
+PN     - comparison with other multiparadigm work
+PN     - reusable lessons
+ N    Roadmap for the dissertation
+
+
+      II. FC++: 
+      ---------
+J     Motivation and overview
+      Description of basic library features
+J  N   - intro
+J      - direct functoids
+J      - indirect functoids
+J      - use of direct functoids
+ D N   - full functoids
+ D N   - infix
+J  N   - currying 
+J      - subtype polymorphism
+J  N   - c++ interface
+      Description of advanced library features
+ D N   - lambda
+ D  *  - monads
+    x  - static analysis/error checking
+J      - lists: even and odd
+    x  - lists: strict, generalized interface
+      Applications
+  S    - HOFs and design patterns
+  S    - parametric polymorphism and design patterns
+    x  - other (customers, everyday stuff)
+      Pragmatics
+J      - performance comparison
+J      - performance analysis/optimizations
+J  N   - expressiveness/limitations
+ D N*  - lambda, sugars
+    x Discussion: summarize how FC++ supports the thesis
+
+
+      III. LC++: 
+      ----------
+      Description of the library
+L      - intro example/syntax
+L      - declaring relations and logic variables
+L      - calling out to C++ functions
+L      - asserting facts and rules, basic queries
+L      - queries, environments, and result lists
+ N     - functors and data structures
+LN     - limitations
+      Beneath the surface
+L      - query execution and c++ interface (CPS)
+L      - parsing and semantic analysis
+  x   Applications (business rules, iptables example)
+L *   Detailed comparison to related work
+  x   Discussion: summarize how LC++ supports the thesis
+
+
+      IV. Generalizing from C++: 
+      --------------------------
+      Reusable lessons
+N      - type system for HO,poly functions
+N      - currying
+N      - infix functions
+N      - list interface
+N      - list optimizations
+ x     - monad specializers
+ x     - design pattern implementations
+N      - subtype polymorphism for functoids
+N      - lazy lists as interface to logic query results, CPS
+N      - function objects for logic code to "call out"
+N      - domain-specific static analyses
+      Capabilities and limitations of C++
+ x     - what they are and how they affect the libraries
+ x     - generalizing what could be done in other languages
+
+
+      V. Related Work:
+      ----------------
+x     Work adding functional components to object-oriented languages
+x      - Representing functions
+x      - Lambda
+x      - Applications
+x     Work on multiparadigm languages with logic components 
+      
+      
+      VI. Summary:
+      ------------
+x     Sum up interesting points of the work
+x     Talk about interesting future directions
+

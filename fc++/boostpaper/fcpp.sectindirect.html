@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>6. Indirect Functoids</title><link rel="stylesheet" href="reference.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.48"><link rel="home" href="fcpp.html" title="Boost.FC++"><link rel="up" href="fcpp.html" title="Boost.FC++"><link rel="previous" href="fcpp.sectdirect.html" title="5. Direct Functoids"><link rel="next" href="fcpp.sectfull.html" title="7. Full Functoids"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table border="1" cellpadding="2" bgcolor="#007F7F"><tr><td bgcolor="#FFFFFF"><img src="../../c++boost.gif" alt="c++boost.gif (8819 bytes)" width="277" height="86"></td><td><a href="../../index.htm"><font color="#FFFFFF" size="4" face="Arial">Home</font></a></td><td><a href="libraries.html"><font color="#FFFFFF" size="4" face="Arial">Libraries</font></a></td><td><a href="../../people/people.htm"><font color="#FFFFFF" size="4" face="Arial">People</font></a></td><td><a href="../../more/faq.htm"><font color="#FFFFFF" size="4" face="Arial">FAQ</font></a></td><td><a href="../../more/index.htm"><font color="#FFFFFF" size="4" face="Arial">More</font></a></td></tr></table><div class="section"><div class="titlepage"><div><h2 class="title" style="clear: both"><a name="fcpp.sectindirect"></a>6. Indirect Functoids</h2></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt>6.1. <a href="fcpp.sectindirect.html#id188344">Subtype-polymorphism</a></dt><dt>6.2. <a href="fcpp.sectindirect.html#fcpp.subsectboostfun">Relation to 
+   boost::function</a></dt></dl></div><p>
+Indirect functoids are &quot;function variables&quot; which can be dynamically
+bound to any function with the right monomorphic type signature.  Recall
+the example from <a href="fcpp.sectoverview.html#fcpp.sectoverview" title="4. Overview Examples">Section 4</a>:
+<pre class="programlisting">
+   fun2&lt;int,int,int&gt; f = plus;  
+   f(3,2);          // yields 5
+   f = minus;
+   f(3,2);          // yields 1
+</pre>
+Here <tt>f</tt> is an indirect functoid, which can be bound to
+different functions (<tt>plus</tt> and <tt>minus</tt>, in the
+example) during its lifetime.  Indirect functoids are declared as
+instances of the <tt>funN</tt> classes, where
+<span class="emphasis"><i>N</i></span> is the arity of the function and the
+<span class="emphasis"><i>N+1</i></span> template arguments name the argument types and
+the return type.
+</p><p>
+Indirect functoids are necessarily monomorphic.  This restriction is
+rooted in the implementation: indirect functoids are implemented using
+dynamic dispatch (virtual function call), and in C++, a virtual method
+cannot also be a member template.  When an indirect functoid is
+initialized or assigned the value of a polymorphic direct functoid, the
+appropriate monomorphic function is selected.  For example:
+<pre class="programlisting">
+   std::string foo=&quot;foo&quot;, bar=&quot;bar&quot;;
+   fun2&lt;std::string,std::string,bool&gt; sl = less;
+   sl(foo,bar);    // yields false
+   fun2&lt;int,int,bool&gt; il = less;
+   il(2,3);        // yields true
+</pre>
+Here we use the FC++ polymorphic functoid <tt>less</tt> (which has the
+general signature <tt>(T,T)-&gt;bool</tt>) to initialize two different
+indirect functoids.  Each indirect functoid selects the appropriate
+monomorphic instantiation of the polymorphic functoid it is initialized
+with.
+</p><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id188344"></a>6.1. Subtype-polymorphism</h3></div></div><p>
+Indirect functoids exhibit subtype-polymorphism (the dynamic
+polymorphism OO programmers are familiar with).  This works in the
+expected way; indirect functoids are contravariant in their argument
+types and covariant in their return types.  An example makes this
+clear:  suppose there are two inheritance hierachies, one where
+<tt>dog</tt> is derived from <tt>animal</tt> and another where
+<tt>car</tt> is derived from <tt>vehicle</tt>.  Then we can say
+<pre class="programlisting">
+   fun1&lt;dog*,vehicle*&gt; f = ...; 
+   fun1&lt;animal*,car*&gt; g = f;    // ok
+   f = g;                       // illegal (type error)
+</pre>
+<tt>f</tt> is effectively a subtype of <tt>g</tt>; wherever
+<tt>g</tt> is used, <tt>f</tt> can be supplied as a legal
+implementation, but not the other way around.
+</p></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="fcpp.subsectboostfun"></a>6.2. Relation to 
+   <tt>boost::function</tt></h3></div></div><p>
+Indirect functoids in FC++ are similar to
+<tt>boost::function</tt> objects.  There are
+a few notable differences.  First, indirect functoids must always be
+initialized with a function value (there is no default constructor or
+the equivalent of a &quot;null&quot; function).  Second, indirect functoids have
+all the FC++ full functoids features (like built-in currying and infix
+syntax, described in the next section), whereas
+<tt>boost::function</tt> objects do not.  On
+the other hand, indirect functoids always pass parameters by
+<tt>const&amp;</tt>, whereas
+<tt>boost::function</tt> objects can have
+parameters passed by plain reference, allowing for mutation of
+arguments to the function object.
+</p></div></div><table width="100%"><tr><td align="left"><small>Last revised: October 03, 2003 at 23:27:22 GMT</small></td><td align="right"><small>Copyright © 2000-2003 Brian McNamara and Yannis Smaragdakis</small></td></tr></table><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="fcpp.sectdirect.html"><img src="images/prev.png" alt="Prev"></a> </td><td width="20%" align="center"><a accesskey="u" href="fcpp.html"><img src="images/up.png" alt="Up"></a></td><td width="40%" align="right"> <a accesskey="n" href="fcpp.sectfull.html"><img src="images/next.png" alt="Next"></a></td></tr><tr><td width="40%" align="left" valign="top">5. Direct Functoids </td><td width="20%" align="center"><a accesskey="h" href="fcpp.html"><img src="images/home.png" alt="Home"></a></td><td width="40%" align="right" valign="top"> 7. Full Functoids</td></tr></table></div></body></html>

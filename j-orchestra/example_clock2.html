@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>jOrchestra</title>
+  </head>
+
+  <body>
+    <h1>Clock Example<br>
+    Tutorial Part II.</h1>
+    <p>It is strongly advised, that you first complete <a href="example_clock1.html"> the first part of the
+    tutorial</a>.<br>
+    In this part, we will introduce how to partition applications from scratch
+    using J-Orchestra.<br>
+    Repeat steps from 1 to 4 from Part I.<br>
+    1) Choose File/Import menu option and then click on &quot;Add&quot; button
+    in &quot;Select Directories&quot; dialog.<br>
+    Select the root directory of the clock example.<br>
+    2) J-Orchestra will import the clock application files.<br>
+    <img border="0" src="exampl5.jpg" width="1031" height="460">&nbsp;</p>
+    <p>3) Click the &quot;Add&quot; button. Enter &quot;client&quot; in the
+    &quot;Name&quot; field and enter &quot;//localhost/client&quot; in the
+    &quot;Location&quot; field. Then click<br>
+    the &quot;Save&quot; button.<br>
+    <img border="0" src="exampl6.jpg" width="1036" height="460"><br>
+    </p>
+    <p>4) Follow the same steps as in step 3) to enter the info for the
+    &quot;server&quot; site.<br>
+    <img border="0" src="exampl7.jpg" width="1036" height="460">
+    </p>
+    <p>5) Now select the anchored group of classes containing java/util/Date and
+    drag-n-drop it to the &quot;server&quot; folder.<br>
+    <img border="0" src="exampl8.jpg" width="1036" height="466"></p>
+    <p>6) Drag-n-drop the rest of the classes to the &quot;client&quot; folder.<br>
+    <img border="0" src="exampl9.jpg" width="1033" height="466"><br>
+    <br>
+    7) Now repeat steps 6 to 13 in Part I of the tutorial.</p>
+    <hr>
+    <p>Notice that java/lang/Thread is a referenced system class. However, in
+    this distribution scenario we are interested in partitioning the threading
+    functionality. In other words, we would like to ignore java/lang/Thread.</p>
+    <p>To accomplish that, create <i>.ignore </i>file containing a single line <i>java.lang.Thread
+    </i>and place the file to the base directory of the example and import
+    classes again. java/lang/Thread should not appear in the list of imported
+    classes.<br>
+    <img border="0" src="exampl10.jpg" width="1033" height="418"></p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p><img src="images/music_line2.gif" width="700" height="18"><br><br>
+    <i>Last Modified:</i>  
+    <!--webbot bot="TimeStamp" S-Type="EDITED"
+    S-Format="%B %d, %Y" startspan -->June 12, 2003<!--webbot bot="TimeStamp" endspan i-checksum="13992" --></p>
+  </body>
+</html>

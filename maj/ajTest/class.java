@@ -1,0 +1,114 @@
+package maj.ajTest;
+
+import java.io.*;
+import org.aspectj.compiler.base.*;
+import org.aspectj.compiler.base.ast.*;
+import org.aspectj.compiler.base.cst.*;
+import org.aspectj.compiler.crosscuts.ast.*;
+
+public class classtest {
+
+    public static void main(String myargs[]) {
+	// Class Declaration
+		infer class0 =
+		`[class foo 
+		  implements interface1, interface2  {
+		    int foo(int x, int y) throws exception1, exception2 {
+				int z;
+				x++;
+				return x;
+			}
+			}];
+
+	// Interface Declaration
+		infer inter1 =
+		`[interface foo {
+			public int x;
+
+			int foo(int x, int y) {
+				int z;
+				x++;
+				return x;
+			}
+			} ];
+
+	infer class1 =
+		`[class foo {
+			public int x;
+
+			int foo(int x, int y) {
+				int z;
+				x++;
+				return x;
+			}
+		} ];
+
+	infer mods1 = `[public static];
+	Modifiers mods2 = `[public static];
+
+	/*	DOES NOT PARSE
+infer class1A =
+	    `[class foo {
+#(Modifiers)mods1 int x;
+		
+#(Modifiers)mods2 foo(int x, int y) {
+    int z;
+    x++;
+    return x;
+}
+	    } ];
+	*/
+
+/* How do we fit Identifier in here???
+	infer class1B =
+		`[class #(Identifier)id1 {
+			public int x;
+
+			int foo(int x, int y) {
+				int z;
+				x++;
+				return x;
+			}
+		} ];
+*/
+	infer var1 =  `[int x;];
+	infer class1C =
+		`[class foo {
+			#(VarDec)var1
+
+			int foo(int x, int y) {
+				int z;
+				x++;
+				return x;
+			}
+			} ];
+	/* DOES NOT PARSE
+	infer meth1 =
+		`[int foo(int x, int y) {
+			#(Modifiers)mods1 int z;
+			x++;
+			return x;
+		}
+		];
+	*/
+
+	infer class1D =
+		`[class foo extends MySuperClass implements interface1, interfac2 {
+			public int x;
+
+		    //			#(MethodDec)meth1
+
+			} ];
+//	infer class2 =  `(ClassDec)[class foo { int x; #var1 } ];	// Ambiguous
+
+//	infer selfclass1 =  `(ClassDec)[#(ClassDec)class1];
+//	infer selfclass1 =  `(ClassDec)[#class1];	//Doesn't work yet b'cs ambiguous with Statement
+
+	System.out.println(class0.unparse());
+	System.out.println(inter1.unparse());
+	System.out.println(class1.unparse());
+	//	System.out.println(class1A.unparse());
+	System.out.println(class1C.unparse());
+	System.out.println(class1D.unparse());
+    }
+}

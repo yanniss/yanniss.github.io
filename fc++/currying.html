@@ -1,0 +1,142 @@
+<html>
+<head>
+<title>Currying in FC++</title>
+</head>
+
+<body>
+
+<h2>Currying in FC++</h2>
+
+<h6>If you're unfamiliar with the term "currying", you may want to check
+out <a href="currying-tutorial.txt">currying-tutorial.txt</a></h6>
+
+<p>
+Given a function <code>f</code> of three arguments, whose type is described as
+<pre>
+   f  ::  (X,Y,Z) -> R
+</pre>
+the following table shows some of the different ways that
+<code>f</code> can be used.  Each row of the table shows different ways
+to express the same thing, using the various currying styles available
+in FC++.  Note that the "prefix" and "underscore" styles can only be
+used on <code>Curryable</code>s, whereas the "binder" and "curry"
+styles can be used on any functoid.
+</p>
+
+<table border>
+<tr>
+<td><b>Prefix</b><br>(<code>Curryable</code>s)</td>
+<td><b>Underscore</b><br>(<code>Curryable</code>s)</td>
+<td><b>Binder</b><br>(all functoids)</td>
+<td><b>Curry</b><br>(all functoids)</td>
+<td><b>Result Type</b><br></td>
+</tr>
+<tr>
+<td><code>f(x)</code></td>
+<td><code>f(x,_,_)</code></td>
+<td><code>bind1of3(f,x)</code></td>
+<td><code>curry3(f,x)</code></td>
+<td><code>(Y,Z)->R</code><br></td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td><code>f(_,_,z)</code></td>
+<td><code>bind3of3(f,z)</code></td>
+<td>&nbsp;</td>
+<td><code>(X,Y)->R</code><br></td>
+</tr>
+<tr>
+<td><code>f(x,y)</code></td>
+<td><code>f(x,y,_)</code></td>
+<td><code>bind1and2of3(f,x,y)</code></td>
+<td><code>curry3(f,x,y)</code></td>
+<td><code>(Z)->R</code><br></td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td><code>f(_,y,z)</code></td>
+<td><code>bind2and3of3(f,y,z)</code></td>
+<td>&nbsp;</td>
+<td><code>(X)->R</code><br></td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td><code>bind1and2and3of3(f,x,y,z)</code></td>
+<td><code>curry3(f,x,y,z)</code></td>
+<td><code>()->R</code><br></td>
+</tr>
+<tr>
+<td><code>f(x,y,z)</code></td>
+<td><code>f(x,y,z)</code></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td><code>R</code><br></td>
+</tr>
+</table>
+
+<p>
+The practical offshoot of this is that it's easy to express some simple
+functions:
+<pre>
+   plus(3)           // f(x) = 3 + x
+   greater(_,10)     // f(x) = x > 10
+   map(inc)          // a function which inc's all elements of a list
+   until(prime,inc)  // f(x) = first prime number that's >= x
+</pre>
+</p>
+
+<!--
+<b>Prefix</b><br>(<code>Curryable</code>s)
+<b>Underscore</b><br>(<code>Curryable</code>s)
+<b>Binder</b><br>(all functoids)
+<b>Curry</b><br>(all functoids)
+<b>Result Type</b>
+.
+<code>f(x)</code>
+<code>f(x,_,_)</code>
+<code>bind1of3(f,x)</code>
+<code>curry3(f,x)</code>
+<code>(Y,Z)->R</code>
+.
+&nbsp;
+<code>f(_,_,z)</code>
+<code>bind3of3(f,z)</code>
+&nbsp;
+<code>(X,Y)->R</code>
+.
+<code>f(x,y)</code>
+<code>f(x,y,_)</code>
+<code>bind1and2of3(f,x,y)</code>
+<code>curry3(f,x,y)</code>
+<code>(Z)->R</code>
+.
+&nbsp;
+<code>f(_,y,z)</code>
+<code>bind2and3of3(f,y,z)</code>
+&nbsp;
+<code>(X)->R</code>
+.
+&nbsp;
+&nbsp;
+<code>bind1and2and3of3(f,x,y,z)</code>
+<code>curry3(f,x,y,z)</code>
+<code>()->R</code>
+.
+<code>f(x,y,z)</code>
+<code>f(x,y,z)</code>
+&nbsp;
+&nbsp;
+<code>R</code>
+-->
+
+<hr>
+
+<h6>
+Last updated on July 26, 2001 by <a
+href="mailto:lorgon@cc.gatech.edu">Brian McNamara</a></h6>
+
+
+</body>
+</html>
+

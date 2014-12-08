@@ -1,0 +1,107 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta http-equiv="Content-Language" content="en-us">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>BARBER</title>
+</head>
+
+<body>
+
+<div align="center">
+  <center>
+  <table border="0" cellpadding="0" cellspacing="8" width="98%" height="644">
+    <tr>
+      <td align="right" valign="top" width="20%" height="36">&nbsp;</td>
+      <td width="15" height="36"></td>
+      <td valign="bottom" width="80%" height="36"><b><font color="#0000FF" size="6">BARBER</font><font size="5">
+        <font face="Times New Roman">(the <font color="#0000FF">B</font>inary <font color="#0000FF">A</font>pplication
+        <font color="#0000FF">R</font>efactoring <font color="#0000FF">B</font>rows<font color="#0000FF">ER</font>)</font></font></b></td>
+    </tr>
+    <tr>
+      <td valign="top" width="20%" height="233"><font size="3"><br>
+        </font>
+        <p>&nbsp;</td>
+      <td width="15" height="233"></td>
+      <td valign="top" width="80%" height="233"><font size="3"><br>
+        <img border="0" src="barber.GIF" width="134" height="128"></font></td>
+    </tr>
+    <tr>
+      <td valign="top" width="20%" height="205"><strong><font size="5">Binary
+        Refactoring</font></strong></td>
+      <td width="15" height="205"></td>
+      <td valign="top" width="80%" height="205"><font size="4"><font FACE="Times New Roman"><i>Binary
+        Refactoring</i> is a software engineering technique for improving the
+        implementation of programs</font> <font FACE="Times New Roman">without
+        modifying their source code. While related to regular refactoring in
+        preserving a program’s functionality,&nbsp; binary refactoring aims to
+        capture modifications that are often applied to source code, but only
+        improve the performance of the software application and not the code
+        structure or maintainability.&nbsp;</font></font>
+        <p>&nbsp;</p>
+        <p>&nbsp;</td>
+    </tr>
+    <tr>
+      <td valign="top" width="20%" height="684"><strong><font size="5">BARBER<br>
+        design and<br>
+        implementation</font><font size="6">&nbsp;</font></strong></td>
+      <td width="15" height="684"></td>
+      <td valign="top" width="80%" height="684">
+        <p ALIGN="LEFT"><font face="Times New Roman" size="4">Our intention was
+        to make the structure of BARBER straightforward in order to maximize
+        usability. BARBER is an extensible framework in which binary
+        refactorings can be added and share useful support functionality.
+        Currently the system implements several variants of the <i>split class</i>,
+        <i>remove delegate</i>, and <i>inline/devirtualize method </i>refactorings.
+        BARBER operates at the Java bytecode level. It accepts as input an XML
+        file that specifies the binary refactorings to be performed and the
+        location of the code of the original application. BARBER parses the
+        input XML file and performs some syntactic checking of the application
+        being refactored, to ensure that the refactoring makes sense. The checks
+        include looking up all classes and methods participating in the
+        refactoring to ensure that they exist. The refactorings are then
+        applied, producing a modified set of binary Java classes. Fig. 1 shows
+        the user view of BARBER schematically. Because binary refactoring can be
+        thought of as a new activity in the software development chain, we have
+        provided support for using BARBER as a task in the popular ANT build
+        tool for Java. Specifically, the BARBER task is a separate build step
+        that runs after all the standard build steps have been completed. In
+        addition, depending on the target environment for a given build
+        configuration, different sets of binary refactorings can be applied to
+        the same source code base.</font></p>
+        <p ALIGN="LEFT"><img border="0" src="using_barber.gif" width="409" height="255"></p>
+        <p ALIGN="LEFT">&nbsp;</p>
+        <p ALIGN="LEFT">&nbsp;</td>
+    </tr>
+    <tr>
+      <td valign="top" width="20%" height="808"><font face="Times New Roman" size="5"><b>Downloads</b></font></td>
+      <td width="15" height="808"></td>
+      <td valign="top" width="80%" height="808">
+<font SIZE="2" COLOR="#3f7f5f">
+<p><b>BARBER IS DISTRIBUTED UNDER THE LGPL LICENSE</b><a href="http://www.opensource.org/licenses/lgpl-license.php"><br>
+Read more</a> about the GNU Library or &quot;Lesser&quot; General Public License
+(LGPL).</p>
+<hr>
+<p>This product includes software developed by the Apache Software Foundation (<a href="http://www.apache.org/">http://www.apache.org/</a>).<br>
+This software is covered by the following license: <a href="http://www.apache.org/LICENSE-1.1">http://www.apache.org/LICENSE-1.1</a>.</p>
+</font><p><b>BARBER uses the following Apache packages:</b><br>
+<a href="http://jakarta.apache.org/bcel/">BCEL</a>: The Byte Code Engineering
+Library (Version 5.0).<br>
+<a href="http://xml.apache.org/xerces2-j/index.html">Xerces</a>: XML parser in
+Java.<br>
+        <a href="http://antl.apache.org/">Ant</a>: A Java-based build tool.
+</p>
+        <p>Source and binary distribution: <a href="barbar.jar">barber.jar</a>
+</p>
+<hr>
+        <p>&nbsp;</td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+cat html_parts/header.html > ../$1
+cat $1 >> ../$1
+cat html_parts/footer.html >> ../$1
+

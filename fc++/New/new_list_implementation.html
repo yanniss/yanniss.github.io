@@ -1,0 +1,319 @@
+<html>
+<head>
+<title>FC++ lazy list implementation</title>
+</head>
+
+<body>
+
+<h1>FC++ lazy list implementation</h1>
+
+<p>
+As of v1.3, lists have been completely reimplemented in a way that is
+far more efficient than the previous implementation.  This document
+describes the new list implementation structure, and how you can write
+functoids to take advantage of the new structure to be more efficient.
+</p>
+
+<p>
+If, instead, you don't actually care about the new list structure, but
+you just want your now-broken code to compile again, jump down to
+<a href="#ignorance_is_bliss">
+How to get away with being ignorant of the new List structure</a>.
+</p>
+
+<hr>
+
+<h3>Lists, Caches, and OddLists</h3>
+
+There are three main structures in the new implementation: Lists,
+Caches, and OddLists.  They are characterized by these equations:
+<pre>
+   List&lt;T&gt;      = pointer to a Cache&lt;T&gt;
+   OddList&lt;T&gt;   = pair&lt; T, List&lt;T&gt; &gt;
+   Cache&lt;T&gt;     = variant{ Fun0&lt; OddList&lt;T&gt; &gt;
+                       or  OddList&lt;T&gt;         }
+</pre>
+Pictorially, 
+<table border><tr><td>
+<img src="list_structures.gif">
+</td></tr></table>
+In pseudo-C++
+<pre>
+   template &lt;class T&gt; class List {
+      IRef&lt; Cache&lt;T&gt; &gt; rep;
+   };
+   template &lt;class T&gt; class OddList {
+      T first;
+      List&lt;T&gt; second;
+   };
+   template &lt;class T&gt; class Cache {
+      enum { UNCACHED, CACHED } state;
+      Fun0&lt; OddList&lt;T&gt; &gt; fxn;   // valid in the "uncached" state
+      OddList&lt;T&gt; value;         // valid in the "cached" state
+   };
+</pre>
+
+<h3>The significance of Caches</h3>
+
+Caches enable laziness in a way that is efficient.  Caches can either be
+in an "uncached" state, where the function is the valid member of the
+variant, or in a "cached" state, where the value is valid.  Consider the code
+<pre>
+   List&lt;int&gt; l = enumFrom(1);
+   cout << head(l) << endl;
+</pre>
+After executing that, here is a picture of memory, where the variable
+<code>l</code> is represented by the little box at the left:
+<table border><tr><td>
+<img src="enumFrom1.1.gif">
+</td></tr></table>
+Suppose now we say
+<pre>
+   cout << head(tail(l)) << endl;
+</pre>
+Here is what happens:
+<ol>
+<li>We try to evaluate <code>tail(l)</code>.  Since <code>l</code>'s
+<code>Cache</code> is in the "cached" state, we simply return the next
+node of the list (<code>l.rep-&gt;value.second</code>).</li> <li>We
+call <code>head()</code> on that result.  Since this is an "uncached"
+<code>Cache</code>, we must execute the function to get the value, and
+then return it (<code>value=fxn(); state=CACHED; return
+value;</code>)</li>
+<li>The result is printed.</li>
+</ol>
+As a result, things now look like this:
+<table border><tr><td>
+<img src="enumFrom1.2.gif">
+</td></tr></table>
+
+<h3>The significance of OddLists</h3>
+
+<p>
+OddLists are used for efficiency.  Consider
+<pre>
+   List&lt;T&gt; l = something();
+   head(l);
+</pre>
+In order to evaluate <code>head(l)</code> (or <code>tail(l)</code> or
+<code>null(l)</code>) we must see if the <code>Cache</code> is in the
+"cached" state, and if not, call the <code>fxn</code> to produce the
+<code>value</code>.
+</p>
+
+<p>
+Now consider
+<pre>
+   head( cons(1,NIL) );
+</pre>
+If <code>cons()</code> were to return a <code>List</code>, then
+<code>head()</code> would be forced to check to see if the
+<code>Cache</code> were in the "cached" state before producing a value,
+since that's how we just saw taking the head of a <code>List</code>
+works.  However clearly that is unnecessary in this instance;
+<code>cons()</code> always produces a "cached" value, as C++ is a
+strict (non-lazy) language, and by passing parameters to
+<code>cons()</code>, we have already evaluated the "value" of the list
+node being produced.  As a result, rather than have <code>cons()</code>
+return a <code>List</code>, it returns an <code>OddList</code>.
+<code>OddList</code>s have exactly the same interface as lists, but
+they are more efficient (at the opportunity cost of always having their
+first element be non-lazy).
+</p>
+
+<h3>How to write functoids to take advantage of these structures</h3>
+
+<p>
+These structures matter most when writing recursive list functoids.
+Consider, for example, <code>Map</code> written in the old style (where
+everything is a <code>List</code>):
+<pre>
+struct Map {
+   template &lt;class F, class L&gt;
+   struct Sig : public FunType&lt;F,L,
+      List&lt;typename F::template Sig&lt;typename L::ElementType&gt;::ResultType&gt; &gt; {};
+
+   template &lt;class F, class T&gt;
+   List&lt;typename F::template Sig&lt;T&gt;::ResultType&gt;
+   operator()( const F& f, const List&lt;T&gt;& l ) const {
+      if( null(l) )
+         return NIL;
+      else
+         return cons( f(head(l)), curry2( Map(), f, tail(l) ) );
+   }
+};
+</pre>
+Note that the call to <code>cons()</code> takes two parameters, of these
+types
+<pre>
+typename F::template Sig&lt;T&gt;::ResultType 
+   (the list element type, let's call it "E" for short)
+binder1and2of2&lt;Map,F,List&lt;T&gt; &gt;   // what curry2() returns
+   (a zero-argument functoid that returns a List&lt;E&gt;)
+</pre>
+The second argument type is non-ideal.  <code>cons()</code> will return
+an <code>OddList</code> which contains an <code>E</code> and a pointer
+to a <code>Cache</code>, but that <code>Cache</code>'s thunk will be
+ugly.  Recall that <code>Cache</code> thunks are functions that return
+<code>OddList</code>s, but we have passed a function that returns a
+<code>List</code> to <code>cons()</code>.  As a result, we have to
+create a new thunk, which stores a reference to the one passed (call it
+"f"), whose body is
+<pre>
+   return f().force();
+</pre>
+This makes the types work out, by transforming a function-that-returns-a-List
+into a function-that-returns-an-OddList, but it has to use extra space and
+time to do it.
+</p>
+
+<p>
+Now consider <code>Map</code> written to return an <code>OddList</code>:
+<pre>
+struct Map {
+   template &lt;class F, class L&gt;
+   struct Sig : public FunType&lt;F,L,
+      OddList&lt;typename RT&lt;F,typename L::ElementType&gt;::ResultType&gt; &gt; {};
+
+   template &lt;class F, class L&gt;
+   OddList&lt;typename RT&lt;F,typename L::ElementType&gt;::ResultType&gt;
+   operator()( const F& f, const L& l ) const {
+      if( null(l) )
+         return NIL;
+      else
+         return cons( f(head(l)), curry2( Map(), f, tail(l) ) );
+   }
+};
+</pre>
+Now everything works nicely on the <code>cons()</code> end of things;
+<code>curry2()</code> creates the right type of functoid to pass to
+<code>cons()</code>, since <code>Map</code> has the "right" return
+type.  There is no more "impedence mismatch" at the recursive call.
+</p>
+
+<p>
+Note also that we've changed the type of <code>Map</code>'s second
+parameter; rather than take only <code>List</code>s, we take
+<code>L</code>, which could match an <code>OddList</code> or a
+<code>List</code>.  This way, calls to
+<pre>
+   map( f, cons(1,NIL) );
+</pre>
+work, and we do not "waste" the known "cachedness" of the first element
+of this list.  Transforming functions that take <code>List</code>s into
+functions that take <code>L</code>s (where <code>L</code> is a template
+parameter) is nearly the same as writing two overloaded versions of the
+function--one that works on <code>OddList</code>s, and one that works
+on <code>List</code>s.
+</p>
+
+<h3>Implications for laziness</h3>
+
+<p>
+There's a great paper about adding laziness to strict languages, 
+<a href="http://www.cs.bell-labs.com/who/wadler/topics/language-design.html">
+"How to add laziness to a strict language, without even being odd"</a>,
+which explains where we got the name OddList from.  However, the "odd"
+lists described in that paper always evaluate "one too far ahead" in a list,
+whereas FC++'s OddLists effectively have "even" tails, which means only
+the original call is too eager; the recursive calls are fine.  Thus,
+the example from that paper:
+<pre>
+   cutoff( 5, map( sqrt, countdown(4) ) );
+</pre>
+returns the right answer in FC++.  The only time FC++ is too eager is in
+the edge case; this code
+<pre>
+   cutoff( 0, map( sqrt, countdown(-1) ) );
+</pre>
+throws an exception.  We believe that this is "how it should be".  C++
+is strict, and therefore a call to map should "do work".  If you wanted
+to original call to map to be lazy, you would have written
+<pre>
+   List<float> l = curry2( map, sqrt, countdown(-1) );
+   cutoff( 0, l );
+</pre>
+that is, you would have curried the first call to make it lazy.  Indeed,
+the code above works fine in FC++, returning the empty list.
+</p>
+   
+<h3>Interface comparison with previous List implementation</h3>
+
+<p>
+Let's move on to more pragmatic issues.  Lists and OddLists both support
+the same external interface; here are things you can do with an
+<code>L</code>:
+<pre>
+   L l;     // L may be List or OddList
+   head(l);
+   null(l);
+   tail(l);        // always returns List
+   cons(3,l);      // always returns OddList
+   l.head();
+   l.tail();
+   l.operator bool();   // !null(l)
+
+   // The new stuff
+   l.force();      // return an OddList of me
+   l.delay();      // return a List of me
+   // There are also implicit conversions between OddList and List
+</pre>
+<code>List</code> actually supports a little more functionality than
+<code>OddList</code> does (it contains the iterator interface, both to make
+a list from a pair of iterators, and to use the <code>begin()</code> and
+<code>end()</code> member functions), but for the vast majority of
+tasks, the two are completely interchangeable.
+</p>
+
+<hr>
+
+<a name="ignorance_is_bliss">
+<h3>How to get away with being ignorant of the new List structure</h3>
+</a>
+
+<p>
+If all you care about is making broken code compile; here's the
+quickie guide to how to fix broken code.  Say you'd written this, which
+works with pre-v1.3 FC++:
+<pre>
+   struct SomeFunc {
+      template &lt;class L&gt;
+      struct Sig : public FunType&lt;L,L&gt; {}; 
+
+      template &lt;class T&gt;
+      List&lt;T&gt; operator()( const List&lt;T&gt;& l ) const {
+         // probably a more interesting body
+         return l;
+      }
+   } some_func;
+
+   int main() {
+      some_func( cons(1,NIL) );   // compiler error
+   }
+</pre>
+and have been annoyed to discover that it gives a compiler error with
+the new version of the library:
+<pre>
+   tmp2.cc: In function `int main()':
+   tmp2.cc:20: no match for call to `(SomeFunc) (fcpp::OddList<int>)'
+</pre>
+The solution is simple; the call should be
+<pre>
+      some_func( cons(1,NIL).delay() );
+</pre>
+More generally, when the compiler tells you that you have an
+<code>OddList</code>, and you just want a <code>List</code>, call
+<code>delay()</code> on it and all will be well.
+</p>
+
+<hr>
+
+
+<h6>
+Last updated on July 26, 2001 by <a
+href="mailto:lorgon@cc.gatech.edu">Brian McNamara</a></h6>
+
+
+</body>
+</html>
+

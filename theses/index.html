@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Supervised B.Sc. and M.Sc. Theses</title>
+</head>
+  <body>
+
+<h3>Psallida: <a href="psallida.pdf">Relational Representation of the LLVM Intermediate Language</a></h3>
+<p>
+We describe the relational representation of the LLVM intermediate language, known as the
+LLVM IR. Our implementation produces the relation contents of an input program in the LLVM
+intermediate form. Each relation is stored as a database table into a Datalog workspace. We
+represent both the type system and the instruction set of the LLVM language. We also support
+the restrictions of the language specifying the corresponding constraints using the Datalog
+programming language.
+</p>
+<br>
+
+<h3>Antoniadis: <a href="antoniadis.pdf">Declarative Points-To Analysis on Different Datalog Engines</a></h3>
+<p>
+In recent years, Datalog has found new application in declarative program
+analysis. In this thesis we present a prototype framework for context-insensitive points-to analysis of
+Java programs, which is a category of static program analysis that
+evaluates where each variable of a program can 'point-to' for each possible execution of
+the code. This framework uses Datomic, a distributed database which implements a
+Datalog-based query language. The same prototype context-insensitive analysis has
+been implemented using the Datalog LB dialect, which uses the LogicBlox engine in
+order to be used as a benchmark for comparison. Our aim is to evaluate the
+performance of the Datomic database system for the purpose of declarative program
+analysis.
+</p>
+<br>
+
+<h3>Kalogeropoulos: <a href="kalogeropoulos.pdf">Map-Hash-Repeat: A Cloud Programming Pattern for Iterative Computation</a></h3>
+<p>
+In this thesis we describe an initial exploration of the Map-Hash-Repeat pattern of cloud
+computation, in the context of the F# programming language and the MBrace cloud
+framework. Map-Hash-Repeat can be viewed as a generalization of the well-known
+MapReduce pattern, where a) the reduce phase is replaced by “hashing”, i.e., re-distribution
+of results over the node topology; b) both the map and the reduce phases are repeatedly
+iterated; and c) the final result is produced (possibly via a full reduce phase) upon reaching an
+iteration fixpoint.
+This pattern seems to capture a general mode of computation, e.g., easily simulating iterative
+algorithms, in addition to traditional MapReduce functionality.
+Our prototype is in a functional setting, using the F# programming language, and leverages
+an existing framework for cloud computation to encode the Map-Hash-Repeat pattern
+succinctly.
+</p>
+<br>
+
+<h3>Kollias: <a href="kollias.pdf">Faster Scala Collections with Compile-Time Reflection</a></h3>
+<p>
+We describe the implementation of specific Scala collections
+operations (currently the map and foreach methods) using the Scala
+2.10 compile-time reflection facilities. The primary motivation for
+this work is to create faster collections by inlining operations at
+the call site.  The functionality is available at the standard Scala
+library level, so that our optimized operations can be used on all
+plain Scala collection types (e.g., List, Array, etc.) without the
+need of creating new specialized types. Our mechanism is implemented
+directly inside the Scala standard library and by modifying the
+default compiler. The results are encouraging since benchmarks show a
+40% speedup.
+</p>
+<br>
+   
+<h3>Ferles: <a href="ferles.pdf">C+-: A Language for Learning Programming, Based on C and C++</a></h3>
+<p>
+The purpose of this project is to define and implement a programming language for
+education. The language will be a pure subset of C++. The intent is to create a
+language suitable for low-level undergraduate education. The C+- language should
+maintain most of the advantages of C++ over C, it should enable most common uses of
+the standard template library (STL), yet it should disallow most syntactic ambiguities of
+C++, as well as obscure, advanced features that are likely to be misused by novice
+users or are unnecessary to them.
+</p>
+<br>
+
+<h3>Kastrinis: <a href="kastrinis.pdf">The Role of Exceptions in Static Program Analysis for Java</a></h3>
+<p>
+Static program analysis is the analysis of computer software that
+focuses on the examination of the source code, without actually
+executing the program built from that code.  An important subclass of
+static program analysis is that of Points-To Analysis, an analysis
+that reasons about which objects can flow into which variables, for
+every possible program execution. The points-to results, are
+fundamental for further, more complex analyses.
+
+For an analysis like the above to be precise, it has to simulate every
+aspect of the source code and of the underlying system in which the
+program will be executed, that can influence the flow of objects into
+variables. On the other hand, the results need to be produced within a
+logical timespan for the analysis to be practical. Thus it is crucial
+that every overapproximation made by the analysis is as "tight" as
+possible.
+
+One important feature of object-oriented languages like Java is that
+of exceptions. Previous work has shown that accurate handling of
+exceptions can significantly affect the precision of the results. In
+this work, we present three alternative ways to handle exceptions in
+Java, as well as the effect each one has over the precision and the
+performance of the resulting analysis. An impressive find is the fact
+that, instead of recording each distinct exception object, we can
+collapse all exceptions of the same type, and use one representative
+object per type, with barely any loss in precision but at the same
+time with a significant boost in performance (in many analyses
+achieving more than 20% improvement).
+
+Our analysis is part of the Doop framework, that provides a points-to
+analysis for a number of possible types of context, written entirely
+in Datalog.
+</p>
+<br>
+
+<h3>Balatsouras: <a href="balatsouras.pdf">Declarative Whole-Program Escape Analysis for Java</a></h3>
+<p>
+An object escapes when it can outlive the method that allocated it. We
+present a declarative whole-program escape analysis for Java, written
+entirely in Datalog, that over-approximates the escaped objects in a
+program. Our analysis is a part of the Doop framework that provides it
+with a points-to analysis for a number of possible types of context.
+Our analysis was able to identify 60.66% of the application heap
+allocation sites and 57.43% of all the allocation sites (i.e.,
+including library code), on average, of the DaCapo benchmark programs
+as non-escaping, and thus safe candidates to be allocated on the
+stack.  The main intuition is that an object escapes if it is
+reachable through a static field, an exception, or a local variable of
+an immediate caller of the method that created it. The escape analysis
+required just about 100 lines of Datalog code, which clearly
+demonstrates the potency of the declarative approach for static
+analysis. This allowed us to focus on the definition of the escaped
+objects and leave their computation to the underlying Datalog engine,
+which resulted in a concise and expressive representation.  By running
+the escape analysis for a variety of possible contexts, we found that
+the choice of context has little effect on precision but is crucial
+for the execution time overhead. Specifically, the call-site-sensitive
+analyses take a long time to complete since they do not adequately
+prune the search space of object-to-object pointers when computing
+object reachability.
+</p>
+<br>
+</body>
+</html>

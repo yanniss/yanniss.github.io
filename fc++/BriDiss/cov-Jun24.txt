@@ -1,0 +1,42 @@
+To my committee,
+
+Here's an update on my dissertation.  As usual, I have posted the update at
+    http://www.cc.gatech.edu/~yannis/fc++/BriDiss/
+Chapters 1 and 2 were already complete; now Chapters 3 and 5 are too
+(except for one subsection; see below).
+
+When the final document is ready and meets your approval, you-all only
+need to sign a single form ("Certificate of Thesis Approval").  I will
+contact you-all regarding this document during the first week of July
+(recall that I am out of town for the rest of this month).
+
+DISSERTATION CHANGES: DETAILS
+
+There are a number of minor changes throughout chapter 3 (based on
+proofreading and feedback from you-all), and a couple of newly written
+sections.  Now all but one subsection of that chapter is finished.
+
+Chapter 5 has been added; a bit of that material was lifted from my
+proposal, but I also rewrote portions of it and moved some of the FC++
+related work out of Chapter 2 and into Chapter 5 where it seemed to fit
+better.
+
+REMAINING WORK
+
+There are few subsections in Chapter 4, one in Chapter 3, and Chapter 6
+(Conclusions) to finish writing.  I intend to finish this by the end of
+the month.
+
+OTHER MISCELLANY
+
+In just the past week, I've received a emails from two different people
+inquiring about using both FC++ and LC++ for various projects they are
+working on.  I am happy to see that there continue to be new
+"customers" for our libraries.
+
+You can retrieve this message and the latest draft of my dissertation at
+    http://www.cc.gatech.edu/~yannis/fc++/BriDiss/
+
+That's all for now.  Thanks for reading,
+   Brian
+

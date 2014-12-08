@@ -1,0 +1,607 @@
+
+Ok, so as promised, here's a summary of the new* idea for type systems
+I've been thinking about.  Read it at your leisure, and I'd appreciate
+any and all comments/criticisms/ideas/whatever you have to share.  
+
+(* - actually, it's kinda an old idea that finally got fleshed out enough
+to have an actual chance of being useful)
+
+First, the brief summary: the idea is to put more information into the
+type system in order that the typechecker can detect more kinds of
+errors and the compiler can do more optimizations.  This "extra
+information" is done at the user level; effectively a user can annotate
+a class or class library with extra information to make that component
+safer/faster.  The extra information comes in the form of a set of
+"abstract states" that an object can be in; a finite-state model (FSA)
+and dataflow are used to track the state of an object during its
+lifetime.  I'll present an example shortly which will make it all much
+clearer.
+
+This message is long, as I'm long-winded and don't yet understand the
+idea well enough to present it succinctly, so I start with an outline of
+what-all I shall say.
+
+-------
+Outline
+-------
+
+Stack example
+ - goals (safety/optimization)
+ - FSA model
+ - dataflow and lattice theory
+ - coding it up
+ - "multi"
+ - summary
+Application domains
+ - examples of other domains where the idea can obvious be applied
+Aliasing
+ - a huge stumbling block
+Related work
+ - other work in procedural/OO languages
+ - functional languages
+My ideas
+ - engineering tradeoffs, best set of choices
+Open problems
+ - things I don't know, but need to find out
+Conclusion
+
+-------------
+Stack Example
+-------------
+
+As an example, consider a Stack class, with the usual interface (push,
+pop, top, is_empty).  Like most classes, it is not reasonable to call
+any method at any time, for example, it is easy to see that
+   Stack s;
+   s.pop();
+will fail, whereas
+   Stack s;
+   s.push(3);
+   s.pop();
+will succeed.  Of course, a well-defined stack class will undoubtedly
+check for client abuses, and trying to pop() and empty stack will likely
+throw a StackUnderflow exception or the like, so that the behavior is
+still well-defined.  However this run-time check, while necessary
+protection, makes the pop() operation run slower, penalizing "good"
+clients like the second one above.  We can imagine adding a method to
+the Stack interface--something like unsafe_pop()--which will not bother
+checking to see if the stack is empty.  Then the second client above
+could call unsafe_pop() to avoid the runtime penalty of the needless
+check.  But leaving such decisions in the hands of the programmer is
+bad: it is error-prone (a coder may think it is safe to call unsafe_pop()
+when in fact it's not) and it forces the programmer to deal with
+piddling optimization details that should be left to automation.
+
+So we try to do better.  Imagine a 3-state model associated with the
+Stack, where the three states are labelled Empty, NonEmpty, and Unknown.
+A newly-created Stack variable would start in the Empty state.  After a
+push(), a stack would be NonEmpty.  Et cetera.  We can imagine creating
+an FSA where the transition labels are the mutator methods in the
+interface of the Stack class:
+
+                    push()            __
+          /-----------------------_| /  \
+        >O             _________>   O _ | push()
+      Empty    push() /            / |\_/
+                      \ |_--------- NonEmpty
+               Unknown O _    pop()
+                      / |\
+                pop() \__/
+
+The states are 'O's labelled with names starting with uppercase letters.
+The transitions are the arrows labelled with mutator methods.  Now we
+can abstractly model the effects of straight-line code on a Stack object:
+
+   Stack s;    // the start state is Empty
+   s.push(3);  // from Empty, push() takes us to the NonEmpty state
+   s.push(3);  // from NonEmpty, push() takes us to the NonEmpty state
+   s.pop();    // from NonEmpty, pop() takes us to the Unknown state
+
+You get the idea.  This idea is not too new; I think I've shared
+variants of it before with each of you.
+
+Effectively, this model captures the useful information needed for my
+original motivating examples:
+   Stack s;
+   s.pop();
+and
+   Stack s;
+   s.push(3);
+   s.pop();
+In the first case, there is no transition from the Empty state labelled
+pop(), so we know the program is somehow in error.  In the second case,
+we know the stack is NonEmpty when the pop() happens, so we can dispose
+of the needless run-time check.
+
+Of course, this model is still not very powerful; for example, it cannot
+distinguish between
+   Stack s;
+   s.push(3);
+   s.push(3);
+   s.pop();
+   s.pop();
+which succeeds, and
+   Stack s;
+   s.push(3);
+   s.pop();
+   s.pop();
+which fails (throws an exception) at the second pop().  We could add
+more states to the model to make it "smart" enough to know that N pushes
+followed by N+1 pops will fail (for any finite value N), but for now
+we'll stick with the 3-state model as it's good enough to illustrate the
+basic idea.  
+
+(Aside: if we quit using an FSA model and switch to a push-down
+automata, we could match any number of pushes and pops, but this seems a
+poor trade-off, making the model "too complicated" for the kinds of
+goals I'm after.)
+
+Ok, so we've imagined this model in our heads and applied it to straight
+line code.  To generalize it into something that can be automatically
+understood by a compiler, all we have to do is organize the states of
+the model into a semi-lattice.  Then keeping track of the state of the
+model reduces to a forward dataflow problem--something a compiler knows
+how to do.  The lattice structure tells how two different states get
+merged; for example, in this code:
+
+   Stack s;      // s is Empty after here
+   if( some_condition ) then
+      s.push(3); // s is NonEmpty after here
+   endif
+   // what is the state here, where two control-flow paths merge?
+
+the final state should be Unknown; more generally, the states of the
+model are organized into this semi-lattice:
+       Empty    NonEmpty
+          \      /
+            \  /
+           Unknown
+If you don't know any lattice theory, don't worry; just know that in
+addition to the FSA, we specify what the result of merging two unequal
+states is, in order to deal with merging control-flow paths.
+
+Ok, so I've beaten to death a straightforward idea that would only take
+about 15 seconds to relate in person.  :)  Now let's write some code to
+implement this Stack.  (Assume that ListNode is already implemented
+somewhere (we'll use a linked-list).)
+
+> class Stack
+>    states { Unknown { Empty, NonEmpty } }
+
+"states" is a keyword which introduces the set of states of the FSA
+associated with this class.  The braces encode the lattice structure.
+
+>    ListNode* head;
+
+usual instance variable
+
+>    constructor() outstate Empty
+>       head = null
+
+All constructors must specify what the "outgoing state" of the newly
+created object is.  In this case, a new Stack starts in its Empty state.
+
+>    proc push( int x ) outstate NonEmpty
+>       head = new ListNode(x,head)
+
+Mutator methods also specify the new outgoing state of the model.  After
+any call to push(), we end up in the NonEmpty state.
+
+Next, things get interesting.  We can "overload" top() based on the
+state of the model.  This discirmination enables us to encode various
+things about safety/optimization:
+
+>    func top[Empty]() returns int
+>       compiler_error( "Cannot top() an empty stack" )
+
+top() called from the Empty state should yield a static error.
+
+>    func top[NonEmpty]() returns int
+>       return head->data
+
+top() called from the NonEmpty state simply returns the data on the top
+of the stack; no run-time check for emptiness is necessary.
+
+>    func top[Unknown]() returns int, throws Underflow, 
+>                        outstate NonEmpty, xoutstate Empty
+>       if( head == null )
+>          throw Underflow
+>       return head->data
+
+top() called from the Unknown state has the "normal" implementation; it
+checks to see if the stack is empty, throws and exception if so, else
+returns the top value.  (More generally, any method called from the
+"Unknown" state should have the same implementation that the method
+would have if we weren't using these models at all.)  top() can also
+tell us its outgoing state, which differs based on whether it succeeded
+(outstate NonEmpty) or threw an exception (xoutstate Empty).
+
+pop() is similarly "overloaded" for the various states of the model:
+
+>    proc pop[Unknown]() throws Underflow, outstate Unknown, xoutstate Empty
+>       if( head == null )
+>          throw Underflow
+>       head = head->next
+> 
+>    proc pop[Empty]()
+>       compiler_error( "Cannot pop() an empty stack" )
+>          
+>    proc pop[NonEmpty]() outstate Unknown
+>       head = head->next
+
+is_empty() is uninteresting:
+
+>    func is_empty() returns bool
+>       return head == null
+
+Hurray.  With that stack class coded, we can see now how our original
+examples are "solved":
+   Stack s;
+   s.pop();   // compile-time error
+and
+   Stack s;
+   s.push(3);
+   s.pop();   // no run-time check, and no requirement to catch an exception
+
+Lovely.  
+
+One issue that had always presented a major hurdle for me was this one:
+   Stack s;
+   if( some_condition ) then
+      s.push(3);
+   endif
+   // now s is in the Unknown state
+   if( !s.is_empty() ) then
+      // what is the state here?
+      s.pop();    // ideally this requires no check, can't throw
+   endif
+Obviously we would like "s" to be NonEmpty inside the second "if".
+However making that happen is tricky.  It's not too hard to create
+ad-hoc extensions to the programming language to encode the idea that
+"s.is_empty()==true implies s is in the NonEmpty state", but these
+extensions didn't generalize well.
+
+   Aside: To see why, consider the model { Negative, Zero, Positive,
+   Unknown } applied to an Integer class.  It is not too unreasonable
+   to imagine "if( i == 0 )" bringing "i" from the Unknown state to the
+   Zero state, but what about "if( i+3==3 )" or "if( i+5 > 2 )" or more
+   complicated expressions?  I realized that, in the general case, it's
+   impossible to come up with a sound and complete analysis that can
+   recover precision in the model based on the values inside control
+   flow conditions.  The moment you try to automatically analyze 
+   arbitrary expressions and map them to the model, you're sunk.
+
+So basically I was faced with
+   // s is in the Unknown state
+   if( !s.is_empty() ) then
+      s.pop();    // still Unknown, so: run-time check, may throw
+   endif
+which is a real show-stopper, killing a good idea in its tracks.
+
+Then a few weeks ago, Olin Shivers presented a programming language
+construct called "multi".  It's a function which can have multiple
+return points.  You can invent your own syntax, but the idea is that a
+multi-function with signature
+
+   multi f() { foo, bar }
+
+may return to one of two locations (labelled "foo" and "bar"), and thus
+clients must call f() using a construct like
+
+   multi f()
+      case foo:
+         whatever_code();
+      case bar:
+         whatever_other_code();
+
+Get the idea?  You can think of it as generalization of exception-
+handling--a function which may throw either returns to the call site
+with a value, or returns to the handler with an exception.  That is, we
+could write the same function in Java as
+
+   void f() throws BarException;
+
+and call it as
+
+   try {
+      f();
+      whatever_code();
+   } catch( BarException e ) {
+      whatever_other_code();
+   }
+
+"multi" gives you a general, structured way to write your own control
+structures.  You could emulate the same thing with just exceptions, but
+it'd be ugly and awkward in most cases.
+
+Anyway, it soon hit me that "multi" enables a solution to the above
+problem.  We can add a "multi" method to the stack interface, with a
+signature like
+
+   multi test_empty() { empty, nonempty };
+
+which says that test_empty() is a method with two return points labelled 
+"empty" and "nonempty".  Now, rather than saying
+
+   // s is in the Unknown state
+   if( s.is_empty() ) then
+      print( "it's empty" );
+   else
+      s.pop();   // still Unknown, will check, may throw
+
+we can say
+
+   // s is in the Unknown state
+   multi s.test_empty()
+      case empty:
+         print( "it's empty" );
+      case nonempty:
+         s.pop();    // s is NonEmpty!   (see below)
+
+and recover the state information!  This recovery is possible due to how
+test_empty() is implemented in the Stack class:
+
+>    multi test_empty() { empty, nonempty }
+>              empty outstate Empty, nonempty outstate NonEmpty
+>       if( is_empty() )
+>          return_to empty
+>       return_to nonempty
+
+Just as we had "outstate" and "xoutstate" specify the resulting state of
+an object after pop(), depending upon whether it returned normally or
+exceptionally, we can specify different outstates depending upon which
+return point we we return to from a "multi".  This enables us to start
+with an object in an unknown state, test it at run-time, and use the
+result to get us back to known states (recover precision in the model).
+(The key with multi is that it returns to different _locations_ rather than
+returning different _values_.)
+
+Occasionally there will be cases where the programmer knows that an
+object is in a particular state even though the analysis does not.  We
+can imagine something like a cast:
+   // s is Unknown
+   state_cast<NonEmpty>( s )   // tell the compiler you know better
+   // s is NonEmpty
+for when you want to do a "manual override".  Like any cast, it's one of
+those "we provide it to you for completeness, but don't use it!"
+features of the language.
+
+For a final review, here's a summary of how client code works with our
+complete stack example:
+
+>    // sample client code
+>    Stack s;
+>    s.push(3);
+>    s.pop();     // cannot throw
+> 
+>    s.push(3);
+>    s.push(3);
+>    s.pop();     // cannot throw
+>    s.pop();     // may throw (as far as compiler knows; model we chose 
+>                               is not all that powerful)
+>    // s is Unknown
+>    if( some_cond )
+>       s.push(3);   // NonEmpty after this
+>    // join(Unknown,NonEmpty) is Unknown
+> 
+>    // s is Unknown
+>    if( s.is_empty() )
+>       // still Unknown!
+>       print( s.top() )       // may throw
+> 
+>    // use multi to recover state from run-time info
+>    multi s.test_empty()
+>       empty:
+>          // s is Empty
+>          print( s.top() )    // compiler error
+>       nonempty:
+>          // s is NonEmpty
+>          print( s.top() )    // no run-time check
+> 
+>    // s is Unknown
+>    state_cast<NonEmpty>( s )   // tell the compiler you know better
+>    print( s.top() )            // may blow up if you have goofed
+
+-------------------
+Application Domains
+-------------------
+
+The stack example was a simple example to motivate the idea and show the
+basics of how it could be implemented in the language.  Here are some
+other examples of classes/domains where these finite models would prove
+useful:
+
+   Pointers:
+      Having a { Null, NonNull, Unknown } pointer model gives you the
+   power to ensure that you're not dereferencing NULLs.
+
+   Initialization:
+      An { Initialized, Uninitialized } model would enable you to detect
+   the same kinds of "used variable x before ever assigning it an initial
+   value" errors that compilers sometime report for builtin types.
+   (Note to self: if we provided a way to specify a "backward dataflow
+   model", we may also be able to model "computed a value that never gets
+   used", too.)
+
+   Data structures:
+      Like the stack, we can imagine models with states for "empty",
+   "nonempty" etc., as well as "sorted" or "full" or other attributes
+   that may apply to specific structures.
+
+   File handles:
+      The model { Closed, OpenR, OpenW, OpenRW } could ensure that files
+   are opened before being read/written, and ensure files are eventually 
+   closed, and could detect/prevent double-closes, etc.
+
+   Matrices:
+      In a matrix library, models like { Unknown, UpperTriangular,
+   Diagonal, ... } can provide many optimzations opportunities, as well
+   as some safety properties.
+
+   Integers: 
+      Depending on your needs, various models including states like
+   Zero, NonZero, NonNegative, etc. may be useful.
+
+   Single-owner objects:
+      We can model stuff like C++'s auto_ptr (or balloons/islands) using
+   a model where assignment makes the RHS object go to the Unusuable
+   state and the LHS object become Usable.
+
+And there are many more.  Most large/solid libraries require some
+domain-specific understanding in order to use them properly, and a lot
+of that domain-specific knowledge (especially dealing with the order in
+which methods must be called) can be captured by these kinds of FSA
+models.
+
+--------
+Aliasing
+--------
+
+So the idea sounds great.  But it has one huge achilles heel, which you
+may have already foreseen.  It's the same problem for all static
+analyses: aliasing.
+
+Aliases tend to destroy the soundness of the analysis.  The most obvious
+example is
+
+   Stack s;         // Empty
+   Stack *p = &s;   // make an alias
+   s.push(3);       // NonEmpty
+   p->pop();        // modify s "behind its back"
+   // s still appears NonEmpty to basic analysis
+   s.pop();         // kaboom!
+
+We'll return to the topic soon.
+
+------------
+Related work
+------------
+
+There is much work about increasing the power/expressiveness of type
+systems to improve safety or get better optimization.  
+
+Back as far as 1986, some guys published a paper about "typestate" for a
+language called NIL (later called Hermes).  "typestate"s worked very
+very much like my FSAs, except that there was no way to recover lost
+precision (e.g. multi).  Also, it was for a procedural language that had
+no pointers (and no way to get aliasing).
+
+Recently other people have tried to apply this same idea to languages
+like C or Java where there is aliasing.  They do various amount of alias
+analysis to trade off either completeness or soundness of the type
+system.  On one end of the spectrum, we go towards the theorem-proving
+guys, who do all kinds of expensive analyses and try to prove arbitrary
+properties about programs.  At another end, we have people who are just
+trying to detect some specific kinds of errors that can be captured with
+simple models; soundness isn't important (we let some erroneous programs
+compile) provided that we can sometimes detect errors statically without
+generating too many false-positives (false positive is when the compiler 
+flags an error even though the program is ok).
+
+If you go to pure functional programming, there are no aliases, so the
+problems go away.  Indeed, there's no mutable state, so the idea of
+"states" associated with types evaporates, and standard type systems can
+do this.  (E.g., s.pop() becomes "let s2 = pop(s)" where s2 has a
+different type from s.)  Indeed, the FP guys have created all kinds of
+special type systems suited to various domains for detecting these kinds
+of things statically.
+
+--------
+My ideas
+--------
+
+As always, I'm approaching this from a language-design point of view.
+Ideally, I want to make a type system which can incorporate these ideas,
+and, even in the face of aliasing, be useful, predictable, and visible.
+
+Nearly all of the current work being done focuses on adding stuff to
+existing languages (C, Java).  Aliases predominate, and as a result,
+you are faced with an engineering trade-off.  To deal with aliases and
+pointers, you typically must either abandon soundness or predictability.
+
+To preserve soundness (ensure all bugs of a certain kind are caught
+statically) you sacrifice predictability: whether or not a program with
+aliases typechecks depends upon whether the particular alias analysis 
+used in the implemenetation is 'smart enough' (or runs for a long enough
+time) to prove the program correct.  Tiny modifications to programs may
+affect whether they typecheck (or how long they take to typecheck).
+This seems unpleasant, as current type systems are completely
+"predictable".  I think that the psychology of the human programmer is
+relatively incompatible with a checker tool whose results can change in
+non-obivous ways due to small source code changes.
+
+To preserve predictability, some systems give up soundness.  Rather than
+try to catch all errors of a certain type, they simply catch as many as
+they can.  Others errors may escape undetected, but the goal is just to do
+better than the status quo.  Small changes to a program are less likely
+to affect whether a program checks; programs which are "close to the
+edge" will all check.  The main problem here is visibility: you can only
+see what errors the system can find, but you have no visible feel for
+how many errors may remain that the system was unable to reason well
+about.
+
+The direction I would like to go is a different one.  I'd like to have a
+system where, for every object, either it gets checked against its
+model, or you can see that it's not checked by inspection of the source
+code.  Language design can make this possible.  For example, an
+extremely conservative version of this idea would be that "any variable
+which can be aliased is unchecked" and "all unchecked variables must be
+declared as such".  Then, the program 
+
+   Stack s;          // same program we saw before     
+   Stack *p = &s; 
+   s.push(3);    
+   p->pop();    
+   s.pop(); 
+
+would give an error on line 2 with something like 
+
+   2: Stack *p = &s; 
+                 ^^
+   Cannot take address of checked variable "s", as it creates an alias
+
+but you could rewrite the program as something like
+
+   unchecked Stack s; 
+   unchecked Stack *p = &s; 
+   s.push(3);    
+   p->pop();    
+   s.pop(); 
+
+Any variable labelled "unchecked" remains in the state at the bottom of
+the lattice (Unknown) for its entire lifetime.  Effectively, unchecked
+variables degenerate into the status quo.
+
+This approach is too conservative, because many common things (like
+passing by reference, referencing an object via a pointer) immediately
+render an object "uncheckable".  However I think some careful language
+design (e.g. "restrict"ed (unaliasable) pointers and references,
+annotations that summarize aliasing effects of procedures, safe
+"defaults", ...) may bring many common cases back into the domain of
+"safely analyzable".  Much work must be done before I can see if I can
+do well enough to make it such that using such a type system turns into
+a win in terms of cost/benefits.  But that's the direction I'd like to
+go--extending the type system in a way that's both sound and
+predictable, so that you know what extended checking you are getting,
+and it's usable in a straightforward and natural way (an not a huge
+burden).
+
+-------------
+Open problems
+-------------
+
+I know a few things I must study more to make this work.  They include:
+ - how to make reference params work without creating spurious aliasing
+ - how these "states" interact with parametric polymorphism (templates)
+ - if/how to deal with common aliasing patterns (like iterators, which 
+   are aliases into their containers)
+
+----------
+Conclusion
+----------
+
+Hopefully you've got a decent sense of the idea I'm working on, but it's
+probably clear that much of it is still nebulous to me, as I've found it
+hard to explain well.  Lemme know if you have questions, and tell me
+what you think.
+

@@ -1,0 +1,187 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.61 [en] (X11; U; SunOS 5.7 sun4u) [Netscape]">
+   <title>FC++: The Functional C++ Library</title>
+<!-- <body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
+-->
+</head>
+<body>
+
+<center>
+<h6>
+New! Version 1.3 available for 
+<a href="http://www.cs.umass.edu/~yannis/fc++/download.html">download</a>
+as of July 26, 2001.</h6></center>
+
+<hr>
+<center>
+
+<!--
+
+<table border="0" cellpadding="0" cellspacing="0">
+<tr align="center">
+<td><img src="Logos/fc.gif"></td>
+<td><img src="Logos/fin.gif"></td>
+</tr>
+</table>
+
+-->
+
+<!--
+<img SRC="Logos/fc++-anim2.gif">
+-->
+<img SRC="Logos/fc++-anim1.gif">
+
+</center>
+<h6 align=center>click <a href="Logos/logos.html">here</a> for more FC++
+logos</h6>
+
+<h2>
+FC++: Functional Programming in C++</h2>
+
+<h3>
+Higher-Order Polymorphic Functions in the C++ Language</h3>
+FC++ is a library for functional programming in C++. Functional programming
+is a programming paradigm in which functions are treated as regular values.
+Thus, we can have functions that take other functions as parameters. The
+former functions are called "higher-order" functions. A common feature
+of functions is that they can be <i>polymorphic</i>. "Polymorphic" means
+that the same function can be used with arguments of many types. FC++ is
+distinguished from other libraries (including the C++ Standard Library)
+by its complete support for polymorphism: FC++ polymorphic higher-order
+functions can take other polymorphic functions as arguments and return
+polymorphic functions as results. This is particularly useful (i.e., simplifies
+code) in C++ where type inference is limited and we often need to pass
+polymorphic functions around and determine their type later.
+<p>With FC++ you can define your own higher-order polymorphic functions,
+but the library also contains a large amount of functionality that can
+be re-used as-is in C++ programs. This includes infinite ("lazy") lists,
+useful higher-order functions (like <code>map</code>,
+<code>compose</code>, etc.), a reference-counting
+facility that can be used to replace C++ pointers, many common logical
+and arithmetic operators in a form that can be used with higher-order functions,
+and more.&nbsp;
+<hr WIDTH="100%">
+<h2>
+Documentation</h2>
+
+<ul>
+<li>
+<a href="http://www.cs.umass.edu/~yannis/fc++/fc++-sigplan.pdf">Functional
+Programming in C++ using the FC++ Library</a>: a short article introducing
+FC++ (in April 2001 <a href="http://elvis.rowan.edu/sigplan/">SIGPLAN 
+Notices</a>). This is a good introduction to the library.</li>
+
+<li>
+<a href="http://www.cs.umass.edu/~yannis/fc++/fc++.main.pdf">Functional
+Programming in C++</a>: the original research paper describing FC++. Presented
+in the 2000 International Conference on Functional Programming (ICFP 2000).
+Great for understanding some of the ideas behind the implementation of
+FC++. <b>Important note</b>: the actual syntax and names of some operators
+have changed slightly since the version of FC++ described in this paper.
+For up-to-date concrete technical information, use the "Getting Started
+with FC++" tutorial, below.</li>
+
+<li>
+<a href="http://www.cs.umass.edu/~yannis/fc++/funoo.pdf">FC++: Functional
+Tools for OO Tasks</a>: another paper that shows how some common OO programming
+tasks benefit from FC++.</li>
+
+<li>
+<a href="fcpptw.pdf">Functional Programming with the FC++
+Library</a>: a paper that introduces FC++ and analyzes the library
+performance.  The first half of this paper is quite similar to the
+SIGPLAN Notices paper above, except that this paper is aimed at the C++
+audience, rather than the FP audience; the second half of the paper
+(performance analysis) is new material.  (Submitted to the <a
+href="http://www.oonumerics.org/tmpw01/">Second Workshop on C++ Template
+Programming</a>.)</li>
+
+<li>
+<a href="http://www.cs.umass.edu/~yannis/fc++/faq.html">Frequently asked
+questions</a> about FC++</li>
+
+<li>
+<a href="http://www.cs.umass.edu/~yannis/fc++/tutorial.html">Getting started
+with FC++ (a tutorial)</a></li>
+
+<li>
+Various library documents:
+   <ul>
+   <li><a href="currying.html">Currying</a></li>
+   <li><a href="New/header_dependencies.html">Library structure (header
+   files)</a></li>
+   <li><a href="New/new_list_implementation.html">New list
+   implementation</a></li>
+   <li><a href="New/reusers.html">Reusers</a></li>
+   </ul>
+</li>
+
+</ul>
+
+<hr WIDTH="100%">
+<h2>
+Distribution</h2>
+
+<ul>
+<li>
+<a href="http://www.cs.umass.edu/~yannis/fc++/download.html">FC++ download
+page</a>. You can view and download individual files or the whole library,
+as well as several example files.</li>
+</ul>
+
+<hr WIDTH="100%">
+<h2>
+Customers</h2>
+
+<ul>
+<li>
+The <a href="http://www.btexact.com/people/briggsk2/XR.html">XR (Exact
+Reals) library</a> is based on FC++.</li>
+</ul>
+
+<hr WIDTH="100%">
+<h2>
+Related Links</h2>
+
+<ul>
+<li>
+Other libraries that support functional programming in C++ include</li>
+
+<ul>
+<li>
+<a href="http://www.fz-juelich.de/zam/FACT">FACT!</a>, and</li>
+
+<li>
+<a href="http://lambda.cs.utu.fi/">The lambda library</a>.</li>
+</ul>
+
+<li>
+Many of the functions in FC++ are designed to be similar to those in the
+standard library of the
+<a href="http://www.haskell.org">Haskell</a> programming
+language.</li>
+</ul>
+
+<hr WIDTH="100%">
+<h2>
+People</h2>
+FC++ is being developed by <a href="mailto:lorgon@cc.gatech.edu">Brian
+McNamara</a> and <a href="mailto:yannis@cc.gatech.edu">Yannis Smaragdakis</a>.
+Feel free to write to us if you have questions or comments about the library;
+we appreciate feedback from our users.
+
+<hr>
+<a href="New/site_map.html">Site map</a>
+<hr>
+
+
+<h6>
+Last updated on July 26, 2001 by <a
+href="mailto:lorgon@cc.gatech.edu">Brian McNamara</a></h6>
+
+
+</body>
+</html>

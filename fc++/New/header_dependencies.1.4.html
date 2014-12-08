@@ -1,0 +1,44 @@
+<html>
+<head>
+<title>FC++ library structure</title>
+</head>
+
+<body>
+
+<h1>FC++ library structure</h1>
+
+For most applications, the easiest way to use the library is just to
+<pre>
+   #include "prelude.h"
+</pre>
+but here is the header dependency diagram, in case you are interested.
+<pre>
+                       config
+                        /  |
+                 signature |
+&lt;functional&gt;,      |       |
+&lt;utility&gt;        curry     |
+        \        /         |
+         operator     ref_count
+               \      /
+               function
+                 |
+               reuse  &lt;iterator&gt;,&lt;new&gt;,&lt;cstdlib&gt;,&lt;exception&gt;
+                 |    /
+                 |   /
+                 list
+                  |
+                prelude
+</pre>
+<a href="http://www.cs.umass.edu/~yannis/fc++/tutorial.html#Sec2">Look
+here</a> for more description of the actual contents of each library
+header.
+
+<hr>
+
+<h6>
+Last updated on July 26, 2001 by <a
+href="mailto:lorgon@cc.gatech.edu">Brian McNamara</a></h6>
+
+</body>
+</html>

@@ -1,0 +1,108 @@
+<html>
+<head>
+<title>FC++ compiler support</title>
+</head>
+
+<body>
+
+<h1>FC++ compiler support</h1>
+
+<p>
+FC++ is written in Standard C++, and therefore should work with any
+compliant C++ compiler.  Fully compliant C++ compilers are getting
+easier to find, but, we still maintain this page, which
+documents how the FC++ library works with different compilers.
+</p>
+
+<p>
+If you have tried using FC++ with a compiler other than the ones listed
+here, please <a href="mailto:lorgon@cc.gatech.edu">mail us</a> with
+information about your experience (regardless of whether it was successful 
+or not).
+</p>
+
+<hr>
+
+<p>
+Note: all information in the table applies to the current release (v1.5)
+of the FC++ library.  (You can see some old info 
+<a href="compilers.1.4.html">here</a>.)
+</p>
+
+<table border>
+<tr>
+<td align=center><b><nobr>Compiler version</nobr></b></td>
+<td align=center><b><nobr>FC++ status</nobr></b></td>
+<td align=center><b><nobr>Other notes</nobr></b></td>
+</tr>
+
+<tr>
+<td><a href="http://gcc.gnu.org/"><nobr>g++-2.95.2,</nobr>
+<nobr>g++-2.95.4</nobr></a></td>
+<td>It mostly works</td>
+<td>There are a few bugs in g++-2.95.x that we have work-arounds for.
+First, bugs in the compiler prevent portions of FC++ from being put into
+<code>namespace fcpp</code>.  As a result, those portions are just
+dumped into the global namespace.  Second, g++ has a non-conforming
+<code>&lt;iterator&gt;</code> library, which we correct for.  Finally,
+this version of g++ can't handle the new "lambda" extensions, so don't
+<code>#define FCPP_ENABLE_LAMBDA</code>.  The
+<code>config.h</code> file automatically detects this compiler version
+and sets up the fixes, so FC++ (sans lambda) works "out of the box" 
+with this compiler anyway.</td>
+</tr>
+
+<tr>
+<td><a href="http://gcc.gnu.org/"><nobr>g++-3.0.4,</nobr>
+<nobr>g++-3.1.1,</nobr> <nobr>g++-3.2.2</nobr></a></td>
+<td>It all works</td>
+</tr>
+
+<tr>
+<td><a href="http://gcc.gnu.org/"><nobr>g++-3.3</nobr></a></td>
+<td>Some works</td>
+<td>This version of g++ has <a
+href="http://gcc.gnu.org/bugzilla/show_bug.cgi?id=11154">a bug</a> with
+template specializations which is sometimes triggered by FC++
+code.</td>
+</tr>
+
+<tr>
+<td><a 
+href="http://www.intel.com/software/products/compilers/cwin/index.htm">Intel 
+C++ 7.0 (icc)</a></td>
+<td>It all works</td>
+</tr>
+
+<tr>
+<td><a href="http://www.comeaucomputing.com/">Comeau C++ 4.3.0.1</a></td>
+<td>It all works</td>
+<td>Works even with "-A --strict"</td>
+</tr>
+
+<tr>
+<td><a href="http://msdn.microsoft.com/visualc/productinfo/">MSVC++ 7.1</a></td>
+<td>It mostly works</td>
+<td>We did not have time to do thorough testing with this compiler, but
+the testing we did suggests it mostly works.</td>
+</tr>
+
+<!--
+<tr>
+<td><a href="">FIX THIS</a></td>
+<td>FIX THIS</td>
+<td>FIX THIS</td>
+</tr>
+-->
+
+</table>
+
+<hr>
+
+<h6>
+Last updated on Aug 7, 2003 by <a
+href="mailto:lorgon@cc.gatech.edu">Brian McNamara</a></h6>
+
+</body>
+</html>
+

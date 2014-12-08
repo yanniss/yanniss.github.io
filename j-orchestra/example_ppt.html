@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>jOrchestra</title>
+  </head>
+
+  <body>
+        
+    <h1>Power Point Controller Example</h1>
+    <p><b>Note</b>: It is highly recommended to have completed <a href="example_clock1.html">Tutorial
+    Part I</a> before trying this example.</p>
+    <p>This example is a Java Swing application that starts and navigates
+    through a Microsoft PowerPoint (TM) presentation. The proposed partitioning
+    separates the graphical frontend from the rest of the application. The backend part uses
+    JNI to connect to PowerPoint through COM and as such must run on Windows.
+    The front-end GUI Swing partition can execute from a PDA running Linux,
+    for example.</p>
+    <p><a href="resources/PPTController_example.jar">PPTController_example.jar</a> has
+    all the required files of the example.</p>
+    <p>1) Run the original centralized application: <i>java ppt.PPT
+    </i>to make sure it works properly. <i><br>
+    </i>2) Start J-Orchestra, load PPTController.xml configuration, and perform the
+    partitioning.<br>
+    (See <a href="example_clock1.html">Tutorial I</a> for detailed instructions).<br>
+    3) Copy PPTExternalController.dll to the &quot;windows_pc&quot; site.<br>
+    </p>
+        
+    <p>Now you ready to run the partitioned version of the application:<br>
+    4) Run the server at ./step4/windows_pc: <i>startServer.bat </i>or <i>startServer.sh</i><br>
+    5) Run the client part at ./step4/unix_ipaq:&nbsp; <i>java remotecapable.ppt.PPT</i></p>
+        
+    <p>&nbsp;</p>
+        
+    <p><img src="images/music_line2.gif" width="700" height="18"><br><br>
+    <i>Last Modified:</i>  
+    <!--webbot bot="TimeStamp" S-Type="EDITED"
+    S-Format="%B %d, %Y" startspan -->June 12, 2003<!--webbot bot="TimeStamp" endspan i-checksum="13992" --></p>
+  </body>
+</html>

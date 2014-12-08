@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>11. Relationships with other libraries</title><link rel="stylesheet" href="reference.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.48"><link rel="home" href="fcpp.html" title="Boost.FC++"><link rel="up" href="fcpp.html" title="Boost.FC++"><link rel="previous" href="fcpp.sectlibrary.html" title="10. Library"><link rel="next" href="fcpp.sectlambda.html" title="12. Lambda"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table border="1" cellpadding="2" bgcolor="#007F7F"><tr><td bgcolor="#FFFFFF"><img src="../../c++boost.gif" alt="c++boost.gif (8819 bytes)" width="277" height="86"></td><td><a href="../../index.htm"><font color="#FFFFFF" size="4" face="Arial">Home</font></a></td><td><a href="libraries.html"><font color="#FFFFFF" size="4" face="Arial">Libraries</font></a></td><td><a href="../../people/people.htm"><font color="#FFFFFF" size="4" face="Arial">People</font></a></td><td><a href="../../more/faq.htm"><font color="#FFFFFF" size="4" face="Arial">FAQ</font></a></td><td><a href="../../more/index.htm"><font color="#FFFFFF" size="4" face="Arial">More</font></a></td></tr></table><div class="section"><div class="titlepage"><div><h2 class="title" style="clear: both"><a name="fcpp.sectrelation"></a>11. Relationships with other libraries</h2></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt>11.1. <a href="fcpp.sectrelation.html#id270098">Interfaces to STL</a></dt><dt>11.2. <a href="fcpp.sectrelation.html#id270261">Relation to Boost</a></dt></dl></div><p>
+In this section we briefly describe the relationship between FC++ and
+other C++ libraries.
+</p><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id270098"></a>11.1. Interfaces to STL</h3></div></div><p>
+The main interface to the STL is via iterators in the <tt>list</tt>
+class.  FC++ <tt>list</tt>s, like STL containers, have a
+constructor which takes two iterators deliniating a range, so that the
+contents of an STL container can be (lazily) copied into a
+<tt>list</tt>.  For example:
+<pre class="programlisting">
+   std::vector&lt;int&gt; v = ...;
+   fcpp::list&lt;int&gt; l( v.begin(), v.end() );
+   // l is not yet evaulated; still holds iterators into v
+   fcpp::length( l );  // force evaluation of entire list
+   // now l has a true copy of the elements in v
+</pre>
+Additionally, <tt>list</tt>s themselves have forward iterators:   
+<pre class="programlisting">
+   for( fcpp::list&lt;int&gt;::iterator i = l.begin(); i != l.end(); ++i )
+      cout &lt;&lt; *i;      // print each element of list
+</pre>
+</p><p>
+In addition to <tt>fcpp::list</tt>s, there is also a class called
+<tt>fcpp::strict_list</tt>, which has the same structural interface
+as <tt>list</tt>, but does not do lazy evaluation.  The library
+&quot;list&quot; functions work on any datatype which meets the FC++ &quot;ListLike&quot;
+concept, which includes <tt>list</tt>, <tt>odd_list</tt>, and
+<tt>strict_list</tt>.  For many applications,
+<tt>strict_list</tt> may be the preferred datatype to use, as it
+avoids incurring the costs of lazy evaluation when that feature is not
+needed.
+</p><p>
+Monomorphic FC++ (unary or binary) functoids are STL &quot;adaptables&quot;.
+The <tt>fcpp::ptr_to_fun()</tt> functoid promotes C++ 
+function/method pointers into FC++ full functoids.  The
+<tt>stl_to_funN</tt> functions turn STL adaptables into functoids.
+</p></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id270261"></a>11.2. Relation to Boost</h3></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt>11.2.1. <a href="fcpp.sectrelation.html#id270312">boost::bind and
+   boost::lambda</a></dt><dt>11.2.2. <a href="fcpp.sectrelation.html#id270401">boost::function</a></dt><dt>11.2.3. <a href="fcpp.sectrelation.html#id270472">Other Boost libraries</a></dt></dl></div><p>
+FC++ is related to a number of Boost libraries.
+</p><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id270312"></a>11.2.1. <tt>boost::bind</tt> and
+   <tt>boost::lambda</tt></h4></div></div><p>
+FC++'s lambda (see <a href="fcpp.sectlambda.html#fcpp.sectlambda" title="12. Lambda">Section 12</a>) and currying
+(<a href="fcpp.sectfull.html#fcpp.sectfull" title="7. Full Functoids">Section 7</a>) capabilities do approximately the
+same thing that <tt>boost::lambda</tt> and
+<tt>boost::bind</tt>
+do.  These libraries were developed with different design rationales;
+for a description of the comparison, see [<a href="fcpp.html#fcpp.citdpcool" title="[McN&amp;Sma03]">McN&amp;Sma03</a>].
+</p><p>
+Since FC++ supports the <tt>result_of</tt> method for
+return-type-deduction (see <a href="fcpp.sectfull.html#fcpp.sectfull" title="7. Full Functoids">Section 7</a>), FC++
+interoperates with
+<tt>boost::lambda</tt> and
+<tt>boost::bind</tt>.
+</p></div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id270401"></a>11.2.2. <tt>boost::function</tt></h4></div></div><p>
+FC++ indirect functoids (<a href="fcpp.sectindirect.html#fcpp.sectindirect" title="6. Indirect Functoids">Section 6</a>) are
+similar to <tt>boost::function</tt>
+objects.  Indirect functoids have all of FC++'s full functoids
+capabilities (like currying and infix syntax; see <a href="fcpp.sectfull.html#fcpp.sectfull" title="7. Full Functoids">Section 7</a>) built in.  Indirect functoids can only pass
+parameters by value (actually, <tt>const&amp;</tt>), though (see
+<a href="fcpp.sectlimitations.html#fcpp.sectlimitations" title="16. Limitations and future work">Section 16</a> for discussion on this point).
+</p></div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id270472"></a>11.2.3. Other Boost libraries</h4></div></div>
+
+FC++ uses a number of other boost libraries in its implementation:
+<div class="itemizedlist"><ul type="disc"><li><tt>boost::intrusive_ptr</tt> in indirect 
+   functoids and <tt>list</tt>s, for automatic memory management
+</li><li><tt>boost::is_base_and_derived</tt> and
+ <tt>boost::is_convertible</tt> in a number 
+ of places
+</li><li><tt>boost::addressof</tt> to implement 
+   the <tt>address_of()</tt> functoid
+</li><li><tt>boost::type_with_alignment</tt> and
+   <tt>boost::alignment_of</tt> in the 
+   implementation of the <tt>list</tt> and <tt>by_need</tt> 
+   datatypes
+</li><li><tt>boost::noncopyable</tt> in a number of places
+</li></ul></div></div></div></div><table width="100%"><tr><td align="left"><small>Last revised: October 03, 2003 at 23:27:22 GMT</small></td><td align="right"><small>Copyright © 2000-2003 Brian McNamara and Yannis Smaragdakis</small></td></tr></table><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="fcpp.sectlibrary.html"><img src="images/prev.png" alt="Prev"></a> </td><td width="20%" align="center"><a accesskey="u" href="fcpp.html"><img src="images/up.png" alt="Up"></a></td><td width="40%" align="right"> <a accesskey="n" href="fcpp.sectlambda.html"><img src="images/next.png" alt="Next"></a></td></tr><tr><td width="40%" align="left" valign="top">10. Library </td><td width="20%" align="center"><a accesskey="h" href="fcpp.html"><img src="images/home.png" alt="Home"></a></td><td width="40%" align="right" valign="top"> 12. Lambda</td></tr></table></div></body></html>
