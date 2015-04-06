@@ -217,8 +217,11 @@ in BibTeX format</a></li>
   <li><img src="new.gif" title="" alt="New!" class="c5">Latest work:</li>
   <li class="c4">
   <ul>
+    <li>"<a href="points-to-tutorial15.pdf">Pointer Analysis</a>" (tutorial to appear in <a href="http://www.nowpublishers.com/PGL">Foundations and Trends in PL</a>)</li> 
+    <li>"<a href="algebras-ecoop15.pdf">Streams a la carte: Extensible Pipelines with Object Algebras</a>" (revised version to appear in <a href="http://2015.ecoop.org/">ECOOP'15</a>)</li> 
+    <li>"<a href="pql-cc15.pdf">A Backend Extension Mechanism for PQL/Java with Free Run-Time Optimisation</a>" (<a href="http://www.etaps.org/index.php/2015/cc">CC'15</a>)</li> 
+    <li>"<a href="Soundiness-CACM.pdf">In Defense of Soundiness: A Manifesto</a>" (<a href="http://cacm.acm.org/">CACM</a>, Feb'15), see also <a href="http://soundiness.org/">soundiness.org</a></li> 
     <li>"<a href="variance-oopsla14.pdf">Refactoring Java Generics by Inferring Wildcards, In Practice</a>" (<a href="http://2014.splashcon.org/track/oopsla2014">OOPSLA'14</a> preprint)</li>
-    <li>"<a href="Soundiness-CACM.pdf">In Defense of Soundiness: A Manifesto</a>" (to appear in <a href="http://cacm.acm.org/">CACM</a>), see also <a href="http://soundiness.org/">soundiness.org</a></li> 
     <li>"<a href="lambdas-icooolps14.pdf">Clash of the Lambdas</a>" (<a href="http://soft-dev.org/events/icooolps14/">ICOOOLPS'14</a>)</li> 
     <li>"<a href="introspective-pldi14.pdf">Introspective Analysis: Context-Sensitivity, Across the Board</a>" (<a href="http://conferences.inf.ed.ac.uk/pldi2014/">PLDI'14</a>), <a href="http://cgi.di.uoa.gr/~smaragd/pldi14ae/pldi14-ae.tgz">code</a> </li>
     <li>"<a href="jphantom-oopsla13.pdf">Class Hierarchy Complementation: Soundly Completing a Partial Type Graph</a>" (<a href="http://splashcon.org/2013/">OOPSLA'13</a>)</li>
@@ -229,12 +232,6 @@ in BibTeX format</a></li>
     <li>"<a href="meta-invariantsFSE13.pdf">Second-Order Constraints in Dynamic Invariant Inference</a>" (<a href="http://esec-fse.inf.ethz.ch/">ESEC/FSE'13</a>)</li>
     <li>"<a href="hybrid-context-pldi13.pdf">Hybrid Context Sensitivity for Points-To Analysis</a>" (<a href="http://pldi2013.ucombinator.org/">PLDI'13</a>)</li>    
     <li>"<a href="cc13-exceptions.pdf">Efficient and Effective Handling of Exceptions in Java Points-To Analysis</a>" (<a href="http://www.etaps.org/2013/cc13">CC'13</a>)</li>
-    <li>"<a href="DeclarativeDebugging.pdf">Declarative Datalog Debugging for Mere Mortals</a>" (<a href="http://www.dbai.tuwien.ac.at/datalog2.0/">Datalog 2.0 2012</a>)</li>
-    <li>"<a href="residual-issta12.pdf">Residual Investigation: Predictive and Precise Bug Detection</a>" <img alt="distinguished paper award"
- src="award.gif" class="c8" title="distinguished paper award"> (<a href="http://crisys.cs.umn.edu/issta2012/">ISSTA'12</a>)</li>
-    <li>"<a href="pql-ecoop12.pdf">PQL: A Purely-Declarative Java Extension for Parallel Programming</a>" (<a href="http://ecoop12.cs.purdue.edu/">ECOOP'12</a>)</li>
-    <li>"<a href="varj-ecoop12.pdf">Java Wildcards Meet Definition-Site Variance</a>" (<a href="http://ecoop12.cs.purdue.edu/">ECOOP'12</a>)</li>
-    <li>"<a href="cp-popl12.pdf">Sound Predictive Race Detection in Polynomial Time</a>" (<a href="http://www.cse.psu.edu/popl/12/">POPL'12</a>)</li>
 </ul>
 <br></li>
   <li> Project areas, each with representative publications and links:<br>
@@ -262,7 +259,7 @@ in BibTeX format</a></li>
 enhances
 Java generics with a safe static-if construct.
 -->
-is our latest work. MorphJ is a language for safe "morphing", i.e.,
+is a language for safe "morphing", i.e.,
 creating classes by iterating over members of other classes. Recent work also includes a generalization of
 the concept of "variance" in generics/templates: a way to marry parametric and subtype polymorphism.
 <a href="maj">Meta-AspectJ</a> (MAJ)
@@ -272,6 +269,8 @@ the 90s, I also worked (as an intern and a funded Ph.D. student) on the <a
 Programming (IP)</a> project at Microsoft.</li>
     <li class="c4">
     <ul>
+
+      <li>"<a href="varj-ecoop12.pdf">Java Wildcards Meet Definition-Site Variance</a>" (<a href="http://ecoop12.cs.purdue.edu/">ECOOP'12</a>)</li>
 
       <li>"<a href="morphj-toplas.pdf">Morphing: Structurally Shaping a Class by
             Reflecting on Others</a>": a comprehensive article (<a href="http://userweb.cs.utexas.edu/~toplas/">ACM TOPLAS</a>, sans appendix)
@@ -340,7 +339,86 @@ Languages conference (DSL)'97.
     </li>
 
 
-    <li><span class="c7">Languages and language-inspired tools for distributed and concurrent computing</span>: Lately I have explored small, declarative languages for various tasks (e.g., <a href="pql-ecoop12.pdf">parallelism</a>, but also <a href="gcassert.pdf">GC-time computation</a>). Other recent work includes <a href="adaptive-pact09.pdf">adaptive locks</a>: a model for switching between mutex locks and transactions dynamically (either for performance or for correctness). See also the <a href="tic-oopsla07.pdf">TIC</a> model for transactional memory. 
+    <li><span class="c7">Declarative languages</span>: Lately I have explored small, declarative languages for various tasks (e.g., <a href="pql-ecoop12.pdf">parallelism</a>, but also <a href="gcassert.pdf">GC-time computation</a>). 
+    </li>
+
+    <li class="c4">
+    <ul>
+
+      <li>"<a href="pql-ecoop12.pdf">PQL: A Purely-Declarative Java Extension for Parallel Programming</a>" (<a href="http://ecoop12.cs.purdue.edu/">ECOOP'12</a>)</li>
+
+      <li>"<a href="DeclarativeDebugging.pdf">Declarative Datalog Debugging for Mere Mortals</a>" (<a href="http://www.dbai.tuwien.ac.at/datalog2.0/">Datalog 2.0 2012</a>)</li>
+
+      <li>"<a href="gcassert.pdf">What Can the GC Compute Efficiently? A Language for Heap Assertions at GC Time</a>" (<a href="http://splashcon.org/2010/">OOPSLA'10</a>)</li>
+
+      <li>"<a href="pldi-fit-2010.pdf">A New Java Runtime for a Parallel World</a>" (<a href="http://www.cs.stanford.edu/pldi10/fit.html">PLDI'10 FIT</a>)</li>
+
+    </ul>
+    <br>
+    </li>
+
+
+    <li><span class="c7">Program analysis and test generation for bug detection</span>: recent work
+includes <a href="residual-issta12.pdf">Residual Investigation</a>: an approach that enhances static
+bug warnings with predictive dynamic analyses. My original work includes 
+<a href="http://ranger.uta.edu/~csallner/jcrasher/">JCrasher</a>
+and its
+followups, <a href="http://ranger.uta.edu/~csallner/cnc/">CnC</a>
+and <a href="http://ranger.uta.edu/~csallner/dsd-crasher/">DSD-Crasher</a>.
+JCrasher
+is a system for random testing of Java programs. CnC combines
+static checking (the ESC/Java system) with automatic test case
+generation. DSD-Crasher adds a dynamic invariant detection step
+to CnC. Finally, the ORM- modeling formalism allows efficient satisfiability
+checking and test data generation.</li>
+    <li class="c4">
+    <ul>
+
+      <li>"<a href="residual-issta12.pdf">Residual Investigation: Predictive and Precise Bug Detection</a>" <img alt="distinguished paper award"
+ src="award.gif" class="c8" title="distinguished paper award"> (<a href="http://crisys.cs.umn.edu/issta2012/">ISSTA'12</a>)</li>
+
+      <li>"<a href="orm-jase.pdf">Scalable Satisfiability Checking and Test Data Generation from Modeling Diagrams</a>" (<a href="http://www.springer.com/computer/artificial/journal/10515">JASE</a>): the ORM- paper
+      <ul>
+        <li><a href="dbsat-ase07.pdf">conference version</a> at <a href="http://www.cse.msu.edu/ase2007/">ASE'07</a> <img alt="best paper award" src="award.gif" class="c6" title="best paper award">
+        </li>
+      </ul>
+      </li>
+
+      <li>"<a href="dysy-icse08.pdf">DySy: Dynamic Symbolic Execution for Invariant Inference</a>" (<a href="http://icse08.upb.de/">ICSE'08</a>)</li>
+
+      <li>"<a href="dsd-tosem.pdf">DSD-Crasher: A Hybrid Analysis Tool for Bug
+Finding</a>" (<a href="http://tosem.acm.org">ACM TOSEM</a>), 
+        <a href="issta06.pdf">conference version</a> at <a href="http://www.cis.udel.edu/issta06/">ISSTA'06</a>
+        <img alt="distinguished paper award" src="award.gif" style="width: 16px; height: 17px;"  title="distinguished paper award"><br>
+      </li>
+
+      <li>"<a href="tap07.pdf">Combining Static and Dynamic Reasoning for
+Bug Detection</a>" (<a href="http://tap.ethz.ch/">TAP</a>, 2007)<br>
+      </li>
+
+      <li>"<a href="er23-csallner.pdf">Dynamically Discovering Likely
+Interface Invariants</a>" (<a href="http://www.isr.uci.edu/icse-06/">ICSE'06</a> Emerging Results)<br>
+      </li>
+
+      <li>"<a href="cnc-final.pdf">CnC: Combining Static
+Checking and Testing</a>" (<a
+ href="http://www.cs.wustl.edu/icse05/Home/index.shtml">ICSE'05</a>)<br>
+      </li>
+
+      <li>"<a href="jcrasher.pdf">JCrasher:
+an
+Automatic Robustness Tester for Java</a>" (<a
+ href="http://www.interscience.wiley.com/jpages/0038-0644/">Software:
+Practice and Experience</a>)<br>
+      </li>
+
+    </ul>
+    <br>
+    </li>
+
+
+
+    <li><span class="c7">Languages and language-inspired tools for distributed and concurrent computing</span>: Some recent work includes the <a href="cp-popl12.pdf">causally-precedes</a> relation for sound, predictive race detection, and <a href="adaptive-pact09.pdf">adaptive locks</a>: a model for switching between mutex locks and transactions dynamically (either for performance or for correctness). See also the <a href="tic-oopsla07.pdf">TIC</a> model for transactional memory. 
 <br>
 Past work includes <a href="j-orchestra/">J-Orchestra</a>:
 an automatic partitioning system for Java programs. It manages to
@@ -352,10 +430,7 @@ for distributed computing that resembles single-machine programming.
 
     <li class="c4">
     <ul>
-
-      <li>"<a href="gcassert.pdf">What Can the GC Compute Efficiently? A Language for Heap Assertions at GC Time</a>" (<a href="http://splashcon.org/2010/">OOPSLA'10</a>)</li>
-
-      <li>"<a href="pldi-fit-2010.pdf">A New Java Runtime for a Parallel World</a>" (<a href="http://www.cs.stanford.edu/pldi10/fit.html">PLDI'10 FIT</a>)</li>
+      <li>"<a href="cp-popl12.pdf">Sound Predictive Race Detection in Polynomial Time</a>" (<a href="http://www.cse.psu.edu/popl/12/">POPL'12</a>)</li>
 
       <li>"<a href="adaptive-jpdc.pdf">Adaptive Locks: Combining Transactions
 and Locks for Efficient Concurrency</a>" (<a href="http://www.elsevier.com/wps/find/journaldescription.cws_home/622895/description#description">JPDC</a>)
@@ -403,59 +478,6 @@ Distribution</a>": a description of <a
         <br>
       </li>
     </ul>
-    </li>
-
-    <li><span class="c7">Program analysis and test generation for bug detection</span>: <a
- href="http://ranger.uta.edu/~csallner/jcrasher/">JCrasher</a>
-and its
-followups, <a href="http://ranger.uta.edu/~csallner/cnc/">CnC</a>
-and <a href="http://ranger.uta.edu/~csallner/dsd-crasher/">DSD-Crasher</a>.
-JCrasher
-is a system for random testing of Java programs. CnC combines
-static checking (the ESC/Java system) with automatic test case
-generation. DSD-Crasher adds a dynamic invariant detection step
-to CnC. The ORM- modeling formalism allows efficient satisfiability
-checking and test data generation.</li>
-    <li class="c4">
-    <ul>
-
-      <li>"<a href="orm-jase.pdf">Scalable Satisfiability Checking and Test Data Generation from Modeling Diagrams</a>" (<a href="http://www.springer.com/computer/artificial/journal/10515">JASE</a>): the ORM- paper
-      <ul>
-        <li><a href="dbsat-ase07.pdf">conference version</a> at <a href="http://www.cse.msu.edu/ase2007/">ASE'07</a> <img alt="best paper award" src="award.gif" class="c6" title="best paper award">
-        </li>
-      </ul>
-      </li>
-
-      <li>"<a href="dysy-icse08.pdf">DySy: Dynamic Symbolic Execution for Invariant Inference</a>" (<a href="http://icse08.upb.de/">ICSE'08</a>)</li>
-
-      <li>"<a href="dsd-tosem.pdf">DSD-Crasher: A Hybrid Analysis Tool for Bug
-Finding</a>" (<a href="http://tosem.acm.org">ACM TOSEM</a>), 
-        <a href="issta06.pdf">conference version</a> at <a href="http://www.cis.udel.edu/issta06/">ISSTA'06</a>
-        <img alt="distinguished paper award" src="award.gif" style="width: 16px; height: 17px;"  title="distinguished paper award"><br>
-      </li>
-
-      <li>"<a href="tap07.pdf">Combining Static and Dynamic Reasoning for
-Bug Detection</a>" (<a href="http://tap.ethz.ch/">TAP</a>, 2007)<br>
-      </li>
-
-      <li>"<a href="er23-csallner.pdf">Dynamically Discovering Likely
-Interface Invariants</a>" (<a href="http://www.isr.uci.edu/icse-06/">ICSE'06</a> Emerging Results)<br>
-      </li>
-
-      <li>"<a href="cnc-final.pdf">CnC: Combining Static
-Checking and Testing</a>" (<a
- href="http://www.cs.wustl.edu/icse05/Home/index.shtml">ICSE'05</a>)<br>
-      </li>
-
-      <li>"<a href="jcrasher.pdf">JCrasher:
-an
-Automatic Robustness Tester for Java</a>" (<a
- href="http://www.interscience.wiley.com/jpages/0038-0644/">Software:
-Practice and Experience</a>)<br>
-      </li>
-
-    </ul>
-    <br>
     </li>
 
 
