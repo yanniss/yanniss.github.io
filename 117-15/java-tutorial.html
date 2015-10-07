@@ -1,0 +1,219 @@
+<html>
+<head>
+	
+</head>
+<body>
+	<div style="text-align: center;"><span style="font-size: 18pt;">Quick Java Tutorial</span> (with C++ programmers in mind)<br />
+		Yannis Smaragdakis<br />
+		<br />
+		<br />
+		<br />
+		
+		<div style="text-align: left;"><span style="font-size: 14pt;"><span style="font-size: 14pt;">1. Preliminaries, Environment<br />
+					<br />
+					<span style="font-size: 12pt;">Hello World Java program:<br />
+						</span></span></span>
+			<div style="margin-left: 40px;"><span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">public class Test {</span></span></span></span></span><br style="font-family: Courier New;" />
+				<span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">&nbsp; public static void main(String [] args) {</span></span></span></span></span><br style="font-family: Courier New;" />
+				<span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">&nbsp;&nbsp;&nbsp; System.out.println("Hello, World!");</span></span></span></span></span><br style="font-family: Courier New;" />
+				<span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">&nbsp; }</span></span></span></span></span><br style="font-family: Courier New;" />
+				<span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">}</span></span></span></span></span><br />
+				<span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;"></span></span></span></span></span></div><span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;"><br />
+								<span style="font-family: Times New Roman;"><span style="font-size: 12pt;">Note there is no semicolon at the end (unlike in C++).<br />
+										Important points:</span><br />
+									</span></span></span></span></span></span>
+			<ul>
+				<li>This needs to be in a file called Test.java. Any public class needs to be in a file by the same name. (Yes, this means there can be only one public class per file.)<br />
+					</li>
+				<li>You can compile it with "javac Test.java". You will get out a file Test.class. You can run this with "java Test". Or you can use an IDE. Any class that contains a main method with the above signature can be run as the main class of an application by just giving its name to the "java" command, which invokes the Java Virtual Machine.<br />
+					</li>
+			</ul>The above is in a "package" (the Java notion for namespaces) called the "default package". It's nameless. You could put your class in a package, say, "mypack" by adding the line "<span style="font-family: Courier New; font-size: 10pt;" startcont="this">package mypack;</span>" at the beginning of the file. Packages are hierarchical and are typically the way to organize libraries or applications. They correspond to directories in the file system. If the above class was in a directory "<span style="font-family: Courier New; font-size: 10pt;">myFirstExamples</span>", which was itself under a directory "<span style="font-size: 10pt; font-family: Courier New;">myJavaCode</span>", we could add the class in a corresponding package "<span style="font-size: 10pt; font-family: Courier New;">myJavaCode.myFirstExamples</span>":<br />
+			<span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;"><br />
+								</span></span></span></span></span>
+			<div style="margin-left: 40px;"><span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">package myJavaCode.myFirstExamples;</span></span></span></span></span><br />
+				<span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;"></span></span></span></span></span><br />
+				<span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">public class Test {</span></span></span></span></span><br style="font-family: Courier New;" />
+				<span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">&nbsp; public static void main(String [] args) {</span></span></span></span></span><br style="font-family: Courier New;" />
+				<span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">&nbsp;&nbsp;&nbsp; System.out.println("Hello, World!");</span></span></span></span></span><br style="font-family: Courier New;" />
+				<span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">&nbsp; }</span></span></span></span></span><br style="font-family: Courier New;" />
+				<span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">}</span></span></span></span></span><br />
+				</div><br />
+			In this case, you can still compile the file from the directory it's in using "javac Test.java". But when you try to run it using "java Test" you will receive a message such as "Exception in thread "main" java.lang.NoClassDefFoundError: Test (wrong name: myJavaCode/myFirstExamples/Test)".<br />
+			<br />
+			The class can be run if you go to the parent directory of "myJavaCode" and use "java myJavaCode.myFirstExamples". You can also add that parent directory to your Java CLASSPATH (an environment variable in your shell, or a variable in your IDE). But your class's name is now "myJavaCode.myFirstExamples.Test", not just "Test". This is how other code (outside this package) will refer to it.<br />
+			<br />
+			The package mechanism is something you need to employ when you use functionality from the Java libraries. Look at the <a href="http://download.oracle.com/javase/1.5.0/docs/api/">documentation of the standard library</a>. (You should do this often, by the way!) Locate a class, say class Dialog. Notice the "java.awt" prefix before the name of the class. To use this class, you can either refer to it by its full name ("java.awt.Dialog"), or you can write "<span style="font-family: Courier New; font-size: 10pt;">import java.awt.*;</span>" at the top of your program (which will let you use any name from the java.awt package without qualifying it), or you can be explicit and say "import java.awt.Dialog;" (which will only let you use this class without qualification).<br />
+			
+			</div></div><br />
+	<span style="font-size: 14pt;"><span style="font-size: 14pt;">2. Obvious Differences<br />
+			<br />
+			<span style="font-size: 12pt;">In Java everything is part of a class. There are no free-floating variables or functions. This doesn't make a big difference. We already saw how the "main" function is a static method of a class. A static member of a class, like in C++, is one that exists always, independently of objects. The only difference is that outside the class you will need to use names such as "Test.main" instead of just "main" for a static member function (and similarly for static fields). In fact, you already did this. You wrote "<span style="font-size: 10pt; font-family: Courier New;">System.out.println</span>...". This means "call method <span style="font-family: Courier New; font-size: 10pt;">println </span>on the static member called <span style="font-size: 10pt; font-family: Courier New;">out </span>inside class <span style="font-family: Courier New; font-size: 10pt;">System</span>".<br />
+				<br />
+				Another obvious difference is that the "public" keyword (and similarly, private, and protected, as in C++, but with a slightly different meaning, as we'll see) is attached to every member of a class individually and not to a range of members.<br />
+				<br />
+				Java has no preprocessor (no #define, #include, #ifdef). You can define constants as fields with the attribute "final", which is something like "const". You can refer to packages you "import" (somewhat analogously to #include, although very different). The rest of the functionality (macros, conditional compilation) is not supported inside the language.<br />
+				<br />
+				<br />
+				</span></span></span><span style="font-size: 14pt;"><span style="font-size: 14pt;">3. Deep Differences</span></span><span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"></span> <br />
+			<br />
+			<span style="font-family: Times New Roman; font-size: 12pt;">The biggest difference in Java is that the language has no pointers or references. Or you can look at it a different way: the language has no pointers to primitive types (ints, doubles, and the like) and <span style="font-style: italic;">only </span>has pointers for objects--there is no other way to refer to an object, so the pointer is there but it's not even named.<br />
+				<br />
+				In C++ you might write:<br />
+				</span></span></span>
+	<div style="margin-left: 40px;"><span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">class A { <br />
+							</span></span></span></span></span><span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">public:</span></span></span></span></span><span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;"><br />
+							&nbsp; int i;<br />
+							&nbsp; A() {i=0;}<br />
+							};<br />
+							void foo1(A *pa) { pa->i = 1; }<br />
+							void foo2(A a) { a.i = 2; }<br />
+							void foo3(A &amp;ra) { a.i = 3; }<br />
+							<br />
+							A a;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // value of a.i is 0<br />
+							foo1(&amp;pa);&nbsp;&nbsp; // value of a.i becomes 1<br />
+							foo2(a);&nbsp;&nbsp;&nbsp;&nbsp; // value of a.i remains 1<br />
+							foo3(a);&nbsp;&nbsp;&nbsp;&nbsp; // value of a.i becomes 3<br />
+							</span></span></span></span></span><span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;"></span></span></span></span></span><span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;"><br />
+							</span></span></span></span></span></div>In Java there is only one way to pass an object to a function. You can think of it as always passing a pointer. In Java parlance, this is called a "reference" but it's not the same as a C++ reference.<br />
+	
+	<div style="margin-left: 40px;"><span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">class A {</span></span></span></span></span><br />
+		<span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">
+&nbsp; int i;</span></span></span></span></span><br />
+		<span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">
+&nbsp; A() {i=0;}</span></span></span></span></span><br />
+		<span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">
+}</span></span></span></span></span><br />
+		<span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">
+void foo(A pa) { pa.i = 1; }</span></span></span></span></span><br />
+		<span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;"></span></span></span></span></span><span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;"><br />
+							A a = new A();&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; // value of a.i is 0</span></span></span></span></span><br />
+		<span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">
+foo(a); &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // value of a.i becomes 1</span></span></span></span></span><br />
+		<span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;"></span></span></span></span></span><br />
+		</div>Notice another difference? We created an object but had to use "new A()". (Just like with pointers in C++.) That's the only way to create objects in Java and the only way to refer to them! There is no way to have local objects ("on the stack", so to speak), only local pointers to objects that are allocated via "new". We cannot have entire objects as members. E.g., in C++ we can write:<br />
+	
+	<div style="margin-left: 40px;"><span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">class B {<br />
+							&nbsp;&nbsp; A a;<br />
+							};<br />
+							</span></span></span></span></span></div>in which case a B object contains an entire A object in it. If you write the same thing (sans the final semicolon) in Java, it means that the B object contains a reference (think "pointer") to an A object. Of course, if you declare a Java reference and don't set its value (by assigning it a "new" expression or an existing object reference) then it's not usable.<br />
+	<br />
+	So, going back to primitive types (namely, <span style="font-size: 10pt; font-family: Courier New;">int</span>,<span style="font-size: 10pt; font-family: Courier New;"> byte</span>,<span style="font-size: 10pt; font-family: Courier New;"> float</span>,<span style="font-size: 10pt; font-family: Courier New;"> boolean</span>,<span style="font-size: 10pt; font-family: Courier New;"> double</span>,<span style="font-size: 10pt; font-family: Courier New;"> char</span>,<span style="font-size: 10pt; font-family: Courier New;"> short</span>,<span style="font-size: 10pt; font-family: Courier New;"> long</span>). We said Java doesn't allow pointers to them. How do you do what you might want to do with a pointer to a primitive in C++? Well, what exactly would you want to do with a pointer to a primitive? A primitive is a value with a standard, small size. Why do you need a pointer to it? Either you need direct memory access (which Java does not allow: it is not a low-level language so it never lets you manipulate memory bytes) or you want to pass a primitive to a function and have it get changed. The only (partial) way to do this in Java is to wrap the primitive inside a class and pass a reference to the class instead of the primitive itself.<br />
+	<br />
+	A final deep difference between Java and C++ is that Java has garbage collection. This means that you don't call "delete" on an object. Instead you make sure you set all references to it to null (which is the counterpart of C++'s NULL) or to some other object. When the last reference to an object disappears, the object it no longer reachable and some time later it will be automatically "deleted".<br />
+	<br />
+	<br />
+	<span style="font-size: 14pt;">4. Semi-Deep Differences</span><br />
+	<br />
+	A Java class can inherit from another by specifying that it "extends" it. A Java class can extend only a single other class. Java "interfaces" are like abstract classes in C++ with all their methods being pure virtual. That is, an interface is like a class, but it cannot have fields and all its methods are left to be defined in subclasses. A Java class can "implement" an interface, which is like "extends", but only for interfaces. A Java class can implement many interfaces. So, in Java we may have code like:<br />
+	
+	<div style="margin-left: 40px;"><span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">interface IntReadable {<br />
+							&nbsp; int read();<br />
+							}<br />
+							<br />
+							interface IntWriteable {<br />
+							&nbsp; void write(int i);<br />
+							}<br />
+							<br />
+							class C extends A implements IntReadable, IntWriteable {</span></span></span></span></span><br />
+		<span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">
+&nbsp; int read() { /* do something ... */ }<br />
+							&nbsp; void write(int i) { /* do something ... */ }</span></span></span></span></span><br />
+		<span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">
+}</span></span></span></span></span><br />
+		</div><br />
+	In C++, the same would be written as:<br />
+	
+	<div style="margin-left: 40px;"><span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">class IntReadable {<br />
+							public:<br />
+							
+&nbsp; virtual int read() = 0;<br />
+							
+};<br />
+							
+    <br />
+							class IntWriteable {<br />
+							public:<br />
+							
+&nbsp; virtual void write(int i) = 0;<br />
+							
+};<br />
+							
+    <br />
+							
+class C : public A, IntReadable, IntWriteable {</span></span></span></span></span><br />
+		
+  <span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">
+&nbsp; int read() { /* do something ... */ }<br />
+							
+&nbsp; void write(int i) { /* do something ... */ }</span></span></span></span></span><br />
+		
+  <span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">
+};</span></span></span></span></span><br />
+		
+</div>
+<br />
+	Important points:<br />
+	
+	<ul>
+		<li>This kind of inheritance (class C: public ...) is the only inheritance Java supports. There is no private inheritance. This means that, in our example, every (reference to a) C object can be used wherever the code expects a (reference to an) A object, or an IntReadable, or an IntWriteable.<br />
+			</li>
+		<li>All non-static methods in Java are just like "virtual" methods in C++: they are dispatched dynamically. <br />
+			</li>
+		<li>If a class's code needs to call a superclass method, it does it by using the name "super" for the superclass (pseudo-)object (much like using "this").</li>
+	</ul><br />
+	Another difference is in access protection modifiers (private, public, protected), which have slightly different meanings in Java. For a class's members:<br />
+	- private means only accessible in class (almost like in C++, except Java has no "friend" concept)<br />
+	- public means accessible by anyone (like in C++)<br />
+	- protected means accessible by classes in the same package and by subclasses<br />
+	- &lt;nothing> means accessible by classes in the same package<br />
+	<br />
+	Java supports arrays in the language, like C++, but there is no way to access array elements using pointers (since there are no pointers). Furthermore, an array is like a regular object. It always needs to be allocated using "new". An array supports the special field "length" that shows its size. A multidimensional array is just an array of arrays in Java: they can be of different lengths, the can be completely independent, they are not next to each other in memory (unlike C++). For instance:<br />
+	
+	<div style="margin-left: 40px;"><span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">int arr[][] = null; // there is no array yet, just a reference to an array!<br />
+							arr = new int[100][];&nbsp; // now there is an array of 100 int[] slots<br />
+							for (int i = 0; i &lt; 100; i++)<br />
+							&nbsp; arr[i] = new int[100-i];<br />
+							// arr[i] is an array of length 100-i. Holds that many ints.<br />
+							&nbsp;&nbsp;&nbsp; <br />
+							</span></span></span></span></span></div><span style="font-size: 14pt;"><span style="font-size: 14pt;"><span style="font-size: 12pt;"><span style="font-size: 10pt;"><span style="font-family: Courier New; font-size: 10pt;">
+</span></span></span></span></span><br />
+	<span style="font-size: 14pt;"><span style="font-family: Times New Roman; font-size: 14pt;"></span></span><br />
+	<span style="font-size: 14pt;">5. Further Things To Look Up</span><br />
+	
+	<ul>
+		<li>Strings in Java. They are easy.</li>
+		<li>Exceptions in Java. You'll run into them soon. Two sentence intro: You throw them with "throw", catch them using "try {...} catch (ExceptionType e) {...}". If they may be thrown but you don't catch them, you have to declare in the method signature that you also throw them, almost like they were a return type.<br />
+			</li>
+		<li>Data structures in the standard library. They are very useful. Check out ArrayList, HashMap, HashSet. Chances are that these will be enough for most of what you want to do.</li>
+		<li>Other functionality in the standard library. Reading input, math operations, etc. Check out the link to the library documentation earlier in the tutorial, or search for the docs.</li>
+	</ul><br />
+	<span style="font-size: 14pt;"><span style="font-family: Times New Roman; font-size: 14pt;">6. Other Differences</span><br style="font-family: Times New Roman;" />
+		</span><br />
+	
+Java has:<br />
+	
+
+	<ul>
+		<li>no typedef</li>
+		<li>no operator overloading</li>
+		<li>no implicit conversions</li>
+		<li>a class that is the root of all inheritance hierarchies, called <span style="font-size: 10pt; font-family: Courier New;">Object</span>.</li>
+		<li>threading and monitor support in the language</li>
+		<li>array bounds checking, pointer safety, type safety</li>
+		<li>significantly different handling of templates/generics</li>
+		<li>...<br />
+			
+  </li>
+	</ul>
+But these are way beyond the scope of a quick tutorial. If you know what
+ the above mean or need to use them, you are not going to be lost in a 
+transition between Java and C++ -- you are too experienced for that.<br />
+	
+<br />
+	
+
+
+
+
+</body>
+</html>
