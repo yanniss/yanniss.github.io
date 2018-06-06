@@ -204,7 +204,7 @@ in BibTeX format</a></li>
 <ul>
   <li>My Ph.D. students: 
    <a href="http://gkastrinis.info/">George Kastrinis</a>.
-   Anastasis Antoniadis. Efthymios Hadjimichael.
+   Anastasis Antoniadis. 
   </li>
   <li>Ph.D. alumni: 
    <a href="http://lorgonblog.spaces.live.com/">Brian McNamara</a>, 
@@ -231,7 +231,11 @@ in BibTeX format</a></li>
   <li><img src="new.gif" title="" alt="New!" class="c5">Latest work:</li>
   <li class="c4">
   <ul>
-    <li>"<a href="must-datastruct-cc18.pdf">An Efficient Data Structure for Must-Alias Analysis
+    <li>"<a href="ecoop18-sound-may-preprint.pdf">Defensive Points-To Analysis: Effective Soundness via Laziness</a>" (<a href="https://conf.researchr.org/home/ecoop-2018">ECOOP'18</a>)</li>
+    <li>"<a href="ecoop18-string-coloring-preprint.pdf">Efficient Reflection String Analysis via Graph Coloring</a>" (<a href="https://conf.researchr.org/home/ecoop-2018">ECOOP'18</a>)</li>
+    <li>"<a href="issta18-featherweight-preprint.pdf">Shooting from the Heap: Ultra-Scalable Static Analysis with Heap Snapshots</a>" (<a href="http://conf.researchr.org/home/issta-2018">ISSTA'18</a>)</li>
+    <li>"<a href="issta18-dynamic-proxies-preprint.pdf">Static Analysis of Java Dynamic Proxies</a>" (<a href="http://conf.researchr.org/home/issta-2018">ISSTA'18</a>)</li>
+	<li>"<a href="must-datastruct-cc18.pdf">An Efficient Data Structure for Must-Alias Analysis
 </a>" (<a href="https://cc-conference.github.io/18/">CC'18</a>)</li>
     <li>"<a href="doubleBlind-CACM.pdf">Effectiveness of Anonymization in Double-Blind Review</a>" (<a href="http://cacm.acm.org/">CACM</a>, to appear)</li> 
     <li>"<a href="heapdl-oopsla17.pdf">Heaps Don’t Lie: Countering Unsoundness with Heap
@@ -242,14 +246,6 @@ Snapshots</a>" (<a href="http://2017.splashcon.org/track/splash-2017-OOPSLA">OOP
     <li>"<a href="streams-popl17.pdf">Stream Fusion, to Completeness</a>" (<a href="http://conf.researchr.org/home/POPL-2017">POPL'17</a>)</li> 
     <li>"<a href="gttse-generation17.pdf">Structured Program Generation Techniques</a>" (<a href="http://gttse.wikidot.com/">GTTSE--Grand Timely Topics in SE</a>)</li> 
     <li>"<a href="cclyzer-sas16.pdf">Structure-Sensitive Points-To Analysis for C and C++</a>" (<a href="http://staticanalysis.org/sas2016/">SAS'16</a>)</li> 
-    <li>"<a href="points-to-tutorial15.pdf">Pointer Analysis</a>" tutorial survey (<a href="http://www.nowpublishers.com/PGL">Foundations and Trends in PL</a>, <a href="http://dx.doi.org/10.1561/2500000014">official link</a>)</li> 
-    <li>"<a href="reflection-aplas15.pdf">More Sound Static Handling of Java Reflection</a>" (<a href="http://pl.postech.ac.kr/aplas2015/">APLAS'15</a>)</li> 
-    <li>"<a href="adrt-oopsla15.pdf">Automating Ad hoc Data Representation Transformations</a>" (<a href="http://2015.splashcon.org/">OOPSLA'15</a>) <img alt="distinguished artifact award"
- src="award.gif" class="c8" title="distinguished artifact award"></li> 
-    <li>Recent workshop papers: "<a href="foo-ftfjp15.pdf">Foo: A Minimal Modern OO Calculus</a>" (<a href="http://2015.ecoop.org/track/FTfJP-2015-papers">FTfJP'15</a>); "<a href="jucm-maspeghi15.pdf">jUCM: Universal Class Morphing</a>" (<a href="http://2015.ecoop.org/track/MASPEGHI-2015-papers">MASPEGHI'15</a>)</li> 
-    <li>"<a href="algebras-ecoop15.pdf">Streams a la carte: Extensible Pipelines with Object Algebras</a>" (<a href="http://2015.ecoop.org/">ECOOP'15</a>). Closely related to earlier performance analysis study: "<a href="lambdas-icooolps14.pdf">Clash of the Lambdas</a>" (<a href="http://soft-dev.org/events/icooolps14/">ICOOOLPS'14</a>)</li>
-    <li>"<a href="pql-cc15.pdf">A Backend Extension Mechanism for PQL/Java with Free Run-Time Optimisation</a>" (<a href="http://www.etaps.org/index.php/2015/cc">CC'15</a>)</li> 
-    <li>"<a href="Soundiness-CACM.pdf">In Defense of Soundiness: A Manifesto</a>" (<a href="http://cacm.acm.org/">CACM</a>, Feb'15), see also <a href="http://soundiness.org/">soundiness.org</a></li> 
 </ul>
 <br></li>
   <li> Project areas, each with representative publications and links:<br>
@@ -257,9 +253,18 @@ Snapshots</a>" (<a href="http://2017.splashcon.org/track/splash-2017-OOPSLA">OOP
   
   <li class="c4">
   <ul>
-    <li><span class="c7">Points-to Analysis</span>: The <a href="http://doop.program-analysis.org">Doop framework</a> expresses a rich set of points-to analyses completely declaratively (in the Datalog language).</li>
+    <li><span class="c7">Static Program Analysis</span>: we express a rich set of static analyses completely declaratively (in the Datalog language).</li>
     <li class="c4">
     <ul>
+      <li>Reference/overview materials:
+		<ul>
+		  <li>The <a href="http://doop.program-analysis.org">Doop framework</a></li>
+          <li>"<a href="points-to-tutorial15.pdf">Pointer Analysis</a>" tutorial survey (<a href="http://www.nowpublishers.com/PGL">Foundations and Trends in PL</a>, <a href="http://dx.doi.org/10.1561/2500000014">official link</a>)</li>
+		  <li><a href="http://plast-lab.github.io/feb16-seminar/">Notes, slides, etc.</a> from a 2016 seminar. <a href="https://www.youtube.com/channel/UCoeyDLLCB4AGlLRrI_cdDHw">Videos of lectures</a>.</li>
+	    </ul>
+      </li>	
+      <li>"<a href="reflection-aplas15.pdf">More Sound Static Handling of Java Reflection</a>" (<a href="http://pl.postech.ac.kr/aplas2015/">APLAS'15</a>)</li> 
+      <li>"<a href="Soundiness-CACM.pdf">In Defense of Soundiness: A Manifesto</a>" (<a href="http://cacm.acm.org/">CACM</a>, Feb'15), see also <a href="http://soundiness.org/">soundiness.org</a></li> 
       <li>"<a href="introspective-pldi14.pdf">Introspective Analysis: Context-Sensitivity, Across the Board</a>" (<a href="http://conferences.inf.ed.ac.uk/pldi2014/">PLDI'14</a>), <a href="http://cgi.di.uoa.gr/~smaragd/pldi14ae/pldi14-ae.tgz">code</a> </li>
       <li>"<a href="set-based-oopsla13.pdf">Set-Based Pre-Processing for Points-To Analysis</a>" (<a href="http://splashcon.org/2013/">OOPSLA'13</a>)</li>
       <li>"<a href="jphantom-oopsla13.pdf">Class Hierarchy Complementation: Soundly Completing a Partial Type Graph</a>" (<a href="http://splashcon.org/2013/">OOPSLA'13</a>)</li>
@@ -273,7 +278,7 @@ Snapshots</a>" (<a href="http://2017.splashcon.org/track/splash-2017-OOPSLA">OOP
     </ul><br>
     </li>
 
-    <li><span class="c7">Program generators, generics in PL</span>: <a
+    <li><span class="c7">Program generators, generics in PL, extensibility</span>: <a
  href="http://code.google.com/p/morphing/">MorphJ</a>
 <!--
  and <a href="http://www.cc.gatech.edu/%7Essh/cj/">cJ</a>
@@ -292,6 +297,11 @@ the 90s, I also worked (as an intern and a funded Ph.D. student) on the <a
 Programming (IP)</a> project at Microsoft.</li>
     <li class="c4">
     <ul>
+      <li>"<a href="adrt-oopsla15.pdf">Automating Ad hoc Data Representation Transformations</a>" (<a href="http://2015.splashcon.org/">OOPSLA'15</a>) <img alt="distinguished artifact award"
+ src="award.gif" class="c8" title="distinguished artifact award"></li> 
+      <li>"<a href="foo-ftfjp15.pdf">Foo: A Minimal Modern OO Calculus</a>" (<a href="http://2015.ecoop.org/track/FTfJP-2015-papers">FTfJP'15</a>)</li>
+	  <li>"<a href="jucm-maspeghi15.pdf">jUCM: Universal Class Morphing</a>" (<a href="http://2015.ecoop.org/track/MASPEGHI-2015-papers">MASPEGHI'15</a>)</li> 
+      <li>"<a href="algebras-ecoop15.pdf">Streams a la carte: Extensible Pipelines with Object Algebras</a>" (<a href="http://2015.ecoop.org/">ECOOP'15</a>). Closely related to earlier performance analysis study: "<a href="lambdas-icooolps14.pdf">Clash of the Lambdas</a>" (<a href="http://soft-dev.org/events/icooolps14/">ICOOOLPS'14</a>)</li>
       <li>"<a href="variance-oopsla14.pdf">Refactoring Java Generics by Inferring Wildcards, In Practice</a>" (<a href="http://2014.splashcon.org/track/oopsla2014">OOPSLA'14</a>)</li>
       <li>"<a href="delphj-oopsla13.pdf">Forsaking Inheritance: Supercharged Delegation in DelphJ</a>" (<a href="http://splashcon.org/2013/">OOPSLA'13</a>)</li>
       <li>"<a href="reified-gpce13.pdf">Reified Type Parameters Using Java Annotations</a>" (<a href="http://program-transformation.org/GPCE13">GPCE'13</a>)</li>
@@ -370,7 +380,7 @@ Languages conference (DSL)'97.
 
     <li class="c4">
     <ul>
-
+      <li>"<a href="pql-cc15.pdf">A Backend Extension Mechanism for PQL/Java with Free Run-Time Optimisation</a>" (<a href="http://www.etaps.org/index.php/2015/cc">CC'15</a>)</li> 
       <li>"<a href="pql-ecoop12.pdf">PQL: A Purely-Declarative Java Extension for Parallel Programming</a>" (<a href="http://ecoop12.cs.purdue.edu/">ECOOP'12</a>)</li>
 
       <li>"<a href="DeclarativeDebugging.pdf">Declarative Datalog Debugging for Mere Mortals</a>" (<a href="http://www.dbai.tuwien.ac.at/datalog2.0/">Datalog 2.0 2012</a>)</li>
