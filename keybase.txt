@@ -1,0 +1,56 @@
+==================================================================
+https://keybase.io/clyze
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://yanniss.github.io
+  * I am clyze (https://keybase.io/clyze) on keybase.
+  * I have a public key ASBharE8RmntG-4YngDJDFzXOlLfEklvkCEkl6mT1XKHTwo
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "0120616ab13c4669ed1bee189e00c90c5cd73a52df12496f90212497a993d572874f0a",
+      "host": "keybase.io",
+      "kid": "0120616ab13c4669ed1bee189e00c90c5cd73a52df12496f90212497a993d572874f0a",
+      "uid": "7789a61f4731fda0013c1cf6a589b319",
+      "username": "clyze"
+    },
+    "merkle_root": {
+      "ctime": 1618945288,
+      "hash": "a65e6fbf71fbae643334c56c89f969fe46a0c35b1aa9a5e5e92a4861256ae329836e90a33e30618f6e07c48ec0f04ce06953a924ea5d3e8a89f1685a4bed2d8a",
+      "hash_meta": "e8e2ad3203189115de9fafc9b5c211939f9d6577c8d17d49a133c09435ae63cb",
+      "seqno": 19690930
+    },
+    "service": {
+      "entropy": "fbKL6s0rrj9mkOZOcE33246f",
+      "hostname": "yanniss.github.io",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 2
+  },
+  "client": {
+    "name": "keybase.io go client",
+    "version": "5.6.1"
+  },
+  "ctime": 1618945376,
+  "expire_in": 504576000,
+  "prev": "91a1d67e1eae9aebbacd71cf5e47410aa1017b60fce8baff976636295a88d847",
+  "seqno": 6,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEgYWqxPEZp7RvuGJ4AyQxc1zpS3xJJb5AhJJepk9Vyh08Kp3BheWxvYWTESpcCBsQgkaHWfh6umuu6zXHPXkdBCqEBe2D86Lr/l2Y2KVqI2EfEIDf+tB0GzrcJ0FOwMSJwcoswh6QtwsUw2U0EZ4nppEtOAgHCo3NpZ8RAJQzucSZcc8LYhxs/1WEjgtzdLHeX14n8QjqwkRhjDQJahug1v1+bFrqJ8XFOiam6Qnlb6MRp8eUyW5YS0A0qB6hzaWdfdHlwZSCkaGFzaIKkdHlwZQildmFsdWXEIAj/ip8aSocB7hJSUm82+L3g/CfNJWvrKScze+YOllT9o3RhZ80CAqd2ZXJzaW9uAQ==
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/clyze
+
+==================================================================
