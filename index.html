@@ -20,7 +20,7 @@
  img.c10 {width: 20px; height: 20px;}
  span.c7 {font-style: italic;}
  img.c6 {width: 16px; height: 17px;}
- img.c5 {width: 46px; height: 19px;}
+ img.c5 {width: 65px; height: 25px;}
  li.c4 {list-style: none}
  p.c3 {font-size: 120%}
  span.c2 {font-size: 120%}
@@ -209,7 +209,7 @@ computing, memory management and program locality)</li>
   <li> 
   Gratefully acknowledging funding by the <a href="http://erc.europa.eu">ERC</a> (Advanced grant, '24-'29), and the <a href="http://www.elidek.gr/en/homepage/">HFRI</a>.
   </li>
-  <li>(Perpetually outdated) <a href="cv.pdf">CV</a></li>
+  <li>(Very outdated) <a href="cv.pdf">CV</a></li>
  </ul>
 </td>
 <td>
@@ -250,33 +250,14 @@ computing, memory management and program locality)</li>
 
   
   <li class="c4"><br></li>
-  <li><img src="new.gif" title="" alt="New!" class="c5">Latest work:</li>
+  <li>Latest work: <img src="new.gif" title="" alt="New!" class="c5"></li>
   <li class="c4">
   <ul>
     <li>"<a href="shrnkr-full.pdf">The Incredible Shrinking Context... in a Decompiler Near You</a>" (<a href="https://conf.researchr.org/home/issta-2025">ISSTA'25</a>)</li> 
     <li>"<a href="sbc2023.pdf">Program Analysis for High-Value Smart Contract Vulnerabilities: Techniques and Insights</a>" (<a href="https://cbr.stanford.edu/sbc23/">SBC'23</a>)</li> 
     <li>"<a href="elipmoc-oopsla22.pdf">Elipmoc: Advanced Decompilation of Ethereum Smart Contracts</a>" (<a href="https://2022.splashcon.org/track/splash-2022-oopsla">OOPSLA'22</a>)</li> 
-    <li>"<a href="symvalic-oopsla21.pdf">Symbolic Value-Flow Static Analysis: Deep, Precise,
-Complete Modeling of Ethereum Smart Contracts</a>" (<a href="https://2021.splashcon.org/track/splash-2021-oopsla">OOPSLA'21</a>)</li> 
-    <li>"<a href="baton-oopsla21.pdf">Making Pointer Analysis More Precise by Unleashing the
-Power of Selective Context Sensitivity</a>" (<a href="https://2021.splashcon.org/track/splash-2021-oopsla">OOPSLA'21</a>)</li> 
-    <li>"<a href="mem-gas-oopsla20-preprint.pdf">Precise Static Modeling of Ethereum 'Memory'</a>" (<a href="https://2020.splashcon.org/track/splash-2020-oopsla">OOPSLA'20</a>)</li> 
-    <li>"<a href="https://cacm.acm.org/magazines/2020/10/247600-madmax/fulltext">MadMax: Analyzing the Out-of-Gas World of Smart Contracts</a>" (<a href="https://cacm.acm.org/magazines/2020/10">CACM Oct'20</a>)
-	  <ul>
-	     <li> Condensed, updated "research highlight" over "<a href="eth-oopsla18.pdf">MadMax: Surviving Out-of-Gas Conditions in Ethereum Smart Contracts</a>" (<a href="https://conf.researchr.org/track/splash-2018/splash-2018-OOPSLA">OOPSLA'18</a>) <img alt="distinguished paper award" src="award.gif" class="c6" title="distinguished paper award"> <img alt="2019 SIGPLAN Research Highlight" src="award.gif" class="c6" title="2019 SIGPLAN Research Highlight"></li>
-	  </ul>
-	</li>	  
-    <li>"<a href="tensor-ecoop20.pdf">Static Analysis of Shape in TensorFlow Programs</a>" (<a href="https://2020.ecoop.org/">ECOOP'20</a>)</li> 
-    <li>"<a href="native-issta20.pdf">Identifying Java Calls in Native Code via Binary Scanning</a>" (<a href="https://conf.researchr.org/home/issta-2020">ISSTA'20</a>)</li>      
-    <li>"<a href="ethainter-pldi20.pdf">Ethainter: A Smart Contract Security Analyzer for Composite Vulnerabilities</a>" (<a href="https://conf.researchr.org/home/pldi-2020">PLDI'20</a>)</li>
-    <li>"<a href="enterprise-pldi20.pdf">Static Analysis of Java Enterprise Applications: Frameworks and Caches, the Elephants in the Room</a>" (<a href="https://conf.researchr.org/home/pldi-2020">PLDI'20</a>)</li>
-    <li>"<a href="pldiws20soapmain-id2-p-1b9d77e--final.pdf">Explaining Bug Provenance with Trace Witnesses</a>" (<a href="https://pldi20.sigplan.org/home/SOAP-2020">SOAP'20</a>)</li>
-    <li>"<a href="toplas20-zipper.pdf">A Principled Approach to Selective Context Sensitivity for Pointer Analysis</a>" (<a href="https://dl.acm.org/journal/toplas">ACM TOPLAS</a>, May'20)
-	  <ul>
-		 <li> extends "<a href="zipper-oopsla18.pdf">Precision-Guided Context Sensitivity for Pointer Analysis</a>" (<a href="https://conf.researchr.org/track/splash-2018/splash-2018-OOPSLA">OOPSLA'18</a>)</li> 
-	  </ul>
-    </li>
 </ul>
+
 
 <br></li>
   <li> Project areas, each with representative publications and links:<br>
@@ -284,7 +265,23 @@ Power of Selective Context Sensitivity</a>" (<a href="https://2021.splashcon.org
   
   <li class="c4">
   <ul>
-    <li><span class="c7">Static Program Analysis</span>: we express a rich set of static analyses completely declaratively (in the Datalog language).</li>
+    <li><span class="c7">Static analysis of smart contracts</span>: work that led to <a href="https://dedaub.com">Dedaub</a> and to the best decompiler for Ethereum VM smart contracts.</li>
+    <li class="c4">
+    <ul>
+      <li>"<a href="symvalic-oopsla21.pdf">Symbolic Value-Flow Static Analysis: Deep, Precise,
+Complete Modeling of Ethereum Smart Contracts</a>" (<a href="https://2021.splashcon.org/track/splash-2021-oopsla">OOPSLA'21</a>)</li> 
+      <li>"<a href="mem-gas-oopsla20-preprint.pdf">Precise Static Modeling of Ethereum 'Memory'</a>" (<a href="https://2020.splashcon.org/track/splash-2020-oopsla">OOPSLA'20</a>)</li> 
+      <li>"<a href="https://cacm.acm.org/magazines/2020/10/247600-madmax/fulltext">MadMax: Analyzing the Out-of-Gas World of Smart Contracts</a>" (<a href="https://cacm.acm.org/magazines/2020/10">CACM Oct'20</a>)
+	    <ul>
+	      <li> Condensed, updated "research highlight" over "<a href="eth-oopsla18.pdf">MadMax: Surviving Out-of-Gas Conditions in Ethereum Smart Contracts</a>" (<a href="https://conf.researchr.org/track/splash-2018/splash-2018-OOPSLA">OOPSLA'18</a>) <img alt="distinguished paper award" src="award.gif" class="c6" title="distinguished paper award"> <img alt="2019 SIGPLAN Research Highlight" src="award.gif" class="c6" title="2019 SIGPLAN Research Highlight"></li>
+	    </ul>
+	  </li>	  
+    <li>"<a href="ethainter-pldi20.pdf">Ethainter: A Smart Contract Security Analyzer for Composite Vulnerabilities</a>" (<a href="https://conf.researchr.org/home/pldi-2020">PLDI'20</a>)</li>
+      <li>"<a href="gigahorse-icse19.pdf">Gigahorse: Thorough, Declarative Decompilation of Smart Contracts</a>" (<a href="https://conf.researchr.org/home/icse-2019">ICSE'19</a>)</li> 
+    </ul><br>
+    </li>
+
+    <li><span class="c7">General Static Program Analysis (esp. pointer analysis)</span>: we express a rich set of static analyses completely declaratively (in the Datalog language).</li>
     <li class="c4">
     <ul>
       <li>Reference/overview material:
@@ -294,8 +291,17 @@ Power of Selective Context Sensitivity</a>" (<a href="https://2021.splashcon.org
 		  <li><a href="http://plast-lab.github.io/feb16-seminar/">Notes, slides, etc.</a> from a 2016 seminar. <a href="https://www.youtube.com/playlist?list=PLRUJ115QHa0WMyGyP2j_1KRFJjaT0kFOu">Videos of lectures</a>.</li>
 	    </ul>
       </li>	
+      <li>"<a href="baton-oopsla21.pdf">Making Pointer Analysis More Precise by Unleashing the Power of Selective Context Sensitivity</a>" (<a href="https://2021.splashcon.org/track/splash-2021-oopsla">OOPSLA'21</a>)</li> 
+      <li>"<a href="native-issta20.pdf">Identifying Java Calls in Native Code via Binary Scanning</a>" (<a href="https://conf.researchr.org/home/issta-2020">ISSTA'20</a>)</li>      
+      <li>"<a href="enterprise-pldi20.pdf">Static Analysis of Java Enterprise Applications: Frameworks and Caches, the Elephants in the Room</a>" (<a href="https://conf.researchr.org/home/pldi-2020">PLDI'20</a>)</li>
+      <li>"<a href="pldiws20soapmain-id2-p-1b9d77e--final.pdf">Explaining Bug Provenance with Trace Witnesses</a>" (<a href="https://pldi20.sigplan.org/home/SOAP-2020">SOAP'20</a>)</li>
+      <li>"<a href="toplas20-zipper.pdf">A Principled Approach to Selective Context Sensitivity for Pointer Analysis</a>" (<a href="https://dl.acm.org/journal/toplas">ACM TOPLAS</a>, May'20)
+	    <ul>
+		  <li> extends "<a href="zipper-oopsla18.pdf">Precision-Guided Context Sensitivity for Pointer Analysis</a>" (<a href="https://conf.researchr.org/track/splash-2018/splash-2018-OOPSLA">OOPSLA'18</a>)</li> 
+	    </ul>
+      </li>
+      <li>"<a href="tensor-ecoop20.pdf">Static Analysis of Shape in TensorFlow Programs</a>" (<a href="https://2020.ecoop.org/">ECOOP'20</a>)</li> 
       <li>"<a href="invokedynamic-ecoop19.pdf">Deep Static Modeling of Invokedynamic</a>" (<a href="https://conf.researchr.org/home/ecoop-2019">ECOOP'19</a>)</li> 
-      <li>"<a href="gigahorse-icse19.pdf">Gigahorse: Thorough, Declarative Decompilation of Smart Contracts</a>" (<a href="https://conf.researchr.org/home/icse-2019">ICSE'19</a>)</li> 
       <li>"<a href="FSE18-camera-ready.pdf">Scalability-First Pointer Analysis with
 Self-Tuning Context-Sensitivity</a>" (<a href="https://conf.researchr.org/home/fse-2018">ESEC/FSE'18</a>)</li>
       <li>"<a href="ecoop18-sound-may-preprint.pdf">Defensive Points-To Analysis: Effective Soundness via Laziness</a>" (<a href="https://conf.researchr.org/home/ecoop-2018">ECOOP'18</a>) <img alt="distinguished paper award" src="award.gif" class="c6" title="distinguished paper award"></li>
